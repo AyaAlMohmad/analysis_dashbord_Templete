@@ -9,39 +9,77 @@
         </p>
     </header>
 
-    <form method="post" action="{{ route('password.update') }}" class="mt-6 space-y-6">
+  
+    <form method="post" action="{{ route('password.update') }}">
         @csrf
         @method('put')
 
-        <div>
-            <x-input-label for="update_password_current_password" :value="__('Current Password')" />
-            <x-text-input id="update_password_current_password" name="current_password" type="password" class="mt-1 block w-full" autocomplete="current-password" />
-            <x-input-error :messages="$errors->updatePassword->get('current_password')" class="mt-2" />
+        <div style="margin-bottom: 20px;">
+            <label for="update_password_current_password" style="display: block; font-weight: 500; color: #374151; margin-bottom: 6px;">
+                {{ __('Current Password') }}
+            </label>
+            <input 
+                id="update_password_current_password" 
+                name="current_password" 
+                type="password" 
+                autocomplete="current-password"
+                style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px;"
+            >
+            @error('updatePassword.current_password')
+                <div style="color: red; font-size: 12px; margin-top: 4px;">{{ $message }}</div>
+            @enderror
         </div>
 
-        <div>
-            <x-input-label for="update_password_password" :value="__('New Password')" />
-            <x-text-input id="update_password_password" name="password" type="password" class="mt-1 block w-full" autocomplete="new-password" />
-            <x-input-error :messages="$errors->updatePassword->get('password')" class="mt-2" />
+        <div style="margin-bottom: 20px;">
+            <label for="update_password_password" style="display: block; font-weight: 500; color: #374151; margin-bottom: 6px;">
+                {{ __('New Password') }}
+            </label>
+            <input 
+                id="update_password_password" 
+                name="password" 
+                type="password" 
+                autocomplete="new-password"
+                style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px;"
+            >
+            @error('updatePassword.password')
+                <div style="color: red; font-size: 12px; margin-top: 4px;">{{ $message }}</div>
+            @enderror
         </div>
 
-        <div>
-            <x-input-label for="update_password_password_confirmation" :value="__('Confirm Password')" />
-            <x-text-input id="update_password_password_confirmation" name="password_confirmation" type="password" class="mt-1 block w-full" autocomplete="new-password" />
-            <x-input-error :messages="$errors->updatePassword->get('password_confirmation')" class="mt-2" />
+        <div style="margin-bottom: 20px;">
+            <label for="update_password_password_confirmation" style="display: block; font-weight: 500; color: #374151; margin-bottom: 6px;">
+                {{ __('Confirm Password') }}
+            </label>
+            <input 
+                id="update_password_password_confirmation" 
+                name="password_confirmation" 
+                type="password" 
+                autocomplete="new-password"
+                style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px;"
+            >
+            @error('updatePassword.password_confirmation')
+                <div style="color: red; font-size: 12px; margin-top: 4px;">{{ $message }}</div>
+            @enderror
         </div>
 
-        <div class="flex items-center gap-4">
-            <x-primary-button>{{ __('Save') }}</x-primary-button>
+        <div style="display: flex; align-items: center; gap: 16px; margin-top: 24px;">
+            <button 
+                type="submit"
+                style="background-color: #1f2937; color: white; padding: 8px 16px; font-size: 14px; border-radius: 6px; border: none; cursor: pointer;"
+            >
+                {{ __('Save') }}
+            </button>
 
             @if (session('status') === 'password-updated')
-                <p
+                <p 
                     x-data="{ show: true }"
                     x-show="show"
                     x-transition
                     x-init="setTimeout(() => show = false, 2000)"
-                    class="text-sm text-gray-600"
-                >{{ __('Saved.') }}</p>
+                    style="font-size: 14px; color: #6b7280;"
+                >
+                    {{ __('Saved.') }}
+                </p>
             @endif
         </div>
     </form>

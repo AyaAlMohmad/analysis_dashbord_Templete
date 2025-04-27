@@ -13,33 +13,62 @@
         @csrf
     </form>
 
-    <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6">
+    <form method="post" action="{{ route('profile.update') }}">
         @csrf
         @method('patch')
 
-        <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $user->name)" required autofocus autocomplete="name" />
-            <x-input-error class="mt-2" :messages="$errors->get('name')" />
+        <div style="margin-bottom: 20px;">
+            <label for="name" style="display: block; font-weight: 500; color: #374151; margin-bottom: 6px;">
+                {{ __('Name') }}
+            </label>
+            <input 
+                id="name" 
+                name="name" 
+                type="text" 
+                value="{{ old('name', $user->name) }}" 
+                required 
+                autofocus 
+                autocomplete="name"
+                style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px;"
+            >
+            @error('name')
+                <div style="color: red; font-size: 12px; margin-top: 4px;">{{ $message }}</div>
+            @enderror
         </div>
 
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $user->email)" required autocomplete="username" />
-            <x-input-error class="mt-2" :messages="$errors->get('email')" />
+        <div style="margin-bottom: 20px;">
+            <label for="email" style="display: block; font-weight: 500; color: #374151; margin-bottom: 6px;">
+                {{ __('Email') }}
+            </label>
+            <input 
+                id="email" 
+                name="email" 
+                type="email" 
+                value="{{ old('email', $user->email) }}" 
+                required 
+                autocomplete="username"
+                style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px;"
+            >
+            @error('email')
+                <div style="color: red; font-size: 12px; margin-top: 4px;">{{ $message }}</div>
+            @enderror
 
             @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
-                <div>
-                    <p class="text-sm mt-2 text-gray-800">
+                <div style="margin-top: 10px;">
+                    <p style="font-size: 14px; color: #374151;">
                         {{ __('Your email address is unverified.') }}
 
-                        <button form="send-verification" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        <button 
+                            form="send-verification" 
+                            type="submit"
+                            style="font-size: 14px; text-decoration: underline; color: #4b5563; cursor: pointer; border: none; background: none; padding: 0;"
+                        >
                             {{ __('Click here to re-send the verification email.') }}
                         </button>
                     </p>
 
                     @if (session('status') === 'verification-link-sent')
-                        <p class="mt-2 font-medium text-sm text-green-600">
+                        <p style="margin-top: 8px; font-weight: 500; font-size: 14px; color: #059669;">
                             {{ __('A new verification link has been sent to your email address.') }}
                         </p>
                     @endif
@@ -47,17 +76,24 @@
             @endif
         </div>
 
-        <div class="flex items-center gap-4">
-            <x-primary-button>{{ __('Save') }}</x-primary-button>
+        <div style="display: flex; align-items: center; gap: 16px; margin-top: 24px;">
+            <button 
+                type="submit"
+                style="background-color: #1f2937; color: white; padding: 8px 16px; font-size: 14px; border-radius: 6px; border: none; cursor: pointer;"
+            >
+                {{ __('Save') }}
+            </button>
 
             @if (session('status') === 'profile-updated')
-                <p
+                <p 
                     x-data="{ show: true }"
                     x-show="show"
                     x-transition
                     x-init="setTimeout(() => show = false, 2000)"
-                    class="text-sm text-gray-600"
-                >{{ __('Saved.') }}</p>
+                    style="font-size: 14px; color: #6b7280;"
+                >
+                    {{ __('Saved.') }}
+                </p>
             @endif
         </div>
     </form>
