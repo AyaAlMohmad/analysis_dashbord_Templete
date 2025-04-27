@@ -11,9 +11,11 @@
                 list-style: none;
                 padding: 0;
             }
+
             .pagination li {
                 margin: 0 4px;
             }
+
             .pagination li a,
             .pagination li span {
                 display: flex;
@@ -28,19 +30,23 @@
                 transition: all 0.3s ease;
                 min-width: 40px;
             }
+
             .pagination li a:hover {
                 background-color: #3b82f6;
                 color: white;
             }
+
             .pagination li.active span {
                 background-color: #2563eb;
                 color: white;
                 font-weight: bold;
             }
+
             .pagination li.disabled span {
                 opacity: 0.5;
                 cursor: not-allowed;
             }
+
             .log-card {
                 background-color: #f9fafb;
                 border: 1px solid #e5e7eb;
@@ -49,6 +55,7 @@
                 overflow: hidden;
                 box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
             }
+
             .log-header {
                 background-color: #f3f4f6;
                 padding: 14px 18px;
@@ -57,38 +64,46 @@
                 align-items: center;
                 cursor: pointer;
             }
+
             .log-info {
                 display: flex;
                 align-items: center;
                 gap: 12px;
             }
+
             .log-action {
                 padding: 6px 12px;
                 border-radius: 9999px;
                 font-size: 12px;
                 font-weight: bold;
             }
+
             .log-action.insert {
                 background-color: #d1fae5;
                 color: #065f46;
             }
+
             .log-action.update {
                 background-color: #fef9c3;
                 color: #92400e;
             }
+
             .log-action.delete {
                 background-color: #fee2e2;
                 color: #991b1b;
             }
+
             .log-meta {
                 font-size: 14px;
                 color: #6b7280;
             }
+
             .log-arrow {
                 font-size: 20px;
                 color: #9ca3af;
                 transition: transform 0.3s ease;
             }
+
             .log-body {
                 background-color: #ffffff;
                 padding: 0 18px 18px 18px;
@@ -97,11 +112,13 @@
                 transition: max-height 0.5s ease, opacity 0.5s ease;
                 opacity: 0;
             }
+
             .log-table {
                 width: 100%;
                 border-collapse: collapse;
                 margin-top: 12px;
             }
+
             .log-table th,
             .log-table td {
                 padding: 10px;
@@ -109,6 +126,7 @@
                 text-align: center;
                 font-size: 14px;
             }
+
             .new-value {
                 background-color: #d1fae5;
                 color: #065f46;
@@ -116,6 +134,7 @@
                 border-radius: 6px;
                 font-weight: bold;
             }
+
             .old-value {
                 background-color: #fee2e2;
                 color: #991b1b;
@@ -123,10 +142,12 @@
                 border-radius: 6px;
                 font-weight: bold;
             }
+
             .log-body.show {
                 max-height: 500px;
                 opacity: 1;
             }
+
             .rotate-180 {
                 transform: rotate(180deg);
             }
@@ -136,13 +157,12 @@
             <div class="bg-white shadow rounded-lg p-6">
                 <h1 class="text-2xl font-bold text-center text-gray-800 mb-8">Change Log - {{ $site }}</h1>
 
-                <!-- زرار Update Data و View Analysis -->
-                <div class="flex flex-wrap justify-center mb-8">
-                    <a href="{{ route('admin.items.log', $site) }}" class="text-blue-500 hover:text-blue-600"
-                        style="margin-right: 20px; color: blue">
+                <!-- أزرار Update و View Analysis -->
+                <div class="flex flex-wrap justify-center mb-8 gap-4">
+                    <a href="{{ route('admin.appointments.log', $site) }}" style="color: blue">
                         🔄 Update Data
                     </a>
-                    <a href="{{ route('admin.items.statistics', $site) }}" class="text-blue-500 hover:text-blue-600">
+                    <a href="{{ route('admin.appointments.statistics', $site) }}" class="text-blue-500 hover:text-blue-600">
                         <i class="fas fa-chart-bar mr-2"></i>View Analysis
                     </a>
                 </div>
@@ -162,6 +182,7 @@
                                 <div id="arrow-{{ $index }}" class="log-arrow">▼</div>
                             </div>
 
+
                             <div id="log-{{ $index }}" class="log-body">
                                 <table class="log-table">
                                     <thead>
@@ -174,25 +195,22 @@
                                     <tbody>
                                         @php
                                             $fields = [
-                                                'clientid' => 'Client ID',
-                                                'rel_type' => 'Relation Type',
-                                                'rel_id' => 'Relation ID',
-                                                'call_direction' => 'Call Direction',
-                                                'call_summary' => 'Call Summary',
-                                                'has_follow_up' => 'Has Follow Up',
-                                                'follow_up_schedule' => 'Follow Up Schedule',
-                                                'userphone' => 'User Phone',
-                                                'call_start_time' => 'Call Start Time',
-                                                'call_end_time' => 'Call End Time',
-                                                'call_duration' => 'Call Duration',
-                                                'status' => 'Call Status',
-                                                'staffid' => 'Staff ID',
-                                                'call_with_staffid' => 'Call With Staff ID',
-                                                'datestart' => 'Date Start',
-                                                'dateadded' => 'Date Added',
-                                                'customer_type' => 'Customer Type',
+                                                'description' => 'Description',
+                                                'date' => 'Date',
+                                                'address' => 'Address',
+                                                'reminder_before' => 'Reminder Before',
+                                                'reminder_before_type' => 'Reminder Before Type',
+                                                'name' => 'Name',
+                                                'email' => 'Email',
+                                                'phone' => 'Phone',
+                                                'source' => 'Source',
+                                                'notes' => 'Notes',
+                                                'approved' => 'Approved',
+                                                'start_hour' => 'Start Hour',
+                                                'recurring' => 'Recurring',
                                             ];
                                         @endphp
+
                                         @foreach ($fields as $field => $label)
                                             @php
                                                 $old = $log->data_old[$field] ?? null;
@@ -202,12 +220,12 @@
                                                 <td>{{ $label }}</td>
                                                 <td>
                                                     <div class="{{ $old !== $new ? 'new-value' : '' }}">
-                                                        {{ is_array($new) ? json_encode($new) : ($new ?? 'Not Available') }}
+                                                        {{ is_array($new) ? json_encode($new) : $new ?? 'Not Available' }}
                                                     </div>
                                                 </td>
                                                 <td>
                                                     <div class="{{ $old !== $new ? 'old-value' : '' }}">
-                                                        {{ is_array($old) ? json_encode($old) : ($old ?? 'Not Available') }}
+                                                        {{ is_array($old) ? json_encode($old) : $old ?? 'Not Available' }}
                                                     </div>
                                                 </td>
                                             </tr>
@@ -219,8 +237,7 @@
                     @endforeach
                 </div>
 
-              
-                <div class="pagination">
+                <div class="pagination mt-8">
                     {{ $logs->links() }}
                 </div>
             </div>
@@ -228,7 +245,7 @@
     </div>
 
     <script>
-        function toggleLog(index) {
+       function toggleLog(index) {
             const logContent = document.getElementById(`log-${index}`);
             const arrow = document.getElementById(`arrow-${index}`);
     

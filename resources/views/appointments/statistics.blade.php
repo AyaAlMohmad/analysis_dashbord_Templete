@@ -12,7 +12,7 @@
             
 
                 <div class="mt-6">
-                    <a href="{{ route('admin.items.logs', $site) }}"
+                    <a href="{{ route('admin.appointments.logs', $site) }}"
                        >
                         Back to Logs
                     </a>
@@ -71,5 +71,4 @@
             });
         });
     </script>
-
 @endsection

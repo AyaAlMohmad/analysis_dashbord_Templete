@@ -1,4 +1,5 @@
-<x-app-layout>
+@extends('layouts.app')
+@section('content')
     <div class="py-12">
         <div class="max-w-5xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white p-6 rounded-lg shadow-lg">
@@ -11,7 +12,7 @@
 
                 <div class="mt-6">
                     <a href="{{ route('admin.leads.logs', $site) }}"
-                        class="px-4 py-2 rounded-xl bg-gray-500 text-white hover:bg-gray-700 transition">
+                       >
                         Back to Logs
                     </a>
                 </div>
@@ -69,4 +70,4 @@
             });
         });
     </script>
-</x-app-layout>
+@endsection

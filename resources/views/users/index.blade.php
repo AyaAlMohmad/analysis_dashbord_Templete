@@ -1,4 +1,5 @@
-<x-app-layout>
+@extends('layouts.app')
+@section('content')
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 <div style="padding: 3rem 0;">
   <div style="max-width: 1200px; margin: 0 auto; padding: 0 1rem;">
@@ -68,4 +69,4 @@
     </div>
   </div>
 </div>
-</x-app-layout>
+@endsection

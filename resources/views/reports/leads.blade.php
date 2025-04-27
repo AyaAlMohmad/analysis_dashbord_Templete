@@ -1,360 +1,367 @@
 @extends('layouts.app')
 @section('content')
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-                <div class="p-4 bg-white shadow-sm rounded-lg">
-                    <h1 class="text-2xl font-bold text-gray-800 text-center">Leads Report</h1>
-                    <div class="flex items-center gap-4 mt-4">
-                        <!-- Dhahran Log -->
-                        <a href="{{ route('admin.leads.log', 'dhahran') }}"
-                            class="p-3 rounded-xl hover:bg-gray-100 transition text-gray-600 text-2xl"
-                            title="View Dhahran Log">
-                            <i class="fas fa-clipboard-list"></i> dhahran
-                        </a>
+    <!-- مكتبات الرسوميات -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="//unpkg.com/alpinejs" defer></script>
+    <div class="py-20 px-8 container mx-auto">
+        <section class="basic-select2">
+            <div class="row justify-content-center">
+                <div class="col-xl-6 col-lg-8">
+                    <div class="card mt-[100px]">
+                        <div class="card-content collapse show">
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <div class="text-bold-600 font-medium-2">
+                                        <h1 class="text-2xl font-bold text-gray-800 text-center">Leads Report</h1>
+                                        <div class="flex items-center gap-4 mt-4">
+                                            <!-- Dhahran Log -->
+                                            <a href="{{ route('admin.leads.log', 'dhahran') }}"
+                                                class="p-3 rounded-xl hover:bg-gray-100 transition text-gray-600 text-2xl"
+                                                title="View Dhahran Log">
+                                                <i class="fas fa-clipboard-list"></i> dhahran
+                                            </a>
 
-                        <!-- Bashaer Log -->
-                        <a href="{{ route('admin.leads.log', 'bashaer') }}"
-                            class="p-3 rounded-xl hover:bg-gray-100 transition text-gray-600 text-2xl"
-                            title="View Bashaer Log">
-                            <i class="fas fa-clipboard-list"></i> bashaer
-                        </a>
-                    </div>
-                </div>
+                                            <!-- Bashaer Log -->
+                                            <a href="{{ route('admin.leads.log', 'bashaer') }}"
+                                                class="p-3 rounded-xl hover:bg-gray-100 transition text-gray-600 text-2xl"
+                                                title="View Bashaer Log">
+                                                <i class="fas fa-clipboard-list"></i> bashaer
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
 
-                <div class="py-12">
-                    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                        <!-- Site Selector -->
-                        <div class="text-center mb-10">
-                            <label for="siteSelect" class="block text-xl font-bold text-gray-800 mb-3">
-                                Choose a Site:
-                            </label>
+                                <p class="text-center mt-4">📍 Select Location</p>
 
-                            <div class="inline-block relative w-64">
-                                <select id="siteSelect"
-                                    class="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-3 px-4 pr-10 rounded leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
-                                    <option value="">-- Select a site --</option>
+                                <select id="siteSelect" class="select2-placeholder form-control mt-2">
+                                    <option value="">-- Please choose a location --</option>
                                     <option value="dhahran">Azyan Dhahran</option>
                                     <option value="bashaer">Azyan Bashaer</option>
                                 </select>
-
-                                <div
-                                    class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
-
-                                </div>
-                                <!-- Export Buttons -->
-                                <div class="flex items-center gap-4 mt-4">
-                                    <button type="button" onclick="submitExport('pdf')"
-                                        class="p-3 rounded-xl hover:bg-red-100 transition text-red-500 text-2xl"
-                                        title="Export PDF">
-                                        <i class="fas fa-file-pdf"></i>
-                                    </button>
-
-                                    <button type="button" onclick="submitExport('zip')"
-                                        class="p-3 rounded-xl hover:bg-blue-100 transition text-blue-500 text-2xl"
-                                        title="Export ZIP">
-                                        <i class="fas fa-file-archive"></i>
-                                    </button>
-                                </div>
                             </div>
+
+                            <form id="exportForm" class="flex items-center gap-12 mt-12 justify-center">
+                                @csrf
+                                <input type="hidden" id="exportedBy" value="{{ Auth::user()->name }}">
+
+                                <!-- PDF Export Button -->
+                                <a href="javascript:void(0);" onclick="submitExport('pdf')" title="Export PDF"
+                                    class="transition duration-300 transform hover:scale-110 hover:rotate-6">
+                                    <div class="fonticon-container flex items-center justify-center custom-hover-red">
+                                        <div class="fonticon-wrap">
+                                            <i class="fa fa-file-pdf-o text-red-500 hover:text-red-700 text-7xl"></i>
+                                        </div>
+                                    </div>
+                                </a>
+
+                                <!-- CSV Export Button -->
+                                <a href="javascript:void(0);" onclick="submitExport('csv')" title="Export ZIP"
+                                    class="transition duration-300 transform hover:scale-110 hover:-rotate-6">
+                                    <div class="fonticon-container flex items-center justify-center">
+                                        <div class="fonticon-wrap">
+                                            <i
+                                                class="fa fa-file-archive-o text-indigo-500 hover:text-indigo-700 text-7xl"></i>
+                                        </div>
+                                    </div>
+                                </a>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            @foreach (['dhahran' => 'Azyan Dhahran', 'bashaer' => 'Azyan Bashaer'] as $key => $title)
+                @php
+                    $leadsData = $key === 'dhahran' ? $leadsAzyanDhahran : $leadsAzyanBashaer;
+                @endphp
+
+                <div id="site-{{ $key }}" class="site-container hidden">
+                    <div class="bg-white p-8 rounded-lg shadow-md mt-12">
+                        <div id="export-header-{{ $key }}" class="hidden text-center mb-6">
+                            <img src="{{ asset('build/logo.png') }}" alt="Logo"
+                                style="max-height:80px;margin-bottom:10px;">
+                            <h2 class="text-2xl font-bold text-gray-800">Leads Report - {{ $title }}</h2>
+                            <hr class="my-4">
                         </div>
 
+                        <!-- الرسم البياني -->
+                        <div class="bg-white p-6 rounded-lg shadow-sm mt-8">
+                            <canvas id="chart-{{ $key }}" class="w-full" style="height:400px;"></canvas>
+                        </div>
 
-                        <!-- Loop Through Sites -->
-                        @foreach (['dhahran' => 'Azyan Dhahran', 'bashaer' => 'Azyan Bashaer'] as $key => $title)
-                            @php
-                                $leadsData = $key === 'dhahran' ? $leadsAzyanDhahran : $leadsAzyanBashaer;
-                            @endphp
+                        <div class="bg-white p-6 rounded-lg shadow-sm mt-8">
+                            <h3 class="text-lg font-semibold mb-4 text-gray-700 text-center">Daily Leads Details</h3>
 
-                            <div id="site-{{ $key }}"
-                                class="site-container hidden bg-white overflow-hidden shadow-xl sm:rounded-lg my-8">
-                                <div class="export-header hidden" id="export-header-{{ $key }}">
-                                    <h1 class="text-xl font-bold mb-1">Leads Report</h1>
-                                    <h2 class="text-lg text-gray-600">Location: {{ ucfirst($title) }}</h2><br>
-                                </div>
-                                <div class="p-4 bg-white shadow-sm rounded-lg">
-                                    <h1 class="text-2xl font-bold text-gray-800 text-center">{{ $title }} - Leads
-                                        Report</h1>
-                                    </>
-
-                                    @if ($errors[$key])
-                                        <div class="mt-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
-                                            {{ $errors[$key] }}
-                                        </div>
-                                    @endif
-
-                                    @if (count($leadsData) > 0)
-                                        <!-- Summary -->
-                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
-                                            <div class="bg-green-50 p-6 rounded-lg shadow-sm">
-                                                <h3 class="text-lg font-semibold text-green-800">Total Added</h3>
-                                                <div class="text-3xl font-bold text-green-600">
-                                                    {{ $totals[$key]['added'] }}
-                                                </div>
-                                            </div>
-                                            <div class="bg-purple-50 p-6 rounded-lg shadow-sm">
-                                                <h3 class="text-lg font-semibold text-purple-800">Total Edited</h3>
-                                                <div class="text-3xl font-bold text-purple-600">
-                                                    {{ $totals[$key]['edited'] }}</div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Table -->
-                                        <div class="p-6">
-                                            <div x-data="{ showTable: false }" class="bg-white rounded-lg shadow-sm">
-                                                <div class="p-4 border-b">
-                                                    <button @click="showTable = !showTable"
-                                                        class="text-blue-500 hover:text-blue-700 flex items-center">
-                                                        <span
-                                                            x-text="showTable ? 'Hide Details' : 'Show Daily Details'"></span>
-                                                        <svg class="w-4 h-4 ml-2 transform transition-transform"
-                                                            :class="{ 'rotate-180': showTable }" fill="none"
-                                                            stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                                stroke-width="2" d="M19 9l-7 7-7-7" />
-                                                        </svg>
-                                                    </button>
-                                                </div>
-                                                <div x-show="showTable" id="daily-details-{{ $key }}"
-                                                    class="overflow-x-auto">
-                                                    <table class="min-w-full divide-y divide-gray-200">
-                                                        <thead class="bg-gray-50">
+                            <section id="daily-details-{{ $key }}" class="hidden">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="card">
+                                            <div class="card-content collapse show">
+                                                <div class="card-body card-dashboard">
+                                                    <table class="table table-striped table-bordered">
+                                                        <thead class="bg-gray-100">
                                                             <tr>
                                                                 <th
-                                                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                                                    class="py-2 px-4 text-gray-600 font-semibold text-center">
                                                                     Date</th>
                                                                 <th
-                                                                    class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">
+                                                                    class="py-2 px-4 text-green-700 font-semibold text-center">
                                                                     Added</th>
                                                                 <th
-                                                                    class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">
+                                                                    class="py-2 px-4 text-purple-700 font-semibold text-center">
                                                                     Edited</th>
                                                                 <th
-                                                                    class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">
+                                                                    class="py-2 px-4 text-blue-700 font-semibold text-center">
                                                                     Total</th>
                                                             </tr>
                                                         </thead>
-                                                        <tbody class="bg-white divide-y divide-gray-200">
+                                                        <tbody>
                                                             @foreach ($leadsData as $date => $stats)
-                                                                <tr class="hover:bg-gray-50">
-                                                                    <td class="px-6 py-4 text-sm text-gray-600">
+                                                                <tr class="hover:bg-gray-50 text-center">
+                                                                    <td class="py-2 px-4">
                                                                         {{ \Carbon\Carbon::parse($date)->format('d M Y') }}
                                                                     </td>
-                                                                    <td
-                                                                        class="px-6 py-4 text-center text-sm text-green-600">
+                                                                    <td class="py-2 px-4 text-green-600">
                                                                         {{ $stats['added'] }}</td>
-                                                                    <td
-                                                                        class="px-6 py-4 text-center text-sm text-purple-600">
+                                                                    <td class="py-2 px-4 text-purple-600">
                                                                         {{ $stats['edited'] }}</td>
-                                                                    <td
-                                                                        class="px-6 py-4 text-center text-sm text-blue-600 font-semibold">
-                                                                        {{ $stats['added'] + $stats['edited'] }}
-                                                                    </td>
+                                                                    <td class="py-2 px-4 font-bold">
+                                                                        {{ $stats['added'] + $stats['edited'] }}</td>
                                                                 </tr>
                                                             @endforeach
                                                         </tbody>
                                                     </table>
-                                                </div>
-                                            </div>
-                                        </div>
+                                                </div> <!-- card-body -->
+                                            </div> <!-- card-content -->
+                                        </div> <!-- card -->
+                                    </div> <!-- col -->
+                                </div> <!-- row -->
+                            </section>
 
-                                        <!-- Chart -->
-                                        <div class="w-full max-w-6xl mx-auto mt-8 p-6">
-                                            <div class="bg-white p-6 rounded-lg shadow-sm relative">
-                                                <div wire:ignore class="relative h-[500px]">
-                                                    <div x-data="{
-                                                        init() {
-                                                            const dates = @js(array_keys($leadsData));
-                                                            const addedData = @js(array_column($leadsData, 'added'));
-                                                            const editedData = @js(array_column($leadsData, 'edited'));
-                                                    
-                                                            new Chart(this.$refs.chart, {
-                                                                type: 'bar',
-                                                                data: {
-                                                                    labels: dates,
-                                                                    datasets: [{
-                                                                            label: 'Added',
-                                                                            data: addedData,
-                                                                            backgroundColor: '#A2C2D6',
-                                                                            borderColor: '#A2C2D6',
-                                                                            borderWidth: 1
-                                                                        },
-                                                                        {
-                                                                            label: 'Edited',
-                                                                            data: editedData,
-                                                                            backgroundColor: '#543829',
-                                                                            borderColor: '#00262f',
-                                                                            borderWidth: 1
-                                                                        }
-                                                                    ]
-                                                                },
-                                                                options: {
-                                                                    responsive: true,
-                                                                    maintainAspectRatio: false,
-                                                                    scales: {
-                                                                        x: { stacked: true },
-                                                                        y: { stacked: true, beginAtZero: true }
-                                                                    }
-                                                                }
-                                                            });
-                                                        }
-                                                    }">
-                                                        <canvas id="chart-{{ $key }}" x-ref="chart"></canvas>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @else
-                                        <div class="bg-white p-6 rounded-lg shadow-sm">
-                                            <p class="text-center text-gray-500">No data available</p>
-                                        </div>
-                                    @endif
-                                </div>
-                        @endforeach
+                            <a href="javascript:void(0);"
+                                class="text-blue-500 hover:text-blue-700 hover:underline mt-4 block text-center"
+                                onclick="toggleTable('{{ $key }}')">
+                                Show Details
+                            </a>
+                        </div>
+
                     </div>
                 </div>
+            @endforeach
+        </section>
+    </div>
 
-                <!-- Scripts -->
-                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-                <script src="//unpkg.com/alpinejs" defer></script>
-                <script>
-                    document.addEventListener('DOMContentLoaded', function() {
-                        const select = document.getElementById('siteSelect');
-                        const containers = document.querySelectorAll('.site-container');
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 
-                        select.addEventListener('change', function() {
-                            containers.forEach(div => div.classList.add('hidden'));
-                            const selected = select.value;
-                            if (selected) {
-                                document.getElementById(`site-${selected}`)?.classList.remove('hidden');
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const siteSelect = document.getElementById('siteSelect');
+            const containers = document.querySelectorAll('.site-container');
+            const charts = {};
+
+            const data = {
+                dhahran: {
+                    dates: @json(array_keys($leadsAzyanDhahran)),
+                    added: @json(array_column($leadsAzyanDhahran, 'added')),
+                    edited: @json(array_column($leadsAzyanDhahran, 'edited'))
+                },
+                bashaer: {
+                    dates: @json(array_keys($leadsAzyanBashaer)),
+                    added: @json(array_column($leadsAzyanBashaer, 'added')),
+                    edited: @json(array_column($leadsAzyanBashaer, 'edited'))
+                }
+            };
+
+            siteSelect.addEventListener('change', function() {
+                containers.forEach(div => div.classList.add('hidden'));
+                const site = this.value;
+                if (site && data[site]) {
+                    document.getElementById(`site-${site}`).classList.remove('hidden');
+
+                    if (!charts[site]) {
+                        const ctx = document.getElementById(`chart-${site}`).getContext('2d');
+                        charts[site] = new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: data[site].dates,
+                                datasets: [{
+                                        label: 'Added',
+                                        data: data[site].added,
+                                        backgroundColor: '#A2C2D6',
+                                    },
+                                    {
+                                        label: 'Edited',
+                                        data: data[site].edited,
+                                        backgroundColor: '#543829',
+                                    }
+                                ]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                scales: {
+                                    x: {
+                                        stacked: true
+                                    },
+                                    y: {
+                                        stacked: true,
+                                        beginAtZero: true
+                                    }
+                                }
                             }
                         });
-                    });
-                </script>
-
-            </div>
-        </div>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <!-- Required scripts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+                    }
+                }
+            });
+        });
+    </script>
     <script>
-        function submitExport(type) {
+        async function submitExport(type) {
             const site = document.getElementById('siteSelect').value;
             if (!site) return alert('Please select a site');
 
-            const exportHeader = document.getElementById(`export-header-${site}`);
+            const {
+                jsPDF
+            } = window.jspdf;
+            const exportedBy = "{{ Auth::user()->name }}";
+            const exportDate = new Date().toLocaleString();
+            const logoUrl = "{{ asset('build/logo.png') }}";
+
             const chartCanvas = document.getElementById(`chart-${site}`);
-            const siteSection = document.getElementById(`site-${site}`);
-            const detailsContent = document.getElementById(`daily-details-${site}`);
+            const detailsTable = document.querySelector(`#daily-details-${site} table`);
 
-
-            if (!exportHeader || !chartCanvas || !detailsContent) {
+            if (!chartCanvas || !detailsTable) {
                 alert('Required elements not found');
                 return;
             }
 
-            const originalHeaderDisplay = exportHeader.style.display;
-            const originalDetailsDisplay = detailsContent.style.display;
-            exportHeader.style.display = 'block';
-            detailsContent.style.display = 'block';
-
-            const exportedBy = "{{ Auth::user()->name }}";
-            const exportDate = new Date().toLocaleString();
             if (type === 'pdf') {
-                html2canvas(chartCanvas).then((chartImg) => {
-    const doc = new jspdf.jsPDF();
-    const imgWidth = 190;
-    let yPos = 10;
+                const doc = new jsPDF('p', 'mm', 'a4');
+                const logoImg = new Image();
+                logoImg.crossOrigin = "anonymous";
+                logoImg.src = logoUrl;
 
-    // Header (text only)
-    doc.setFontSize(16);
-    doc.text(`Leads Report`, 14, yPos);
-    yPos += 10;
+                logoImg.onload = async function() {
+                    // إضافة الشعار
+                    doc.addImage(logoImg, 'PNG', 80, 10, 50, 30);
 
-    doc.setFontSize(12);
-    doc.text(`Site: ${site}`, 14, yPos);
-    yPos += 8;
+                    // إضافة العنوان
+                    doc.setFontSize(16);
+                    doc.text(`Leads Report - Azyan ${site.charAt(0).toUpperCase() + site.slice(1)}`, 105, 50, {
+                        align: 'center'
+                    });
+                    doc.line(10, 55, 200, 55);
 
-    // Chart image
-    doc.addImage(chartImg, 'PNG', 10, yPos, imgWidth, 100);
-    yPos += 110;
+                    let yPos = 60;
 
-    // Details (daily details)
-    doc.setFontSize(12);
-    doc.text(`Daily Details:`, 14, yPos);
-    yPos += 8;
+                    // إضافة الرسم البياني
+                    const chartImg = await html2canvas(chartCanvas);
+                    const chartDataUrl = chartImg.toDataURL('image/png');
+                    doc.addImage(chartDataUrl, 'PNG', 10, yPos, 190, 80);
+                    yPos += 90;
 
-    const tableRows = detailsContent.querySelectorAll('tbody tr');
-    tableRows.forEach(row => {
-        const date = row.children[0].textContent.trim();
-        const added = row.children[1].textContent.trim();
-        const edited = row.children[2].textContent.trim();
-        const total = row.children[3].textContent.trim();
+                    // تجهيز بيانات الجدول
+                    const rows = [];
+                    const tableRows = detailsTable.querySelectorAll('tbody tr');
+                    tableRows.forEach(row => {
+                        const date = row.children[0]?.innerText.trim() ?? '';
+                        const added = row.children[1]?.innerText.trim() ?? '';
+                        const edited = row.children[2]?.innerText.trim() ?? '';
+                        const total = row.children[3]?.innerText.trim() ?? '';
+                        rows.push([date, added, edited, total]);
+                    });
 
-        doc.text(`${date} - Added: ${added}, Edited: ${edited}, Total: ${total}`, 14, yPos);
-        yPos += 7;
+                    // رسم الجدول
+                    await doc.autoTable({
+                        head: [
+                            ['Date', 'Added', 'Edited', 'Total']
+                        ],
+                        body: rows,
+                        startY: yPos,
+                        theme: 'grid',
+                        styles: {
+                            fontSize: 10
+                        },
+                        headStyles: {
+                            fillColor: [41, 128, 185]
+                        },
+                        alternateRowStyles: {
+                            fillColor: [240, 240, 240]
+                        },
+                        margin: {
+                            top: 10
+                        },
+                    });
 
-        // Add new page if content overflows
-        if (yPos > 270) {
-            doc.addPage();
-            yPos = 10;
-        }
-    });
+                    // 📄 إضافة التوقيع النهائي في آخر صفحة فقط
+                    const totalPages = doc.internal.getNumberOfPages();
+                    doc.setPage(totalPages);
 
-    // ➕ Add footer only after all pages have been generated (on the last page)
-    const pageCount = doc.internal.getNumberOfPages();
-    doc.setPage(pageCount); // Move to last page
-    const pageHeight = doc.internal.pageSize.height;
-    const margin = 10;
+                    const pageSize = doc.internal.pageSize;
+                    const pageHeight = pageSize.height || pageSize.getHeight();
 
-    doc.setFontSize(10);
-    doc.text(`Exported by: ${exportedBy}`, margin, pageHeight - 20);
-    doc.text(`Export date: ${exportDate}`, margin, pageHeight - 15);
+                    doc.setFontSize(10);
+                    doc.text(`Exported by: ${exportedBy}`, 10, pageHeight - 20);
+                    doc.text(`Export date: ${exportDate}`, 10, pageHeight - 15);
+                    doc.text(`Page ${totalPages} of ${totalPages}`, 200 - 10, pageHeight - 15, {
+                        align: 'right'
+                    });
 
-    doc.save(`${site}_Leads.pdf`);
-});
-
-            } else if (type === 'zip') {
+                    doc.save(`${site}_leads_report.pdf`);
+                };
+            } else if (type === 'csv') {
                 const zip = new JSZip();
 
-                // Create CSV file
-                let csvContent = "Date,Count\n";
-                const tableRows = detailsContent.querySelectorAll('tbody tr');
-                csvContent = "Date,Added,Edited,Total\n";
+                // تجهيز CSV
+                let csvContent = "Date,Added,Edited,Total\n";
+                const tableRows = detailsTable.querySelectorAll('tbody tr');
                 tableRows.forEach(row => {
-                    const date = row.children[0].textContent.trim();
-                    const added = row.children[1].textContent.trim();
-                    const edited = row.children[2].textContent.trim();
-                    const total = row.children[3].textContent.trim();
+                    const date = row.children[0]?.innerText.trim() ?? '';
+                    const added = row.children[1]?.innerText.trim() ?? '';
+                    const edited = row.children[2]?.innerText.trim() ?? '';
+                    const total = row.children[3]?.innerText.trim() ?? '';
                     csvContent += `${date},${added},${edited},${total}\n`;
                 });
 
-
-                // Add metadata
                 csvContent += `\nExported by,${exportedBy}\nExport date,${exportDate}`;
 
-                // Add files to zip
-                zip.file(`${site}_Leads.csv`, csvContent);
-
+                // حفظ الرسم البياني كصورة مع CSV في zip
                 html2canvas(chartCanvas).then(canvas => {
                     canvas.toBlob(blob => {
+                        zip.file(`${site}_details.csv`, csvContent);
                         zip.file(`${site}_chart.png`, blob);
+
                         zip.generateAsync({
                             type: "blob"
                         }).then(content => {
                             const url = URL.createObjectURL(content);
                             const a = document.createElement('a');
                             a.href = url;
-                            a.download = `${site}_Leads_report.zip`;
+                            a.download = `${site}_leads_report.zip`;
                             a.click();
                             URL.revokeObjectURL(url);
                         });
-                    });
+                    }, 'image/png');
                 });
+            }
+        }
+    </script>
+
+    <script>
+        function toggleTable(key) {
+            const section = document.getElementById(`daily-details-${key}`);
+            const link = document.querySelector(`[onclick="toggleTable('${key}')"]`);
+
+            if (section.classList.contains('hidden')) {
+                section.classList.remove('hidden');
+                link.textContent = 'Hide Details';
+            } else {
+                section.classList.add('hidden');
+                link.textContent = 'Show Details';
             }
         }
     </script>

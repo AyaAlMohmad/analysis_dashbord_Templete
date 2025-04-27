@@ -1,13 +1,16 @@
-<x-app-layout>
+@extends('layouts.app')
+
+@section('content')
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white p-6 rounded shadow">
                 <div class="mb-6 text-center">
                     <h2 class="text-2xl font-bold mb-4">AZYAN {{ strtoupper($site) }}</h2>
+                   
+                @include('items.map-svg')
                 </div>
 
-                {{-- تضمين ملف SVG --}}
-                @include('items.map-svg')
+            
 
                 <script>
                     const siteData = @json($siteData);
@@ -40,4 +43,4 @@
             </div>
         </div>
     </div>
-</x-app-layout>
+@endsection

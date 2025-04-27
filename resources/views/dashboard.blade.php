@@ -142,7 +142,7 @@
                                             <span>Added Calls (Dhahran)</span>
                                         </div>
                                         <div class="media-right media-middle">
-                                            <i class="icon-call-end primary font-large-2 float-right"></i>
+                                            <i class="icon-call-in primary font-large-2 float-right"></i>
                                         </div>
                                     </div>
                                     <div class="progress progress-sm mt-1 mb-0">
@@ -168,7 +168,7 @@
                                             <span>Added Calls (Bashaer)</span>
                                         </div>
                                         <div class="media-right media-middle">
-                                            <i class="icon-call-end info font-large-2 float-right"></i>
+                                            <i class="icon-call-in info font-large-2 float-right"></i>
                                         </div>
                                     </div>
                                     <div class="progress progress-sm mt-1 mb-0">
@@ -406,4 +406,8 @@
             }
         });
     </script>
+    @push('scripts')
+    <script src="{{ asset('app-assets/js/scripts/pages/dashboard-fitness.js') }}" type="text/javascript"></script>
+@endpush
+
 @endsection

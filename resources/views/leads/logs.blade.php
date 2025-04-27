@@ -1,179 +1,259 @@
-<x-app-layout>
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-                @if (session('success'))
-                    <div style="background-color:#d1fae5; color:#166534; padding:4px; border-radius:4px;">
-                        {{ session('success') }}
-                    </div>
-                @endif
+@extends('layouts.app')
 
-                @if (session('error'))
-                    <div style="background-color:#fee2e2; color:#991b1b; padding:4px; border-radius:4px;">
-                        {{ session('error') }}
-                    </div>
-                @endif
-                <div class="p-4 bg-white shadow-sm rounded-lg">
-                    <h1 class="text-2xl font-bold text-gray-800 text-center">Change Log - {{ $site }}</h1>
-                </div>
+@section('content')
+<div class="py-12">
+    <style>
+ 
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 2rem;
+            list-style: none;
+            padding: 0;
+        }
+        .pagination li {
+            margin: 0 4px;
+        }
+        .pagination li a, .pagination li span {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 14px;
+            background-color: #f3f4f6;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #4b5563;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            min-width: 40px;
+        }
+        .pagination li a:hover {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .pagination li.active span {
+            background-color: #2563eb;
+            color: white;
+            font-weight: bold;
+        }
+        .pagination li.disabled span {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
 
-                <div class="flex items-center justify-between my-4">
-                    <a href="{{ route('admin.leads.log', $site) }}"
-                        class="px-4 py-2 rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition">
-                        Update Data
-                    </a>
-                    <a href="{{ route('admin.leads.statistics', $site) }}"
-                    style="color: blue">
-                    <i class="fas fa-chart-bar mr-2"></i>
-                    View Analysis
-                    </a>
-                </div>
+   
+        .log-card {
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            margin-bottom: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
 
-                <div class="space-y-4">
-                    @foreach ($logs as $index => $log)
-                        <div class="border rounded-lg overflow-hidden">
-                            <!-- Accordion Header -->
-                            <a href="#log-{{ $index }}"
-                                class="accordion-header block p-4 bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer"
-                                onclick="toggleLog(event, '{{ $index }}')">
-                                <div class="flex justify-between items-center">
-                                    <div class="flex items-center space-x-4">
-                                        <span class="px-3 py-1 text-xs rounded-full"
-                                            style="@if ($log->action === 'insert') background-color:#d1fae5; color:#166534;
-                                        @elseif($log->action === 'update') background-color:#fef08a; color:#854d0e;
-                                        @else background-color:#fee2e2; color:#991b1b; @endif">
-                                            {{ $log->action === 'insert' ? 'Insert' : ($log->action === 'update' ? 'Update' : 'Delete') }}
-                                        </span>
-                                        <span>
-                                            {{ $log->created_at->format('Y-m-d H:i') }}
-                                            by {{ $log->changed_by }}
-                                        </span>
-                                    </div>
-                                    <span class="transform transition-transform duration-200"
-                                        id="arrow-{{ $index }}">▼</span>
-                                </div>
-                            </a>
+        .log-header {
+            background-color: #f3f4f6;
+            padding: 14px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
 
-                            <!-- Accordion Content -->
-                            <div id="log-{{ $index }}" class="hidden bg-white">
-                                <div class="overflow-x-auto p-4">
-                                    <table class="min-w-full divide-y divide-gray-200">
-                                        <thead class="bg-gray-50">
-                                            <tr>
-                                                <th class="px-4 py-2 text-right">Field</th>
-                                                <th class="px-4 py-2 text-right">New Value</th>
-                                                <th class="px-4 py-2 text-right">Old Value</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody class="divide-y divide-gray-200">
-                                            @php
-                                                $fields = [
-                                                    'name' => 'Name',
-                                                    'title' => 'Title',
-                                                    'company' => 'Company',
-                                                    'description' => 'Description',
-                                                    'country' => 'Country',
-                                                    'zip' => 'ZIP Code',
-                                                    'city' => 'City',
-                                                    'state' => 'State',
-                                                    'address' => 'Address',
-                                                    'assigned' => 'Assigned To',
-                                                    'dateadded' => 'Creation Date',
-                                                    'status' => 'Status',
-                                                    'source' => 'Source',
-                                                    'email' => 'Email',
-                                                    'phonenumber' => 'Phone Number',
-                                                    'website' => 'Website',
-                                                    'leadorder' => 'Lead Priority',
-                                                    'date_converted' => 'Conversion Date',
-                                                    'lead_value' => 'Lead Value',
-                                                    'lastcontact' => 'Last Contact Date',
-                                                    'status_name' => 'Status Name',
-                                                    'source_name' => 'Source Name',
-                                                    'public_url' => 'Public URL',
-                                                    'color' => 'Status Color',
-                                                    'attachments' => 'Attachments',
-                                                    'hash' => 'Unique Hash',
-                                                ];
-                                            @endphp
+        .log-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
 
-                                            @foreach ($fields as $field => $label)
-                                                <tr class="hover:bg-gray-50">
-                                                    <td class="px-4 py-2 font-medium">{{ $label }}</td>
-                                                    <td class="px-4 py-2">
-                                                        @if ($log->action === 'insert')
-                                                            <div
-                                                                style="background-color:#d1fae5; color:#166534; padding:4px; border-radius:4px;">
-                                                                {{ $log->data_new[$field] ?? 'Not Available' }}
-                                                            </div>
-                                                        @else
-                                                            @php
-                                                                $old = $log->data_old[$field] ?? null;
-                                                                $new = $log->data_new[$field] ?? null;
-                                                            @endphp
+        .log-action {
+            padding: 6px 12px;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: bold;
+        }
 
-                                                            @if ($old !== $new)
-                                                                <div
-                                                                    style="background-color:#d1fae5; color:#166534; padding:4px; border-radius:4px; margin-bottom:2px;">
-                                                                    {{ is_array($new) ? json_encode($new) : ($new ?? 'Not Available') }}
-                                                                </div>
-                                                            @else
-                                                                <div style="padding:4px;">
-                                                                    {{ is_array($new) ? json_encode($new) : ($new ?? 'Not Available') }}
-                                                                </div>
-                                                            @endif
-                                                        @endif
-                                                    </td>
-                                                    <td class="px-4 py-2">
-                                                        @if ($log->action !== 'insert' && $old !== $new)
-                                                            <div
-                                                                style="background-color:#fee2e2; color:#991b1b; padding:4px; border-radius:4px;">
-                                                              {{ is_array($old) ? json_encode($old) : ($old ?? 'Not Available') }}
+        .log-action.insert {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        .log-action.update {
+            background-color: #fef9c3;
+            color: #92400e;
+        }
+        .log-action.delete {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
 
-                                                            </div>
-                                                        @else
-                                                            <div style="padding:4px;">
-                                                              {{ is_array($old) ? json_encode($old) : ($old ?? 'Not Available') }}
+        .log-meta {
+            font-size: 14px;
+            color: #6b7280;
+        }
 
-                                                            </div>
-                                                        @endif
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
+        .log-arrow {
+            font-size: 20px;
+            color: #9ca3af;
+            transition: transform 0.3s ease;
+        }
+
+        .log-body {
+            background-color: #ffffff;
+            padding: 0 18px 18px 18px;
+            overflow: hidden;
+            max-height: 0;
+            transition: max-height 0.5s ease, opacity 0.5s ease;
+            opacity: 0;
+        }
+
+        .log-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+        }
+
+        .log-table th, .log-table td {
+            padding: 10px;
+            border: 1px solid #e5e7eb;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .new-value {
+            background-color: #d1fae5;
+            color: #065f46;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+
+        .old-value {
+            background-color: #fee2e2;
+            color: #991b1b;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+
+        .log-body.show {
+            max-height: 500px;
+            opacity: 1;
+        }
+
+        .rotate-180 {
+            transform: rotate(180deg);
+        }
+    </style>
+
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="bg-white shadow rounded-lg p-6">
+            
+            @if (session('success'))
+            <div style="background-color:#d1fae5; color:#166534; padding:4px; border-radius:4px;">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if (session('error'))
+            <div  style="background-color:#fee2e2; color:#991b1b; padding:4px; border-radius:4px;">
+                {{ session('error') }}
+            </div>
+        @endif
+
+        
+            <h1 class="text-2xl font-bold text-center text-gray-800 mb-8">Change Log - {{ ucfirst($site) }}</h1>
+
+            <div class="flex flex-wrap justify-center mb-8">
+                <a href="{{ route('admin.leads.log', $site) }}" class="text-blue-500 hover:text-blue-600" style="margin-right: 20px; color: blue">
+                    🔄 Update Data
+                </a>
+                <a href="{{ route('admin.leads.statistics', $site) }}" class="text-blue-500 hover:text-blue-600">
+                    <i class="fas fa-chart-bar mr-2"></i>View Analysis
+                </a>
+            </div>
+            
+           
+            <div class="space-y-4">
+                @foreach ($logs as $index => $log)
+                    <div class="log-card">
+              
+                        <div class="log-header" onclick="toggleLog('{{ $index }}')">
+                            <div class="log-info">
+                                <span class="log-action {{ $log->action }}">
+                                    {{ ucfirst($log->action) }}
+                                </span>
+                                <span class="log-meta">
+                                    {{ $log->created_at->format('Y-m-d H:i') }} by {{ $log->changed_by }}
+                                </span>
                             </div>
+                            <div id="arrow-{{ $index }}" class="log-arrow">▼</div>
                         </div>
-                    @endforeach
-                </div>
 
-                <div class="mt-4 px-4">{{ $logs->links() }}</div>
+                        <div id="log-{{ $index }}" class="log-body">
+                            <table class="log-table">
+                                <thead>
+                                    <tr>
+                                        <th>Field</th>
+                                        <th>New Value</th>
+                                        <th>Old Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @php
+                                        $fields = [
+                                            'name' => 'Name', 'title' => 'Title', 'company' => 'Company', 'description' => 'Description',
+                                            'country' => 'Country', 'zip' => 'ZIP Code', 'city' => 'City', 'state' => 'State', 'address' => 'Address',
+                                            'assigned' => 'Assigned To', 'dateadded' => 'Creation Date', 'status' => 'Status', 'source' => 'Source',
+                                            'email' => 'Email', 'phonenumber' => 'Phone Number', 'website' => 'Website', 'leadorder' => 'Lead Priority',
+                                            'date_converted' => 'Conversion Date', 'lead_value' => 'Lead Value', 'lastcontact' => 'Last Contact Date',
+                                            'status_name' => 'Status Name', 'source_name' => 'Source Name', 'public_url' => 'Public URL',
+                                            'color' => 'Status Color', 'attachments' => 'Attachments', 'hash' => 'Unique Hash',
+                                        ];
+                                    @endphp
 
+                                    @foreach ($fields as $field => $label)
+                                        @php
+                                            $old = $log->data_old[$field] ?? null;
+                                            $new = $log->data_new[$field] ?? null;
+                                        @endphp
+                                        <tr>
+                                            <td>{{ $label }}</td>
+                                            <td>
+                                                <div class="{{ $old !== $new ? 'new-value' : '' }}">
+                                                    {{ is_array($new) ? json_encode($new) : ($new ?? 'Not Available') }}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="{{ $old !== $new ? 'old-value' : '' }}">
+                                                    {{ is_array($old) ? json_encode($old) : ($old ?? 'Not Available') }}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+
+        
+            <div class="pagination">
+                {{ $logs->links() }}
             </div>
         </div>
     </div>
+</div>
 
-    <script>
-        function toggleLog(event, index) {
-            event.preventDefault();
-            const details = document.getElementById(`log-${index}`);
-            const arrow = document.getElementById(`arrow-${index}`);
+<script>
+    function toggleLog(index) {
+        const logContent = document.getElementById(`log-${index}`);
+        const arrow = document.getElementById(`arrow-${index}`);
 
-            // Close all other logs
-            document.querySelectorAll('.hidden').forEach(item => {
-                if (item.id !== `log-${index}` && item.classList.contains('bg-white')) {
-                    item.classList.add('hidden');
-                    const otherArrows = document.querySelectorAll(`[id^="arrow-"]`);
-                    otherArrows.forEach(a => {
-                        if (a.id !== `arrow-${index}`) a.innerHTML = '▼';
-                    });
-                }
-            });
+   
+        logContent.classList.toggle('show');
+        arrow.classList.toggle('rotate-180');
+    }
+</script>
 
-            // Toggle current state
-            details.classList.toggle('hidden');
-            arrow.innerHTML = details.classList.contains('hidden') ? '▼' : '▲';
-        }
-    </script>
-</x-app-layout>
+@endsection
