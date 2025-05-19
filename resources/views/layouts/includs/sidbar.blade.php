@@ -3,7 +3,7 @@
         <li class="nav-item {{ Route::is('admin.index') ? 'active' : '' }}">
             <a href="{{ route('admin.index') }}">
                 <i class="ft-home"></i>
-                <span>{{ __('Dashboard') }}</span>
+                <span>{{ __('sidebar.dashboard') }}</span>
             </a>
         </li>
         <li class="nav-item {{ Route::is('admin.Analysis') ? 'active' : '' }}">
