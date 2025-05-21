@@ -9,7 +9,7 @@
 
     <div style="text-align: center; margin-bottom: 40px;">
         <h2 style="font-size: 28px; color: #8b5a3b; border-bottom: 2px solid #8b5a3b; display: inline-block;">
-            Reserved progress
+         {{__('messages.reserved')}}
         </h2>
     </div>
 
@@ -34,10 +34,10 @@
                 style="width: 100%; max-width: 500px; border-collapse: collapse; font-size: 12px; background-color: #fff; direction: rtl; text-align: center; font-family: 'Arial', sans-serif;">
                 <thead>
                     <tr style="background-color: #8b5a3b; color: #fff;">
-                        <th style="padding: 6px 8px; border: 1px solid #ddd;">Project Name</th>
-                        <th style="padding: 6px 8px; border: 1px solid #ddd;">Developer </th>
-                        <th style="padding: 6px 8px; border: 1px solid #ddd;">Units </th>
-                        <th style="padding: 6px 8px; border: 1px solid #ddd;">Reserved</th>
+                        <th style="padding: 6px 8px; border: 1px solid #ddd;">{{__('components.project_name')}}</th>
+                        <th style="padding: 6px 8px; border: 1px solid #ddd;">{{__('components.developer')}} </th>
+                        <th style="padding: 6px 8px; border: 1px solid #ddd;">{{__('components.units')}} </th>
+                        <th style="padding: 6px 8px; border: 1px solid #ddd;"> {{__('components.reserved')}}</th>
                     </tr>
                 </thead>
                 <tbody>

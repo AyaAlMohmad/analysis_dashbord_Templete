@@ -37,10 +37,10 @@
                     </a>
                     <div class="dropdown-menu" aria-labelledby="dropdown-flag">
                       <a class="dropdown-item" href="{{ route('admin.lang.switch', 'en') }}">
-                          <i class="flag-icon flag-icon-gb"></i> English
+                          <i class="flag-icon flag-icon-gb"></i>  {{ __('navbar.english') }}
                       </a>
                       <a class="dropdown-item" href="{{ route('admin.lang.switch', 'ar') }}">
-                          <i class="flag-icon flag-icon-sa"></i> العربية
+                          <i class="flag-icon flag-icon-sa"></i>  {{ __('navbar.arabic') }}
                       </a>
                     </div>
                 </li>
@@ -53,15 +53,14 @@
                         <span class="user-name">{{ auth()->user()->name }}</span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right">
-                        <a class="dropdown-item" href="{{ route('profile.edit') }}"><i class="ft-user"></i> Edit
-                            Profile</a>
+                        <a class="dropdown-item" href="{{ route('profile.edit') }}"> <i class="ft-user"></i> {{ __('navbar.edit_profile') }}</a>
 
                         <div class="dropdown-divider"></div>
                         <form method="POST" action="{{ route('logout') }}">
                             <a class="dropdown-item" href="route('logout')"
                                 onclick="event.preventDefault();
                           this.closest('form').submit();"><i
-                                    class="ft-power"></i> Logout</a>
+                                    class="ft-power"></i>  {{ __('navbar.logout') }}</a>
                         </form>
                     </div>
                 </li>

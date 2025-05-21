@@ -8,14 +8,14 @@
         {{-- Filter Section --}}
         <div class="card border border-white shadow mb-4">
             <div class="card-body">
-                <h4 class="text-center mb-4">Filter by Date</h4>
+                <h4 class="text-center mb-4">{{__('components.filter_by_date')}}</h4>
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label for="from_date" class="form-label">From Date</label>
+                        <label for="from_date" class="form-label">{{__('components.from_data')}}</label>
                         <input type="date" name="from_date" id="from_date" class="form-control" required>
                     </div>
                     <div class="col-md-6 mb-3">
-                        <label for="to_date" class="form-label">To Date</label>
+                        <label for="to_date" class="form-label">{{__('components.to_data')}}</label>
                         <input type="date" name="to_date" id="to_date" class="form-control" required>
                     </div>
                 </div>
@@ -25,20 +25,20 @@
         {{-- Projects Section --}}
         <div class="card border border-white shadow mb-4">
             <div class="card-body">
-                <h5 class="text-center mb-3">Projects List</h5>
+                <h5 class="text-center mb-3">{{ __('components.projects_list')}}</h5>
                 
                 <div id="projectsContainer">
             
                 </div>
 
                 <div class="d-grid mt-3">
-                    <button type="button" class="btn btn-success" onclick="addProject()">+ Add Another Project</button>
+                    <button type="button" class="btn btn-success" onclick="addProject()">+ {{__('components.add_project')}}</button>
                 </div>
             </div>
         </div>
 
         <div class="d-grid">
-            <button type="submit" class="btn btn-primary btn-lg">Save All Projects</button>
+            <button type="submit" class="btn btn-primary btn-lg">{{__('components.save_all_projects')}}</button>
         </div>
     </form>
 </div>
@@ -62,23 +62,23 @@
                 </div>
                 
                 <div class="mb-3">
-                    <label class="form-label">Project Name</label>
+                    <label class="form-label">{{__('components.project_name')}}</label>
                     <input type="text" class="form-control" name="projects[${projectId}][project_name]" >
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">Developer Name</label>
+                    <label class="form-label">{{__('components.developer')}}</label>
                     <input type="text" class="form-control" name="projects[${projectId}][developer_name]" >
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">Total Units</label>
+                    <label class="form-label">{{__('components.units')}}</label>
                     <input type="number" class="form-control" name="projects[${projectId}][total_units]" >
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">Total Reserved</label>
+                    <label class="form-label">{{__('components.reserved')}}</label>
                     <input type="number" class="form-control" name="projects[${projectId}][reserved_units]" >
                 </div>
                  <div class="mb-3">
-                    <label class="form-label">Total contracted</label>
+                    <label class="form-label">{{__('components.contracts')}}</label>
                     <input type="number" class="form-control" name="projects[${projectId}][contracts_units]" >
                 </div>
             </div>
@@ -94,7 +94,6 @@
         }
     }
 
-    // إضافة مشروع تلقائياً عند تحميل الصفحة
     document.addEventListener('DOMContentLoaded', function() {
         addProject();
     });

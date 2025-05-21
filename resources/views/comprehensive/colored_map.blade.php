@@ -8,13 +8,18 @@
         <div style="flex: 1 1 70%; text-align: center; padding: 0 20px;">
             <h2
                 style="font-size: 28px; color: #8b5a3b; border-bottom: 2px solid #8b5a3b; display: inline-block; margin-bottom: 30px;">
-                الخريطة الملونة
+               {{__('messages.color_map')}}
             </h2>
 
-            <div style="margin-top: 20px;">
-                <img src="" alt="Color Map"
-                    style="width: 100%; max-width: 700px; border: 2px solid #ccc;">
+            <div style="width: 100%; max-width: 400px; margin: 0 auto;" id="colored-map-{{ Str::slug($project_name, '_') }}">
+                @if($project_name == 'أزيان البشائر')
+                    @include('comprehensive.colored_map_result_js', ['data' => $data, 'project_name' => $project_name])
+                @elseif($project_name == 'أزيان الظهران')
+                    <img src="{{ asset('images/dhahran.png') }}" alt="خريطة الظهران" style="width: 100%;">
+                @endif
             </div>
+            
+            
         </div>
 
         <div style="position: absolute; right: 30px; bottom: 30px;">

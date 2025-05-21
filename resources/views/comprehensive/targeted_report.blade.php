@@ -1,147 +1,151 @@
 <div
-style="background-color: #f9f6f2; padding: 60px 20px; font-family: 'Arial', sans-serif; direction: rtl; position: relative;">
+    style="background-color: #f9f6f2; padding: 60px 20px; font-family: 'Arial', sans-serif; direction: rtl; position: relative;">
 
-<!-- Logo Top -->
-<div style="position: absolute; top: 30px; right: 30px;">
-    <img src="{{ asset('build/logo.png') }}" alt="Tatwir Logo" style="height: 50px;">
-</div>
-
-<!-- Title -->
-<div style="text-align: center; margin-bottom: 40px;">
-    <h2 style="font-size: 28px; color: #8b5a3b; border-bottom: 2px solid #8b5a3b; display: inline-block;">
-        مستهدف شهر مارس
-
-    </h2>
-</div>
-
-
-<!-- Content Row -->
-<div style="display: flex; flex-direction: row-reverse; align-items: flex-start;">
-    <!-- Side Decoration -->
-    <div style="flex: 0 0 auto; min-width: 100px; position: absolute; top: 100px;">
-        <img src="{{ asset('images/style2.png') }}" alt="Decoration" style="height: 500px;">
+    <!-- Logo Top -->
+    <div style="position: absolute; top: 30px; right: 30px;">
+        <img src="{{ asset('build/logo.png') }}" alt="Tatwir Logo" style="height: 50px;">
     </div>
 
-    <!-- Main Tables Container -->
+    <!-- Title -->
+    <div style="text-align: center; margin-bottom: 40px;">
+        <h2 style="font-size: 28px; color: #8b5a3b; border-bottom: 2px solid #8b5a3b; display: inline-block;">
+            {{ __('messages.targeted_month') }}{{ now()->format('F') }}
+        </h2>
+    </div>
 
-
-
-    <div
-        style="max-width: 95%; margin: 40px auto; font-family: 'Arial', sans-serif; font-size: 13px; text-align: center;">
-
-
-
-
-        <div style="max-width: 400px; margin: 0 auto;">
-            <canvas id="targetChart" height="200"></canvas>
+    <!-- Content Row -->
+    <div style="display: flex; flex-direction: row-reverse; align-items: flex-start;">
+        <!-- Side Decoration -->
+        <div style="flex: 0 0 auto; min-width: 100px; position: absolute; top: 100px;">
+            <img src="{{ asset('images/style2.png') }}" alt="Decoration" style="height: 500px;">
         </div>
 
-        <table style="width: 100%; border-collapse: collapse; margin-top: 20px; background-color: white;">
+        <!-- Main Tables Container -->
+        <div
+            style="max-width: 95%; margin: 40px auto; font-family: 'Arial', sans-serif; font-size: 13px; text-align: center;">
 
+            <div style="max-width: 400px; margin: 0 auto;">
+                <canvas id="targetChart_{{ $uniqueId = uniqid() }}" height="200"></canvas>
+            </div>
 
-            <thead style="background-color: #ffe082; font-weight: bold;">
-                <tr>
-                    <th style="border: 1px solid #ccc;">الحالة</th>
-                    <th style="border: 1px solid #ccc;">المستهدف</th>
-                    <th style="border: 1px solid #ccc;">محقق</th>
-                    <th style="border: 1px solid #ccc;">النسبة</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td style="border: 1px solid #ccc;">مُهتم</td>
-                    <td style="border: 1px solid #ccc;">6155</td>
-                    <td style="border: 1px solid #ccc;">481</td>
-                    <td style="border: 1px solid #ccc;">7.81%</td>
-                </tr>
-                <tr>
-                    <td style="border: 1px solid #ccc;">موعد</td>
-                    <td style="border: 1px solid #ccc;">1231</td>
-                    <td style="border: 1px solid #ccc;">204</td>
-                    <td style="border: 1px solid #ccc;">16.57%</td>
-                </tr>
-                <tr>
-                    <td style="border: 1px solid #ccc;">زيارة</td>
-                    <td style="border: 1px solid #ccc;">360</td>
-                    <td style="border: 1px solid #ccc;">60</td>
-                    <td style="border: 1px solid #ccc;">16.67%</td>
-                </tr>
-                <tr>
-                    <td style="border: 1px solid #ccc;">سداد حجز</td>
-                    <td style="border: 1px solid #ccc;">80</td>
-                    <td style="border: 1px solid #ccc;">16</td>
-                    <td style="border: 1px solid #ccc;">20.00%</td>
-                </tr>
-                <tr>
-                    <td style="border: 1px solid #ccc;">إلغاء</td>
-                    <td style="border: 1px solid #ccc;">7</td>
-                    <td style="border: 1px solid #ccc;">2</td>
-                    <td style="border: 1px solid #ccc;">—</td>
-                </tr>
-                <tr>
-                    <td style="border: 1px solid #ccc;">عقد</td>
-                    <td style="border: 1px solid #ccc;">48</td>
-                    <td style="border: 1px solid #ccc;">14</td>
-                    <td style="border: 1px solid #ccc;">29.17%</td>
-                </tr>
-            </tbody>
-        </table>
+            <table style="width: 100%; border-collapse: collapse; margin-top: 20px; background-color: white;">
+                <thead style="background-color: #ffe082; font-weight: bold;">
+                    <tr>
+                        <th style="border: 1px solid #ccc;">{{ __('components.status') }}</th>
+                        <th style="border: 1px solid #ccc;">{{ __('components.target') }}</th>
+                        <th style="border: 1px solid #ccc;">{{ __('components.achieved') }}</th>
+                        <th style="border: 1px solid #ccc;">{{ __('components.percentage') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @php
+                        $statusOrder = ['مهتم', 'موعد', 'زيارة', 'حجز', 'إلغاء', 'عقد'];
+                    @endphp
 
-    </div>
+                    @foreach ($statusOrder as $status)
+                        @if (isset($data['data'][$status]))
+                            <tr>
+                                <td style="border: 1px solid #ccc;">{{ __('components.statuses.' . $status) }}</td>
+                                <td style="border: 1px solid #ccc;">{{ $data['data'][$status]['target'] }}</td>
+                                <td style="border: 1px solid #ccc;">{{ $data['data'][$status]['count'] }}</td>
+                                <td style="border: 1px solid #ccc;">
+                                    @if ($status !== 'إلغاء')
+                                        {{ number_format($data['data'][$status]['percentage'] * 100, 2) }}%
+                                    @else
+                                        —
+                                    @endif
+                                </td>
+                            </tr>
+                        @endif
+                    @endforeach
+                </tbody>
+            </table>
 
+        </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        const ctxTargetChart = document.getElementById('targetChart').getContext('2d');
-        new Chart(ctxTargetChart, {
-            type: 'bar',
-            data: {
-                labels: ['مُهتم', 'موعد', 'زيارة', 'سداد حجز', 'إلغاء', 'عقد'],
-                datasets: [{
-                        label: 'المستهدف',
-                        data: [6155, 1231, 360, 80, 7, 48],
-                        backgroundColor: '#3a3a3a'
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+            (function() {
+                const ctx = document.getElementById('targetChart_{{ $uniqueId }}').getContext('2d');
+                const statusLabels = {!! json_encode($statusOrder) !!};
+                const targetData = [];
+                const achievedData = [];
+                const percentageData = [];
+
+                @foreach ($statusOrder as $status)
+                    @if (isset($data['data'][$status]))
+                        targetData.push({{ $data['data'][$status]['target'] }});
+                        achievedData.push({{ $data['data'][$status]['count'] }});
+                        percentageData.push({{ $data['data'][$status]['percentage'] * 100 }});
+                    @else
+                        targetData.push(0);
+                        achievedData.push(0);
+                        percentageData.push(0);
+                    @endif
+                @endforeach
+
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: statusLabels,
+                        datasets: [{
+                            label: '{{ __('components.target') }}',
+                            data: targetData,
+                            backgroundColor: '#3a3a3a'
+                        }, {
+                            label: '{{ __('components.achieved') }}',
+                            data: achievedData,
+                            backgroundColor: '#c87c2a'
+                        }, {
+                            label: '{{ __('components.percentage') }}',
+                            data: percentageData,
+                            backgroundColor: '#0f683f'
+                        }]
                     },
-                    {
-                        label: 'محقق',
-                        data: [481, 204, 60, 16, 2, 14],
-                        backgroundColor: '#c87c2a'
-                    },
-                    {
-                        label: 'النسبة',
-                        data: [7.81, 16.57, 16.67, 20.00, 0, 29.17],
-                        backgroundColor: '#0f683f'
-                    }
-                ]
-            },
-            options: {
-                indexAxis: 'y',
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'bottom'
-                    }
-                },
-                scales: {
-                    x: {
-                        beginAtZero: true,
-                        ticks: {
-                            stepSize: 1000
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                rtl: true
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label === '{{ __('components.percentage') }}') {
+                                            label += ': ' + context.raw.toFixed(2) + '%';
+                                        } else {
+                                            label += ': ' + context.raw;
+                                        }
+                                        return label;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                ticks: {
+                                    stepSize: 1000
+                                }
+                            }
                         }
                     }
-                }
-            }
-        });
-    </script>
+                });
+            })();
+        </script>
 
-
-
-
-
-    <!-- Logo Bottom -->
-    <div style="position: absolute; right: 30px; bottom: 30px;">
-        <img src="{{ asset('images/logo1.png') }}" alt="Azyan Logo" style="height: 70px;">
+        <!-- Logo Bottom -->
+        <div style="position: absolute; right: 30px; bottom: 30px;">
+            @if (isset($project_name) && $project_name == 'أزيان الظهران')
+                <img src="{{ asset('images/logo5.png') }}" alt="Azyan Logo Dhahran" style="height: 50px;">
+            @elseif(isset($project_name) && $project_name == 'أزيان البشائر')
+                <img src="{{ asset('images/logo6.png') }}" alt="Azyan Logo Albashaer" style="height: 50px;">
+            @else
+                <img src="{{ asset('images/default-logo.png') }}" alt="Default Logo" style="height: 50px;">
+            @endif
+        </div>
     </div>
-
-</div>
 </div>

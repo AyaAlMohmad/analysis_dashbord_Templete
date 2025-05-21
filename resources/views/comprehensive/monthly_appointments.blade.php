@@ -1,84 +1,102 @@
-<div
-        style="background-color: #f9f6f2; padding: 60px 20px; font-family: 'Arial', sans-serif; direction: rtl; position: relative;">
+<div style="background-color: #f9f6f2; padding: 60px 20px; font-family: 'Arial', sans-serif; direction: rtl; position: relative; min-height: 700px;">
 
-        <!-- Logo Top -->
-        <div style="position: absolute; top: 30px; right: 30px;">
-            <img src="{{ asset('build/logo.png') }}" alt="Tatwir Logo" style="height: 50px;">
-        </div>
-
-        <!-- Title -->
-        <div style="text-align: center; margin-bottom: 40px;">
-            <h2 style="font-size: 28px; color: #8b5a3b; border-bottom: 2px solid #8b5a3b; display: inline-block;">
-                تقرير الزيارات شهر مارس
-            </h2>
-        </div>
-
-
-        <!-- Content Row -->
-        <div style="display: flex; flex-direction: row-reverse; align-items: flex-start;">
-            <!-- Side Decoration -->
-            <div style="flex: 0 0 auto; min-width: 100px; position: absolute; top: 100px;">
-                <img src="{{ asset('images/style2.png') }}" alt="Decoration" style="height: 500px;">
-            </div>
-
-            <!-- Main Tables Container -->
-            <div
-                style="max-width: 95%; margin: 40px auto; font-family: 'Arial', sans-serif; font-size: 13px; text-align: center;">
-
-
-
-
-                <h3 style="font-size: 18px; color: #8b5a3b; margin-bottom: 30px;">شهر مارس</h3>
-
-
-
-
-                <table style="border-collapse: collapse; font-size: 14px; text-align: center; background-color: white; width: 600px;">
-                    <thead style="background-color: #8b5a3b; color: white;">
-                        <tr>
-                            <th style="padding: 8px; border: 1px solid #ccc;">المصدر</th>
-                            <th style="padding: 8px; border: 1px solid #ccc;">الزيارات</th>
-                            <th style="padding: 8px; border: 1px solid #ccc;">التسديدات</th>
-                            <th style="padding: 8px; border: 1px solid #ccc;">التعاقدات</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr style="background-color: #f4f4f4;">
-                            <td style="padding: 8px; border: 1px solid #ccc;">الكول سنتر</td>
-                            <td style="padding: 8px; border: 1px solid #ccc;">40</td>
-                            <td style="padding: 8px; border: 1px solid #ccc;">10</td>
-                            <td style="padding: 8px; border: 1px solid #ccc;">0</td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 8px; border: 1px solid #ccc;">المعرض</td>
-                            <td style="padding: 8px; border: 1px solid #ccc;">13</td>
-                            <td style="padding: 8px; border: 1px solid #ccc;">0</td>
-                            <td style="padding: 8px; border: 1px solid #ccc;">0</td>
-                        </tr>
-                        <tr style="background-color: #f4f4f4;">
-                            <td style="padding: 8px; border: 1px solid #ccc;">سوشيال</td>
-                            <td style="padding: 8px; border: 1px solid #ccc;">1</td>
-                            <td style="padding: 8px; border: 1px solid #ccc;">0</td>
-                            <td style="padding: 8px; border: 1px solid #ccc;">0</td>
-                        </tr>
-                        <tr style="background-color: #d7c4b2; font-weight: bold;">
-                            <td style="padding: 8px; border: 1px solid #ccc;">الإجمالي</td>
-                            <td style="padding: 8px; border: 1px solid #ccc;">54</td>
-                            <td style="padding: 8px; border: 1px solid #ccc;">10</td>
-                            <td style="padding: 8px; border: 1px solid #ccc;">0</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-
-
-
-
-        <!-- Logo Bottom -->
-        <div style="position: absolute; right: 30px; bottom: 30px;">
-            <img src="{{ asset('images/logo1.png') }}" alt="Azyan Logo" style="height: 70px;">
-        </div>
-
+    <!-- Logo Top -->
+    <div style="position: absolute; top: 30px; right: 30px;">
+        <img src="{{ asset('build/logo.png') }}" alt="Tatwir Logo" style="height: 50px;">
     </div>
+
+    <!-- Report Title -->
+    <div style="text-align: center; margin-bottom: 10px;">
+        <h2 style="font-size: 26px; color: #8b5a3b; border-bottom: 2px solid #8b5a3b; display: inline-block; padding-bottom: 5px;">
+          {{__('messages.monthly_appointments')}}
+        </h2>
+        <div style="font-size: 20px; color: #5c4033; margin-top: 10px;"> {{__('components.month')}} {{ now()->format('F') }}</div>
+    </div>
+
+    <!-- Main Content -->
+    <div style="display: flex; flex-direction: row-reverse; justify-content: center; align-items: flex-start; margin-top: 40px; gap: 80px;">
+        
+        <!-- Side Decoration -->
+        <div style="flex: 0 0 auto; position: absolute; top: 120px; left: 0;">
+            <img src="{{ asset('images/style2.png') }}" alt="Decoration" style="height: 500px;">
+        </div>
+
+        <!-- Chart Circle -->
+        <div style="text-align: center;">
+            <div style="position: relative; width: 200px; height: 200px; margin: auto;">
+                @php
+                    $totalAppointments = $data['total_appointments'] ?? 0;
+                    $completedVisits = $data['completed_visits'] ?? 0;
+                    $percentage = $totalAppointments > 0 ? ($completedVisits / $totalAppointments) * 100 : 0;
+                    $dashArray = number_format($percentage, 2) . ', ' . number_format(100 - $percentage, 2);
+                @endphp
+
+                <svg viewBox="0 0 36 36" style="width: 100%; height: auto;">
+                  
+                    <path
+                        style="fill: none; stroke: #e6e6e6; stroke-width: 3.8;"
+                        d="M18 2.0845
+                            a 15.9155 15.9155 0 0 1 0 31.831
+                            a 15.9155 15.9155 0 0 1 0 -31.831"/>
+             
+                    <path
+                        style="fill: none; stroke: #a87b4e; stroke-width: 3.8; stroke-linecap: round;"
+                        d="M18 2.0845
+                            a 15.9155 15.9155 0 0 1 0 31.831
+                            a 15.9155 15.9155 0 0 1 0 -31.831"
+                        stroke-dasharray="{{ $dashArray }}" />
+                   
+                    <text x="18" y="20.35" text-anchor="middle" fill="#2e4631" font-size="6" font-weight="bold">
+                        {{ number_format($percentage, 1) }}%
+                    </text>
+                </svg>
+
+              
+            </div>
+
+        
+            <div style="margin-top: 10px;">
+                <span style="display: inline-block; width: 12px; height: 12px; background-color: #a87b4e; margin-left: 5px;"></span> نسبة الإنجاز
+                <span style="margin: 0 10px;"></span>
+                <span style="display: inline-block; width: 12px; height: 12px; background-color: #e6e6e6; margin-left: 5px;"></span> باقي الزيارات
+            </div>
+        </div>
+
+        <!-- Table - Moved further to the right -->
+        <div style="margin-right: 100px;"> <!-- Increased margin-right from 50px to 100px -->
+            <table style="border-collapse: collapse; width: 300px; font-size: 14px; text-align: center;">
+                <thead style="background-color: #8b5a3b; color: white;">
+                    <tr>
+                        <th style="padding: 10px; border: 1px solid #ccc;"> {{__('messages.appointments')}}</th>
+                        <th style="padding: 10px; border: 1px solid #ccc;"> {{__('components.visited')}}</th>
+                        <th style="padding: 10px; border: 1px solid #ccc;"> {{__('messages.success_rate')}} </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="background-color: #fff;">
+                        <td style="padding: 10px; border: 1px solid #ccc;">
+                            {{ $totalAppointments }}
+                        </td>
+                        <td style="padding: 10px; border: 1px solid #ccc;">
+                            {{ $completedVisits }}
+                        </td>
+                        <td style="padding: 10px; border: 1px solid #ccc;">
+                            % {{ number_format($percentage, 2) }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Logo Bottom -->
+    <div style="position: absolute; right: 30px; bottom: 30px;">
+        @if(isset($project_name) && $project_name == 'أزيان الظهران')
+            <img src="{{ asset('images/logo5.png') }}" alt="Azyan Logo Dhahran" style="height: 50px;">
+        @elseif(isset($project_name) && $project_name == 'أزيان البشائر')
+            <img src="{{ asset('images/logo6.png') }}" alt="Azyan Logo Albashaer" style="height: 50px;">
+        @else
+            <img src="{{ asset('images/default-logo.png') }}" alt="Default Logo" style="height: 50px;">
+        @endif
+    </div>
+</div>
