@@ -33,7 +33,9 @@
                                     <div class="col-xl-3 col-lg-6 col-md-12 border-right-blue-grey border-right-lighten-5">
                                         <div class="my-1 text-center">
                                             <div class="card-header mb-2 pt-0">
-                                                <h5 class="{{ $item['color'] }}">{{ $item['label'] }}</h5>
+                                                {{-- <h5 class="{{ $item['color'] }}">{{ $item['label'] }}</h5> --}}
+                                                <h5 class="{{ $item['color'] }}">{{ __('comparison_report.' . $item['key']) }}</h5>
+
                                                 <h3 class="font-large-2 text-bold-200">{{ $total }}</h3>
                                             </div>
                                             <div class="card-content">
@@ -191,7 +193,7 @@
                                                 $totalDhahranEnded = $added['dhahran']['ended'] ?? 0;
                                             @endphp
                                             <h3 class="danger">{{ $totalDhahranEnded }}</h3>
-                                            <span>Ended Calls (Dhahran)</span>
+                                            <span>{{ __('comparison_report.ended_calls_dhahran') }}</span>
                                         </div>
                                         <div class="media-right media-middle">
                                             <i class="icon-call-end danger font-large-2 float-right"></i>
@@ -217,7 +219,7 @@
                                                 $totalBashaerEnded = $added['bashaer']['ended'] ?? 0;
                                             @endphp
                                             <h3 class="danger">{{ $totalBashaerEnded }}</h3>
-                                            <span>Ended Calls (Bashaer)</span>
+                                            <span>{{ __('comparison_report.ended_calls_bashaer') }}</span>
                                         </div>
                                         <div class="media-right media-middle">
                                             <i class="icon-call-end danger font-large-2 float-right"></i>
@@ -239,7 +241,7 @@
                 <div class="col-xl-6 col-lg-12">
                     <div class="card">
                         <div class="card-header border-0">
-                            <h4 class="card-title">Avg. Session Duration & Pages/Session</h4>
+                            <h4 class="card-title">{{ __('comparison_report.avg_session_duration') }}</h4>
                             <a class="heading-elements-toggle"><i class="fa fa-ellipsis-v font-medium-3"></i></a>
                             <div class="heading-elements">
                                 <ul class="list-inline mb-0">

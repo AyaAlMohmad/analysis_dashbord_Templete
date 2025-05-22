@@ -31,10 +31,10 @@
         padding: 10px;
         border: 1px solid #eee;
     }
-    th {
+    /* th {
         background: {{ $primaryColor }};
         color: #fff;
-    }
+    } */
 </style>
 
 <div class="container mt-4" id="reportContent">
@@ -43,12 +43,15 @@
     </div>
 
     <div class="section-title">
-        Source Report <br>
+        {{ __('source_report.title') }} <br>
         <small>
             @if ($from && $to)
-                From {{ \Carbon\Carbon::parse($from)->format('d-m-Y') }} to {{ \Carbon\Carbon::parse($to)->format('d-m-Y') }}
+                {{ __('source_report.from_to', [
+                    'from' => \Carbon\Carbon::parse($from)->format('d-m-Y'),
+                    'to' => \Carbon\Carbon::parse($to)->format('d-m-Y'),
+                ]) }}
             @else
-                Cumulative Report
+                {{ __('source_report.cumulative') }}
             @endif
         </small>
     </div>
@@ -56,8 +59,8 @@
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th>Source</th>
-                <th>Total Leads</th>
+                <th>{{ __('source_report.source') }}</th>
+                <th>{{ __('source_report.total_leads') }}</th>
                 @foreach($statuses as $status)
                     <th>{{ $status['name'] }}</th>
                 @endforeach
@@ -79,9 +82,10 @@
         </tbody>
     </table>
 
-    <div class="text-center mt-3">
-        <small class="text-muted">Report generated at: {{ now()->format('d-m-Y H:i:s') }}</small>
-    </div>
+    <small class="text-muted">
+        {{ __('source_report.generated_at') }} {{ now()->format('d-m-Y H:i:s') }}
+    </small>
+    
 
     <div class="text-center my-4" id="pdf-export-button">
         <a href="javascript:void(0);" onclick="exportPDF()" title="Export PDF"

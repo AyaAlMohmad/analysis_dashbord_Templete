@@ -19,6 +19,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <!-- BEGIN VENDOR CSS-->
     <!-- BEGIN VENDOR CSS-->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
     <link rel="stylesheet" type="text/css" href="{{ asset('app-assets/css/vendors.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('app-assets/vendors/css/forms/icheck/icheck.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('app-assets/vendors/css/forms/icheck/custom.css') }}">
@@ -99,7 +101,7 @@
     <!-- END PAGE VENDOR JS-->
     <!-- BEGIN STACK JS-->
     <script src="{{ asset('app-assets/js/core/app-menu.js') }}" type="text/javascript"></script>
-    <script src="{{ asset('app-assets/vendors/js/forms/select/select2.full.min.js') }}" type="text/javascript"></script>
+    {{-- <script src="{{ asset('app-assets/vendors/js/forms/select/select2.full.min.js') }}" type="text/javascript"></script> --}}
     <script src="{{ asset('app-assets/js/core/app.js') }}" type="text/javascript"></script>
     <script src="{{ asset('app-assets/js/scripts/customizer.js') }}" type="text/javascript"></script>
     {{-- <script src="{{ asset('app-assets/js/scripts/tables/datatables-extensions/datatable-keytable.js') }}" type="text/javascript"></script> --}}
@@ -111,7 +113,7 @@
     <!-- END STACK JS-->
     <!-- BEGIN PAGE LEVEL JS-->
  
-
+   
     {{-- <script src="{{ asset('app-assets/js/scripts/forms/select/form-select2.js') }}" type="text/javascript"></script> --}}
     <!-- END PAGE LEVEL JS-->
    

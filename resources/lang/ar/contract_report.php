@@ -1,0 +1,25 @@
+<?php
+
+return [
+    'title' => 'تقرير العقود',
+    'select_site' => '-- اختر الموقع --',
+    'dhahran' => 'الظهران',
+    'bashaer' => 'البشائر',
+    'from_date' => 'من التاريخ:',
+    'to_date' => 'إلى التاريخ:',
+    'submit' => 'عرض التقرير',
+    'title' => 'تقرير العقود',
+    'subtitle' => 'نظرة تراكمية',
+    'total_contracts' => 'إجمالي العقود',
+    'visited_contracts' => 'العقود التي تمت زيارتها',
+    'signed_contracts' => 'العقود الموقعة',
+    'total_value' => 'القيمة الإجمالية',
+    'section_title' => 'المؤشرات',
+    'metric' => 'المؤشر',
+    'count' => 'العدد',
+    'percentage' => 'النسبة',
+    'visit_rate' => 'نسبة الزيارات من جميع العقود',
+    'contract_rate' => 'نسبة التعاقدات من الزيارات',
+    'generated_at' => 'تم إنشاء التقرير في:',
+    'export_pdf' => 'تصدير PDF',
+];

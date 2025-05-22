@@ -129,7 +129,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->as('admin.')->group(funct
     Route::post('/customers/report/result', [CustomerController::class, 'fetchReport'])->name('customers.report.result');
 
     Route::get('/comprehensive/form', [ComprehensiveReportController::class, 'form'])->name('comprehensive.form');
-    Route::post('/comprehensive', [ComprehensiveReportController::class, 'index'])->name('comprehensive.index');
+    // Route::post('/comprehensive', [ComprehensiveReportController::class, 'index'])->name('comprehensive.index');
+    Route::post('/comprehensive', [ComprehensiveReportController::class, 'store'])->name('comprehensive.store');
+Route::get('/comprehensive', [ComprehensiveReportController::class, 'show'])->name('comprehensive.show');
+
 });
 
 require __DIR__.'/auth.php';

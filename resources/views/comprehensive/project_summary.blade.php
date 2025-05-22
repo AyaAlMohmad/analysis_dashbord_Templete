@@ -37,7 +37,7 @@
         <table style="width: 100%; border-collapse: collapse; margin-top: 20px; background-color: white; font-size: 15px;">
             <thead>
                 <tr style="background-color: #ffe082; font-weight: bold;">
-                    <th colspan="{{ count($options) + 2 }}" style="padding: 14px; border: 1px solid #ccc;">  {{_('components.project_summary')}} </th>
+                    <th colspan="{{ count($options) + 2 }}" style="padding: 14px; border: 1px solid #ccc;">  {{__('components.project_summary')}} </th>
                 </tr>
                 <tr style="background-color: #8b5a3b; color: white;">
                     <th style="border: 1px solid #ccc; padding: 10px;">{{__('components.data')}}</th>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Exception;
 use Illuminate\Support\Facades\Response;
 
 class ItemReportController extends Controller
@@ -52,7 +53,7 @@ class ItemReportController extends Controller
             } else {
                 $errors[$location] = "Failed to fetch data from Azyan " . ucfirst($location);
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $errors[$location] = "Error connecting to Azyan " . ucfirst($location) . " API";
         }
     }
@@ -71,7 +72,7 @@ class ItemReportController extends Controller
                 $error = 'Failed to fetch data';
                 return ['by_category' => [], 'total' => 0];
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $error = 'Connection error';
             return ['by_category' => [], 'total' => 0];
         }
@@ -112,43 +113,43 @@ class ItemReportController extends Controller
         // dd($siteData);
         return view('items.map', compact('site', 'siteData'));
     }
-    public function export(Request $request)
-    {
-        $site = $request->get('site', 'dhahran');
-        $type = $request->get('type', 'pdf');
+    // public function export(Request $request)
+    // {
+    //     $site = $request->get('site', 'dhahran');
+    //     $type = $request->get('type', 'pdf');
 
-        $url = $site === 'bashaer'
-            ? 'https://crm.azyanalbashaer.com/api/items'
-            : 'https://crm.azyanaldhahran.com/api/items';
+    //     $url = $site === 'bashaer'
+    //         ? 'https://crm.azyanalbashaer.com/api/items'
+    //         : 'https://crm.azyanaldhahran.com/api/items';
 
-        $error = null;
-        $data = $this->fetchItems($url, $error);
+    //     $error = null;
+    //     $data = $this->fetchItems($url, $error);
 
-        if ($error) {
-            return back()->with('error', 'Failed to fetch data from the selected site');
-        }
+    //     if ($error) {
+    //         return back()->with('error', 'Failed to fetch data from the selected site');
+    //     }
 
-        $byCategory = $data['by_category'] ?? [];
-        $chartImage = null;
+    //     $byCategory = $data['by_category'] ?? [];
+    //     $chartImage = null;
 
-        switch ($type) {
-            case 'pdf':
-                $pdf = Pdf::loadView('exports.items_pdf', [
-                    'site' => $site,
-                    'items' => $data,
-                    'byCategory' => $byCategory,
-                    'maxCount' => max($byCategory ?: [0])
-                ]);
+    //     switch ($type) {
+    //         case 'pdf':
+    //             $pdf = Pdf::loadView('exports.items_pdf', [
+    //                 'site' => $site,
+    //                 'items' => $data,
+    //                 'byCategory' => $byCategory,
+    //                 'maxCount' => max($byCategory ?: [0])
+    //             ]);
 
-                return $pdf->download("items_{$site}.pdf");
+    //             return $pdf->download("items_{$site}.pdf");
 
-            case 'csv':
-                return $this->exportCsv($byCategory, $site);
+    //         case 'csv':
+    //             return $this->exportCsv($byCategory, $site);
 
-            default:
-                abort(400, 'Invalid export type');
-        }
-    }
+    //         default:
+    //             abort(400, 'Invalid export type');
+    //     }
+    // }
 
     protected function exportCsv($data, $site)
     {
@@ -363,7 +364,7 @@ class ItemReportController extends Controller
                 } else {
                     return response()->json(['status' => false, 'message' => 'API request failed'], 500);
                 }
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 return response()->json(['status' => false, 'message' => $e->getMessage()], 500);
             }
         }

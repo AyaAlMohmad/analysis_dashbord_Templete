@@ -82,53 +82,53 @@
     </div>
 
     {{-- Headings --}}
-    <h4 class="text-center mt-2">Contracts Report</h4>
-    <p class="text-center text-muted">Cumulative Overview</p>
+    <h4 class="text-center mt-2">{{ __('contracts_report.title') }}</h4>
+    <p class="text-center text-muted">{{ __('contracts_report.subtitle') }}</p>
 
     {{-- Statistics --}}
     <div class="d-flex justify-content-center flex-wrap">
         <div class="stat-box">
-            <h4>Total Contracts</h4>
+            <h4>{{ __('contracts_report.total_contracts') }}</h4>
             <div class="value">{{ $data['all_items'] ?? 0 }}</div>
         </div>
         <div class="stat-box">
-            <h4>Visited Contracts</h4>
+            <h4>{{ __('contracts_report.visited_contracts') }}</h4>
             <div class="value">{{ $data['visited'] ?? 0 }}</div>
         </div>
         <div class="stat-box">
-            <h4>Signed Contracts</h4>
+            <h4>{{ __('contracts_report.signed_contracts') }}</h4>
             <div class="value">{{ $data['contracted'] ?? 0 }}</div>
         </div>
         <div class="stat-box">
-            <h4>Total Value</h4>
+            <h4>{{ __('contracts_report.total_value') }}</h4>
             <div class="value">{{ number_format($data['rated'], 2) }}</div>
         </div>
     </div>
 
     {{-- Table --}}
-    <div class="section-title">Indicators</div>
+    <div class="section-title">{{ __('contracts_report.section_title') }}</div>
 
     <table>
         <thead>
             <tr>
-                <th>Metric</th>
-                <th>Count</th>
-                <th>Percentage</th>
+                <th>{{ __('contracts_report.metric') }}</th>
+                <th>{{ __('contracts_report.count') }}</th>
+                <th>{{ __('contracts_report.percentage') }}</th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td>Visit Rate from All Contracts</td>
+                <td>{{ __('contracts_report.visit_rate') }}</td>
                 <td>{{ $data['visited'] ?? 0 }}</td>
                 <td>{{ ($data['all_items'] ?? 0) > 0 ? round(($data['visited'] / $data['all_items']) * 100, 2) . '%' : '0%' }}</td>
             </tr>
             <tr>
-                <td>Contract Rate from Visits</td>
+                <td>{{ __('contracts_report.contract_rate') }}</td>
                 <td>{{ $data['contracted'] ?? 0 }}</td>
                 <td>{{ ($data['visited'] ?? 0) > 0 ? round(($data['contracted'] / $data['visited']) * 100, 2) . '%' : '0%' }}</td>
             </tr>
             <tr>
-                <td>Total Value</td>
+                <td colspan="2">{{ __('contracts_report.total_value') }}</td>
                 <td colspan="2">{{ number_format($data['rated'], 2) }}</td>
             </tr>
         </tbody>
@@ -136,7 +136,7 @@
 
     {{-- Footer --}}
     <div class="text-center mt-3">
-        <small class="text-muted">Report generated at: {{ now()->format('H:i:s d-m-Y') }}</small>
+        <small class="text-muted"> {{ __('contracts_report.generated_at') }} : {{ now()->format('H:i:s d-m-Y') }}</small>
     </div>
 
     {{-- Export Button --}}

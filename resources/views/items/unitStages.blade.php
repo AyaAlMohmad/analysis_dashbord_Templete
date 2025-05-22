@@ -49,32 +49,32 @@
 
 <div class="container mt-4 text-center">
     <div class="centered-section">
-        <h4 id="reportTitle" class="no-export">Unit Stages Report</h4>
+        <h4 id="reportTitle" class="no-export">{{ __('unit_stages.title') }}</h4>
         <select name="site" id="site" class="form-control site-select no-export">
-            <option value="">-- Select Site --</option>
-            <option value="dhahran">Dhahran</option>
-            <option value="bashaer">Bashaer</option>
+            <option value="">-- {{ __('unit_stages.select_site') }} --</option>
+            <option value="dhahran">{{ __('unit_stages.dhahran') }}</option>
+            <option value="bashaer">{{ __('unit_stages.bashaer') }}</option>
         </select>
         <img id="logo" src="" alt="Logo" style="max-height: 70px; display: none;" class="mt-2">
     </div>
 
-    <div class="header-section d-none" id="reportHeader">Unit Stages Report</div>
+    <div class="header-section d-none" id="reportHeader"> {{ __('unit_stages.title') }}</div>
 
     <table class="unit-table d-none" id="unitTable">
         <thead>
             <tr>
-                <th>Phase</th>
-                <th>Total Units</th>
-                <th>Reserved</th>
-                <th>Contacted</th>
-                <th>Available</th>
-                <th>Blocked</th>
+                <th>{{ __('unit_stages.phase') }}</th>
+                <th>{{ __('unit_stages.total_units') }}</th>
+                <th>{{ __('unit_stages.reserved') }}</th>
+                <th>{{ __('unit_stages.contacted') }}</th>
+                <th>{{ __('unit_stages.available') }}</th>
+                <th>{{ __('unit_stages.blocked') }}</th>
             </tr>
         </thead>
         <tbody id="unitTableBody"></tbody>
         <tfoot>
             <tr class="summary-row">
-                <td>Total</td>
+                <td>{{ __('unit_stages.total') }}</td>
                 <td id="grandTotal">0</td>
                 <td id="totalReserved">0</td>
                 <td id="totalContacted">0</td>
@@ -130,86 +130,87 @@
             hiddenElements.forEach(el => el.style.display = '');
         });
     }
-    document.getElementById('site').addEventListener('change', function() {
-    const site = this.value;
-    if (!site) {
-        document.getElementById('unitTable').classList.add('d-none');
-        return;
-    }
 
-    // إظهار حالة التحميل
-    document.getElementById('unitTableBody').innerHTML = `
-        <tr>
-            <td colspan="6">Loading data...</td>
-        </tr>
-    `;
+    document.getElementById('site').addEventListener('change', function () {
+        const site = this.value;
+        if (!site) return;
 
-    fetch(`/admin/items/unitStages?site=${site}`, {
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest',
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        }
-    })
-    .then(async response => {
-        if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
-            throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        if (!data.status) {
-            throw new Error(data.message || 'Invalid data received');
-        }
+        const logo = site === 'dhahran' ? '{{ $logoDhahran }}' : '{{ $logoBashaer }}';
+        const color = site === 'dhahran' ? '#00262f' : '#543829';
 
-        const tbody = document.getElementById('unitTableBody');
-        tbody.innerHTML = '';
+        document.getElementById('logo').src = logo;
+        document.getElementById('logo').style.display = 'block';
+        document.getElementById('reportTitle').classList.remove('d-none');
 
-        // التحقق من وجود البيانات
-        if (!data.data || !data.data.groups) {
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="6">No data available</td>
-                </tr>
-            `;
-            return;
-        }
+        const header = document.getElementById('reportHeader');
+        header.classList.remove('d-none');
+        header.style.backgroundColor = color;
 
-        // ملء الجدول بالبيانات
-        Object.entries(data.data.groups).forEach(([phase, values]) => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${phase}</td>
-                <td>${values.total || 0}</td>
-                <td>${values.reserved || 0}</td>
-                <td>${values.contacted || 0}</td>
-                <td>${values.available || 0}</td>
-                <td>${values.blocked || 0}</td>
-            `;
-            tbody.appendChild(row);
+        const table = document.getElementById('unitTable');
+        table.classList.remove('d-none');
+        table.querySelectorAll('th').forEach(th => {
+            th.style.backgroundColor = color;
+            th.style.color = 'white';
         });
 
-        // تحديث الإجماليات
-        document.getElementById('grandTotal').textContent = data.data.grand_total || 0;
-        document.getElementById('totalReserved').textContent = data.data.totals?.reserved || 0;
-        document.getElementById('totalContacted').textContent = data.data.totals?.contacted || 0;
-        document.getElementById('totalAvailable').textContent = data.data.totals?.available || 0;
-        document.getElementById('totalBlocked').textContent = data.data.totals?.blocked || 0;
+        fetch(`{{ route('admin.items.unitStages') }}?site=${site}`, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(res => res.json())
+        .then(response => {
+    if (!response.status) return;
 
-        document.getElementById('generatedAt').textContent = "Report generated at: " + new Date().toLocaleString();
-        document.getElementById('pdf-export-button').style.display = 'block';
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        document.getElementById('unitTableBody').innerHTML = `
-            <tr>
-                <td colspan="6" class="text-danger">
-                    Error: ${error.message}
-                </td>
-            </tr>
+    const groupData = response.data;
+
+    const tbody = document.getElementById('unitTableBody');
+    tbody.innerHTML = '';
+
+    let totalCount = 0;
+    let totalAvailable = 0;
+    let totalReserved = 0;
+    let totalContacted = 0;
+    let totalBlocked = 0;
+
+    Object.entries(groupData).forEach(([phase, values]) => {
+        const count = parseInt(values.count) || 0;
+        const available = parseInt(values.status_counts.available) || 0;
+        const reserved = parseInt(values.status_counts.reserved) || 0;
+        const contacted = parseInt(values.status_counts.contracted || 0); // if contracted = contacted
+        const blocked = parseInt(values.status_counts.blocked) || 0;
+
+        totalCount += count;
+        totalAvailable += available;
+        totalReserved += reserved;
+        totalContacted += contacted;
+        totalBlocked += blocked;
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${phase}</td>
+            <td>${count}</td>
+            <td>${reserved}</td>
+            <td>${contacted}</td>
+            <td>${available}</td>
+            <td>${blocked}</td>
         `;
+        tbody.appendChild(row);
     });
-});
+
+    document.getElementById('unitTable').classList.remove('d-none');
+    document.getElementById('grandTotal').textContent = totalCount;
+    document.getElementById('totalAvailable').textContent = totalAvailable;
+    document.getElementById('totalReserved').textContent = totalReserved;
+    document.getElementById('totalContacted').textContent = totalContacted;
+    document.getElementById('totalBlocked').textContent = totalBlocked;
+
+    document.getElementById('generatedAt').textContent = "Report generated at: " + new Date().toLocaleString();
+    document.getElementById('pdf-export-button').style.display = 'block';
+})
+
+        .catch(err => {
+            console.error(err);
+            document.getElementById('unitTableBody').innerHTML = `<tr><td colspan="6">Error loading data</td></tr>`;
+        });
+    });
 </script>
 @endsection

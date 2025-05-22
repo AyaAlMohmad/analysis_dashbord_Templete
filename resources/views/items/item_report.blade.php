@@ -27,19 +27,19 @@
     </style>
 
     <div class="container mt-4">
-        <h4>Unit Report</h4>
+        <h4>{{__('reports.item_report')}}</h4>
 
 
 
         <select name="site" id="site" class="form-control">
-            <option value="">-- Select Site --</option>
-            <option value="dhahran">Dhahran</option>
-            <option value="bashaer">Bashaer</option>
+            <option value="">{{__('reports.select_site')}}</option>
+            <option value="dhahran">{{__('reports.dhahran')}}</option>
+            <option value="bashaer">{{__('reports.bashaer')}}</option>
         </select>
 
         <div id="overlay" class="overlay d-none">
             <div class="modal-content">
-                <button type="button" class="btn btn-secondary mb-3" id="changeSiteBtn">Change Site</button>
+                <button type="button" class="btn btn-secondary mb-3" id="changeSiteBtn">{{__('reports.change_site')}}</button>
 
                 <form method="POST" action="{{ route('admin.reports.itemReport.result') }}">
                     @csrf
@@ -48,11 +48,11 @@
                 
 
                     <div class="form-group">
-                        <label for="group">Select group:</label>
+                        <label for="group">{{__('reports.select_group')}}:</label>
                         <select name="group" id="group" class="form-control"></select>
                     </div>
                   
-                        <button type="submit" class="btn btn-primary mt-3">Report</button>
+                        <button type="submit" class="btn btn-primary mt-3">{{ __('reports.generate') }}</button>
                     
                 </form>
             </div>
@@ -78,7 +78,7 @@
     document.getElementById('overlay').classList.remove('d-none');
 
     const groupSelect = document.getElementById('group');
-    groupSelect.innerHTML = '<option value="">-- Select group --</option>';
+    groupSelect.innerHTML = '<option value="">-- {{__('reports.select_group')}}--</option>';
     
     
     data.data.groups.forEach(group => {

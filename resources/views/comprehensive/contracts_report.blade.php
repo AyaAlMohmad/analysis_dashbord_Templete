@@ -33,7 +33,7 @@
                     <th style="padding: 6px 8px; border: 1px solid #ddd;">{{ __('components.developer') }} </th>
                     <th style="padding: 6px 8px; border: 1px solid #ddd;">{{ __('components.units') }} </th>
                     <th style="padding: 6px 8px; border: 1px solid #ddd;">
-                        {{ __('components.contracted_progress') }}</th>
+                        {{ __('components.contracts') }}</th>
                 </tr>
             </thead>
             <tbody>

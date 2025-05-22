@@ -96,9 +96,7 @@
                         </li>
                     </ul>
                 </li>
-
-                {{-- تقارير إضافية --}}
-                <li class="has-sub {{ Route::is('admin.reports.teamCategory') || Route::is('admin.reports.sales') ? 'open' : '' }}">
+     <li class="has-sub {{ Route::is('admin.reports.teamCategory') || Route::is('admin.reports.sales') ? 'open' : '' }}">
                     <a href="#"><i class="ft-plus-circle"></i><span>{{ __('sidebar.additional_reports') }}</span></a>
                     <ul class="menu-content">
                         <li class="{{ Route::is('admin.reports.teamCategory') ? 'active' : '' }}">
@@ -131,12 +129,12 @@
                                 <span>{{ __('sidebar.unit_report') }}</span>
                             </a>
                         </li>
-                        <li class="{{ Route::is('admin.reports.contracts') ? 'active' : '' }}">
+                        {{-- <li class="{{ Route::is('admin.reports.contracts') ? 'active' : '' }}">
                             <a class="menu-item" href="{{ route('admin.reports.contracts') }}">
                                 <i class="ft-file-text"></i>
                                 <span>{{ __('sidebar.contracts_report') }}</span>
                             </a>
-                        </li>
+                        </li> --}}
                         <li class="{{ Route::is('admin.reports.source') ? 'active' : '' }}">
                             <a class="menu-item" href="{{ route('admin.reports.source') }}">
                                 <i class="ft-list"></i>

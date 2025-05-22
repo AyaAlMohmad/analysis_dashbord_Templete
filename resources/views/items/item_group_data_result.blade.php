@@ -67,12 +67,13 @@
             {{-- Statistics Cards --}}
             <div class="row text-center my-4">
                 @php
-                    $statuses = [
-                        'available' => ['label' => 'Available', 'color' => '#00b5ad', 'icon' => 'check-circle'],
-                        'blocked' => ['label' => 'Blocked', 'color' => '#e74c3c', 'icon' => 'ban'],
-                        'reserved' => ['label' => 'Reserved', 'color' => '#f39c12', 'icon' => 'clock'],
-                        'contracted' => ['label' => 'Contracted', 'color' => '#543829', 'icon' => 'file-signature'],
-                    ];
+                   $statuses = [
+    'available' => ['label' => __('unit_report.available'), 'color' => '#00b5ad', 'icon' => 'check-circle'],
+    'blocked' => ['label' => __('unit_report.blocked'), 'color' => '#e74c3c', 'icon' => 'ban'],
+    'reserved' => ['label' => __('unit_report.reserved'), 'color' => '#f39c12', 'icon' => 'clock'],
+    'contracted' => ['label' => __('unit_report.contracted'), 'color' => '#543829', 'icon' => 'file-signature'],
+];
+
                 @endphp
                 @php
                     $chartConfig = [];
@@ -117,20 +118,20 @@
             {{-- Logo and Project Title --}}
             <div class="text-center my-4">
                 <img src="{{ $logo }}" class="logo" alt="Logo">
-                <h3 class="mt-2">{{ $site === 'dhahran' ? 'Azyan Dhahran' : 'Azyan Bashaer' }}</h3>
+                <h3 class="mt-2"> {{ $site === 'dhahran' ? __('unit_report.azyandhahran') : __('unit_report.azyanbashaer') }}</h3>
             </div>
 
             {{-- Table Title --}}
-            <div class="section-title" style="background-color: {{ $darkColor }}">Unit Report</div>
+            <div class="section-title" style="background-color: {{ $darkColor }}">    {{ __('unit_report.report_title') }} </div>
 
             {{-- Data Table --}}
             <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th>Group</th>
-                        <th>Description</th>
-                        <th>Status</th>
-                        <th>Block</th>
+                        <th>{{ __('unit_report.group') }}</th>
+                        <th>{{ __('unit_report.description') }}</th>
+                        <th>{{ __('unit_report.status') }}</th>
+                        <th>{{ __('unit_report.value') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -144,9 +145,10 @@
                     @endforeach
                 </tbody>
             </table>
-            <div class="text-center mt-2 mb-4">
-                <small class="text-muted">Report Export Date: {{ \Carbon\Carbon::now()->format('d-m-Y H:i:s') }}</small>
-            </div>
+            <small class="text-muted">
+                {{ __('unit_report.report_export_date') }}: {{ \Carbon\Carbon::now()->format('d-m-Y H:i:s') }}
+            </small>
+            
 
         </div>
         <div class="text-center my-4" id="pdf-export-button">

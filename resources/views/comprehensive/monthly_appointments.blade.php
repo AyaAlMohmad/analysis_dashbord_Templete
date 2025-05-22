@@ -67,9 +67,9 @@
             <table style="border-collapse: collapse; width: 300px; font-size: 14px; text-align: center;">
                 <thead style="background-color: #8b5a3b; color: white;">
                     <tr>
-                        <th style="padding: 10px; border: 1px solid #ccc;"> {{__('messages.appointments')}}</th>
+                        <th style="padding: 10px; border: 1px solid #ccc;"> {{__('components.appointments')}}</th>
                         <th style="padding: 10px; border: 1px solid #ccc;"> {{__('components.visited')}}</th>
-                        <th style="padding: 10px; border: 1px solid #ccc;"> {{__('messages.success_rate')}} </th>
+                        <th style="padding: 10px; border: 1px solid #ccc;"> {{__('components.success_rate')}} </th>
                     </tr>
                 </thead>
                 <tbody>

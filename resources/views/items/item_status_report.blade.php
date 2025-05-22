@@ -49,17 +49,17 @@
 
 <div class="container mt-4 text-center">
     <div class="centered-section">
-        <h4 id="reportTitle" class="no-export">Unit Status Report</h4>
+        <h4 id="reportTitle" class="no-export">{{ __('components.unit_status_report') }}</h4>
         <select name="site" id="site" class="form-control site-select no-export">
-            <option value="">-- Select Site --</option>
-            <option value="dhahran">Dhahran</option>
-            <option value="bashaer">Bashaer</option>
+            <option value="">{{ __('components.select_site') }}</option>
+            <option value="dhahran">{{ __('components.dhahran') }}</option>
+            <option value="bashaer">{{ __('components.bashaer') }}</option>
         </select>
         
         <img id="logo" src="" alt="Logo" style="max-height: 70px; display: none;">
     </div>
 
-    <div class="header-section d-none" id="reportHeader">Unit Status Report</div>
+    <div class="header-section d-none" id="reportHeader">{{ __('components.unit_status_report') }}</div>
 
     <table class="unit-table d-none" id="unitTable">
         <thead>
@@ -69,7 +69,7 @@
         <tbody id="unitTableBody"></tbody>
         <tfoot>
             <tr class="summary-row" id="summaryRow">
-                <td>Total</td>
+                <td>{{ __('components.total') }}</td>
                 <td id="totalUnits">0</td>
                 <td id="totalAvailableB">0</td>
                 <td id="totalAvailableNB">0</td>
@@ -85,7 +85,7 @@
 
     {{-- PDF Export Button --}}
     <div class="text-center my-4" id="pdf-export-button" style="display: none;">
-        <a href="javascript:void(0);" onclick="exportPDF()" title="Export PDF"
+        <a href="javascript:void(0);" onclick="exportPDF()" title="{{ __('components.export_pdf') }}"
             class="transition duration-300 transform hover:scale-110 hover:rotate-6 d-block mt-4">
             <div class="fonticon-container flex items-center justify-center custom-hover-red">
                 <div class="fonticon-wrap"
@@ -108,7 +108,6 @@
     const doc = new jsPDF('p', 'mm', 'a4');
     const reportElement = document.querySelector('.container');
 
-    // ❌ Hide elements before export
     const hiddenElements = document.querySelectorAll('.no-export');
     hiddenElements.forEach(el => el.style.display = 'none');
 
@@ -124,11 +123,9 @@
         doc.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
         doc.save(`unit_status_report_${selectedSite}_${timestamp}.pdf`);
 
-        // ✅ Restore visibility
         hiddenElements.forEach(el => el.style.display = '');
     });
 }
-
 
     document.getElementById('site').addEventListener('change', function () {
         const site = this.value;
@@ -137,7 +134,6 @@
         const logo = site === 'dhahran' ? '{{ $logoDhahran }}' : '{{ $logoBashaer }}';
         const color = site === 'dhahran' ? '#00262f' : '#543829';
 
-        // Logo + header
         document.getElementById('logo').src = logo;
         document.getElementById('logo').style.display = 'block';
         document.getElementById('reportTitle').classList.remove('d-none');
@@ -145,26 +141,24 @@
         header.classList.remove('d-none');
         header.style.backgroundColor = color;
 
-        // Table + headers
         const table = document.getElementById('unitTable');
         table.classList.remove('d-none');
         document.getElementById('tableHeaderRow1').innerHTML = `
-            <th>Phase</th>
-            <th>Total Units</th>
-            <th colspan="2">Available</th>
-            <th colspan="2">Reserved</th>
-            <th colspan="2">Sold</th>`;
+            <th>{{ __('components.phase') }}</th>
+            <th>{{ __('components.total_units') }}</th>
+            <th colspan="2">{{ __('components.available') }}</th>
+            <th colspan="2">{{ __('components.reserved') }}</th>
+            <th colspan="2">{{ __('components.sold') }}</th>`;
         document.getElementById('tableHeaderRow2').innerHTML = `
             <th></th>
             <th></th>
-            <th>Beneficiary</th>
-            <th>Non-Beneficiary</th>
-            <th>Beneficiary</th>
-            <th>Non-Beneficiary</th>
-            <th>Beneficiary</th>
-            <th>Non-Beneficiary</th>`;
+            <th>{{ __('components.beneficiary') }}</th>
+            <th>{{ __('components.non_beneficiary') }}</th>
+            <th>{{ __('components.beneficiary') }}</th>
+            <th>{{ __('components.non_beneficiary') }}</th>
+            <th>{{ __('components.beneficiary') }}</th>
+            <th>{{ __('components.non_beneficiary') }}</th>`;
 
-        // Apply color to table headers
         table.querySelectorAll('th').forEach(th => {
             th.style.backgroundColor = color;
             th.style.color = 'white';
@@ -177,7 +171,7 @@
         .then(response => {
             if (!response.status) return;
 
-            const data = response.data;
+            const data = response.data.data;
             const groups = data.groups;
             const totals = data.totals.status_totals;
 
@@ -221,14 +215,12 @@
             document.getElementById('totalSoldB').textContent = totalSold.beneficiary;
             document.getElementById('totalSoldNB').textContent = totalSold.non_beneficiary;
 
-            document.getElementById('generatedAt').textContent = "Generated at: " + new Date().toLocaleString();
-
-            // ✅ Show export button after table loads
+            document.getElementById('generatedAt').textContent = "{{ __('components.generated_at') }}: " + new Date().toLocaleString();
             document.getElementById('pdf-export-button').style.display = 'block';
         })
         .catch(err => {
             console.error(err);
-            document.getElementById('unitTableBody').innerHTML = `<tr><td colspan="8">Error loading data</td></tr>`;
+            document.getElementById('unitTableBody').innerHTML = `<tr><td colspan="8">{{ __('components.error_loading_data') }}</td></tr>`;
         });
     });
 </script>

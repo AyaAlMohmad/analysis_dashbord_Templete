@@ -64,18 +64,19 @@
     <div class="text-center mb-4">
         <img src="{{ $logo }}" height="80" alt="Logo">
         <div class="title">
-            <h2>Customer Report</h2>
-            <p>Report from: {{ $from }} to {{ $to }}</p>
+            <h2>{{ __('reports.customer_report') }}</h2>
+            <p>{{ __('reports.report_from') }} {{ $from }} {{ __('reports.to') }} {{ $to }}</p>
+            
         </div>
     </div>
 
-    <div class="title">Detailed Report</div>
+    <div class="title">{{ __('reports.detailed_report') }} </div>
 
     <div class="d-flex">
         @php
             $defaultStatuses = [
-                'Interested', 'Ineligible for Support', 'Financially Ineligible', 'Booked', 'Rebooked', 'Undefined',
-                'Not Interested', 'Canceled'
+                __('reports.interested'), __('reports.ineligible_for_support'), __('reports.financially_ineligible'), __('reports.booked'), __('reports.rebooked'), __('reports.undefined'),
+                __('reports.not_interested'), __('reports.canceled')
             ];
         @endphp
 
@@ -94,15 +95,15 @@
     <hr>
     <div class="d-flex">
         @php
-            $notInterestedReasons = [
-                'Prices', 'Not Eligible for Support', 'Design', 'Area', 'Financial Capability',
-                'Project Location', 'City', 'Unresponsive', 'Hesitant', 'Wants Another Product', 'Other'
+            $notInterestedReasons = [ 
+                __('reports.prices'), __('reports.not_eligible_for_support'), __('reports.design'), __('reports.area'), __('reports.financial_capability'), __('reports.project_location'),
+                __('reports.city'), __('reports.unresponsive'), __('reports.hesitant'), __('reports.wants_another_product'), __('reports.other')
             ];
             $values = $data['Not Interested']['values'] ?? [];
         @endphp
 
         <div class="card text-center">
-            <div class="card-header">Not Interested</div>
+            <div class="card-header">{{ __('reports.not_interested') }}</div>
             <div class="card-footer">{{ $data['Not Interested']['count'] ?? 0 }}</div>
         </div>
     </div>
@@ -121,16 +122,15 @@
     <div class="d-flex">
         @php
             $cancellationReasons = [
-                'Prices', 'Unit Change', 'City', 'Project Location', 'Financial Capability',
-                'Incomplete Procedures', 'Bank Issue', 'Booking Fee Not Paid', 'Area',
-                'Design', 'No Payment to Bank', 'Did Not Meet Payment Terms', 'Technical Problem',
-                'Wants Another Project', 'Other'
+               
+            __('reports.prices'), __('reports.unit_change'), __('reports.city'), __('reports.project_location'), __('reports.financial_capability'),
+                __('reports.incomplete_procedures'), __('reports.bank_issue'), __('reports.booking_fee_not_paid'), __('reports.area'), __('reports.design'), __('reports.no_payment_to_bank'), __('reports.did_not_meet_payment_terms'), __('reports.technical_problem'), __('reports.wants_another_project'), __('reports.other')
             ];
             $cancelValues = $data['Canceled']['values'] ?? [];
         @endphp
 
         <div class="card text-center">
-            <div class="card-header">Canceled</div>
+            <div class="card-header">{{ __('reports.canceled') }}</div>
             <div class="card-footer">{{ $data['Canceled']['count'] ?? 0 }}</div>
         </div>
     </div>
@@ -149,11 +149,11 @@
     <hr>
     <div class="d-flex">
         @php
-            $contractTypes = ['Cash', 'Real Estate Finance', 'Installments'];
+            $contractTypes = [__('reports.cash'), __('reports.real_estate_finance'),__('reports.installments')];
             $contractValues = $data['Contract']['values'] ?? [];
         @endphp
         <div class="card text-center">
-            <div class="card-header">Contract</div>
+            <div class="card-header">{{ __('reports.contract') }}</div>
             <div class="card-footer">{{ $data['Contract']['count'] ?? 0 }}</div>
         </div>
     </div>
@@ -167,7 +167,7 @@
     </div>
 
     <div class="footer">
-        Exported at: {{ \Carbon\Carbon::now()->format('Y-m-d H:i:s') }}
+        {{__('reports.exported_at')}}:{{ \Carbon\Carbon::now()->format('Y-m-d H:i:s') }}
     </div>
 </div>
 

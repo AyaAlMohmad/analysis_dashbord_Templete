@@ -16,6 +16,7 @@ return [
     'unit_stages_report' => 'تقرير مراحل الوحدات',
     'unit_statistics_by_stage' => 'إحصائيات الوحدات حسب المرحلة',
     'additional_reports' => 'تقارير إضافية',
+    'customer_social_outreach' => 'قوائم العملاء ووسائل التواصل الاجتماعي والتواصل',
     'customer_lists' => 'قوائم العملاء والمنصات الاجتماعية',
     'team_report' => 'تقرير الفريق',
     'sales_report' => 'تقرير المبيعات',

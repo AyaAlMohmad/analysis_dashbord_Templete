@@ -13,4 +13,5 @@ return[
     'unit_statistics_by_stage'=>'Unit Statistics by Stage',
     'unit_stages'=>'Unit Stages',
     'visits_payments_contracts'=>'Visits & Payments & Contracts For The Month',
+    'generating_report'=>'Report is being prepared...',
 ];

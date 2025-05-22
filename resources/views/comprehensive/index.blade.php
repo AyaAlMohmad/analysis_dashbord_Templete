@@ -54,6 +54,54 @@
                 top: 0;
                 width: 100%;
             }
+
+
+        }
+
+        #pdf-loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+        }
+
+        .loading-backdrop {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backdrop-filter: blur(5px);
+            background-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .loading-spinner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .spinner-circle {
+            border: 6px solid #ccc;
+            border-top: 6px solid #8b5a3b;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
     </style>
 
@@ -74,190 +122,238 @@
                 </div>
             </div>
         </div>
-
-
-        <div class="page-section">
-            <div class="khozam-section"
-                style="background-color: #f9f6f2; padding: 60px 20px; direction: rtl; position: relative; display: flex; align-items: center; justify-content: space-between; font-family: 'Arial', sans-serif; flex-wrap: wrap;">
-                <div style="position: absolute; top: 30px; right: 30px;">
-                    <img src="{{ asset('build/logo.png') }}" alt="Tatwir Logo" style="height: 60px;">
-                </div>
-                <div style="flex: 2; text-align: center; padding: 20px; max-width: 100%;">
-                    <div style="margin-bottom: 30px;">
-                        <img src="{{ asset('images/logo5.png') }}" alt="Project Logo" style="height:200px;">
+        @if (in_array('dhahran', $requestSites))
+            <div class="page-section">
+                <div class="khozam-section"
+                    style="background-color: #f9f6f2; padding: 60px 20px; direction: rtl; position: relative; display: flex; align-items: center; justify-content: space-between; font-family: 'Arial', sans-serif; flex-wrap: wrap;">
+                    <div style="position: absolute; top: 30px; right: 30px;">
+                        <img src="{{ asset('build/logo.png') }}" alt="Tatwir Logo" style="height: 60px;">
                     </div>
-                    <div style="margin-top: 20px; font-size: 18px; color: #8b5a3b;">
-                        @if (request()->filled('from_date') && request()->filled('to_date'))
-                            From {{ request('from_date') }} to {{ request('to_date') }}
-                        @else
-                            Please select a date range from the form
-                        @endif
+                    <div style="flex: 2; text-align: center; padding: 20px; max-width: 100%;">
+                        <div style="margin-bottom: 30px;">
+                            <img src="{{ asset('images/logo5.png') }}" alt="Project Logo" style="height:200px;">
+                        </div>
+                        <div style="margin-top: 20px; font-size: 18px; color: #8b5a3b;">
+                            @if (request()->filled('from_date') && request()->filled('to_date'))
+                                From {{ request('from_date') }} to {{ request('to_date') }}
+                            @else
+                                Please select a date range from the form
+                            @endif
+                        </div>
+
+
                     </div>
-
-
-                </div>
-                <div style="flex: 1; min-width: 200px; display: flex; justify-content: flex-start;">
-                    <img src="{{ asset('images/style.png') }}" alt="Decoration" style="height: 400px;">
+                    <div style="flex: 1; min-width: 200px; display: flex; justify-content: flex-start;">
+                        <img src="{{ asset('images/style.png') }}" alt="Decoration" style="height: 400px;">
+                    </div>
                 </div>
             </div>
-        </div>
+        @endif
 
-
-        <!-- قسم الظهران -->
         <div class="project-section" style="margin-bottom: 50px;">
-
-            <div class="page-section">@include('comprehensive.colored_map', [
-                'data' => $dhahranColoredMap,
-                'project_name' => 'أزيان الظهران',
-            ])</div>
-            <div class="page-section">@include('comprehensive.reserved_report', [
-                'data' => $dhahranData,
-                'project_name' => 'أزيان الظهران',
-            ])</div>
-            <div class="page-section">@include('comprehensive.contracts_report', [
-                'data' => $dhahranDataContract,
-                'project_name' => 'أزيان الظهران',
-            ])</div>
-            <div class="page-section">@include('comprehensive.status_item', [
-                'statusData' => $dhahranStatusData,
-                'project_name' => 'أزيان الظهران',
-            ])</div>
-             <div class="page-section">@include('comprehensive.project_summary', [
-                'data' => $dhahranProjectSummary,
-                'project_name' => 'أزيان الظهران',
-            ])</div>
-            <div class="page-section">@include('comprehensive.unitStages', [
-                'unitStages' => $dhahranUnitStages,
-                'project_name' => 'أزيان الظهران',
-            ])</div>
-            <div class="page-section">@include('comprehensive.unitStatisticsByStage', [
-                'unitStats' => $unitDetailsByStageResultDhahran,
-                'project_name' => 'أزيان الظهران',
-            ])</div>
-            <div class="page-section">@include('comprehensive.visits_payments_contracts', [
-                'data' => $dhahranVPCData,
-                'project_name' => 'أزيان الظهران',
-            ])</div>
-            <div class="page-section">@include('comprehensive.disinterest_reasons', [
-                'data' => $dhahranDisinterestReasons,
-                'project_name' => 'أزيان الظهران',
-            ])</div>
-            <div class="page-section">@include('comprehensive.unit_sales', [
-                'data' => $dhahranUnitSales,
-                'project_name' => 'أزيان الظهران',
-            ])</div>
-
-            <div class="page-section">@include('comprehensive.source_stats', [
-                'data' => $dhahranUnitStatisticsByStage,
-                'project_name' => 'أزيان الظهران',
-            ])></div>
-            <div class="page-section">@include('comprehensive.monthly_appointments', [
-                'data' => $dhahranMonthlyAppointments,
-                'project_name' => 'أزيان الظهران',
-            ])</div>
-            <div class="page-section">@include('comprehensive.targeted_report', [
-                'data' => $dhahranTargetedReport,
-                'project_name' => 'أزيان الظهران',
-            ])</div>
-
+            @if (in_array('dhahran', $requestSites) && in_array('colored_map', $requestSections))
+                <div class="page-section">@include('comprehensive.colored_map', [
+                    'data' => $dhahranColoredMap,
+                    'project_name' => 'أزيان الظهران',
+                ])</div>
+            @endif
+            @if (in_array('dhahran', $requestSites) && in_array('reserved_report', $requestSections))
+                <div class="page-section">@include('comprehensive.reserved_report', [
+                    'data' => $dhahranData,
+                    'project_name' => 'أزيان الظهران',
+                ])</div>
+            @endif
+            @if (in_array('dhahran', $requestSites) && in_array('contracts_report', $requestSections))
+                <div class="page-section">@include('comprehensive.contracts_report', [
+                    'data' => $dhahranDataContract,
+                    'project_name' => 'أزيان الظهران',
+                ])</div>
+            @endif
+            @if (in_array('dhahran', $requestSites) && in_array('status_item', $requestSections))
+                <div class="page-section">@include('comprehensive.status_item', [
+                    'statusData' => $dhahranStatusData,
+                    'project_name' => 'أزيان الظهران',
+                ])</div>
+            @endif
+            @if (in_array('dhahran', $requestSites) && in_array('project_summary', $requestSections))
+                <div class="page-section">@include('comprehensive.project_summary', [
+                    'data' => $dhahranProjectSummary,
+                    'project_name' => 'أزيان الظهران',
+                ])</div>
+            @endif
+            @if (in_array('dhahran', $requestSites) && in_array('unitStages', $requestSections))
+                <div class="page-section">@include('comprehensive.unitStages', [
+                    'unitStages' => $dhahranUnitStages,
+                    'project_name' => 'أزيان الظهران',
+                ])</div>
+            @endif
+            @if (in_array('dhahran', $requestSites) && in_array('unitStatisticsByStage', $requestSections))
+                <div class="page-section">@include('comprehensive.unitStatisticsByStage', [
+                    'unitStats' => $unitDetailsByStageResultDhahran,
+                    'project_name' => 'أزيان الظهران',
+                ])</div>
+            @endif
+            @if (in_array('dhahran', $requestSites) && in_array('visits_payments_contracts', $requestSections))
+                <div class="page-section">@include('comprehensive.visits_payments_contracts', [
+                    'data' => $dhahranVPCData,
+                    'project_name' => 'أزيان الظهران',
+                ])</div>
+            @endif
+            @if (in_array('dhahran', $requestSites) && in_array('disinterest_reasons', $requestSections))
+                <div class="page-section">@include('comprehensive.disinterest_reasons', [
+                    'data' => $dhahranDisinterestReasons,
+                    'project_name' => 'أزيان الظهران',
+                ])</div>
+            @endif
+            @if (in_array('dhahran', $requestSites) && in_array('unit_sales', $requestSections))
+                <div class="page-section">@include('comprehensive.unit_sales', [
+                    'data' => $dhahranUnitSales,
+                    'project_name' => 'أزيان الظهران',
+                ])</div>
+            @endif
+            @if (in_array('dhahran', $requestSites) && in_array('source_stats', $requestSections))
+                <div class="page-section">@include('comprehensive.source_stats', [
+                    'data' => $dhahranUnitStatisticsByStage,
+                    'project_name' => 'أزيان الظهران',
+                ])></div>
+            @endif
+            @if (in_array('dhahran', $requestSites) && in_array('monthly_appointments', $requestSections))
+                <div class="page-section">@include('comprehensive.monthly_appointments', [
+                    'data' => $dhahranMonthlyAppointments,
+                    'project_name' => 'أزيان الظهران',
+                ])</div>
+            @endif
+            @if (in_array('dhahran', $requestSites) && in_array('targeted_report', $requestSections))
+                <div class="page-section">@include('comprehensive.targeted_report', [
+                    'data' => $dhahranTargetedReport,
+                    'project_name' => 'أزيان الظهران',
+                ])</div>
+            @endif
         </div>
-        <div class="page-section">
-            <div class="khozam-section"
-                style="background-color: #f9f6f2; padding: 60px 20px; direction: rtl; position: relative; display: flex; align-items: center; justify-content: space-between; font-family: 'Arial', sans-serif; flex-wrap: wrap;">
-                <div style="position: absolute; top: 30px; right: 30px;">
-                    <img src="{{ asset('build/logo.png') }}" alt="Tatwir Logo" style="height: 60px;">
-                </div>
-                <div style="flex: 2; text-align: center; padding: 20px; max-width: 100%;">
-                    <div style="margin-bottom: 30px;">
-                        <img src="{{ asset('images/logo6.png') }}" alt="Project Logo" style="height:200px;">
+
+        @if (in_array('albashaer', $requestSites))
+            <div class="page-section">
+                <div class="khozam-section"
+                    style="background-color: #f9f6f2; padding: 60px 20px; direction: rtl; position: relative; display: flex; align-items: center; justify-content: space-between; font-family: 'Arial', sans-serif; flex-wrap: wrap;">
+                    <div style="position: absolute; top: 30px; right: 30px;">
+                        <img src="{{ asset('build/logo.png') }}" alt="Tatwir Logo" style="height: 60px;">
                     </div>
-                    <div style="margin-top: 20px; font-size: 18px; color: #8b5a3b;">
-                        @if (request()->filled('from_date') && request()->filled('to_date'))
-                            From {{ request('from_date') }} to {{ request('to_date') }}
-                        @else
-                            Please select a date range from the form
-                        @endif
-                    </div>
+                    <div style="flex: 2; text-align: center; padding: 20px; max-width: 100%;">
+                        <div style="margin-bottom: 30px;">
+                            <img src="{{ asset('images/logo6.png') }}" alt="Project Logo" style="height:200px;">
+                        </div>
+                        <div style="margin-top: 20px; font-size: 18px; color: #8b5a3b;">
+                            @if (request()->filled('from_date') && request()->filled('to_date'))
+                                From {{ request('from_date') }} to {{ request('to_date') }}
+                            @else
+                                Please select a date range from the form
+                            @endif
+                        </div>
 
 
-                </div>
-                <div style="flex: 1; min-width: 200px; display: flex; justify-content: flex-start;">
-                    <img src="{{ asset('images/style.png') }}" alt="Decoration" style="height: 400px;">
+                    </div>
+                    <div style="flex: 1; min-width: 200px; display: flex; justify-content: flex-start;">
+                        <img src="{{ asset('images/style.png') }}" alt="Decoration" style="height: 400px;">
+                    </div>
                 </div>
             </div>
-        </div>
+        @endif
 
-        <!-- قسم البشائر -->
         <div class="project-section" style="margin-bottom: 50px;">
-            {{-- <h2 style="text-align: center; color: #8b5a3b; margin-bottom: 30px;">مشروع أزيان البشائر</h2> --}}
+            @if (in_array('albashaer', $requestSites)&& in_array('colored_map', $requestSections))
             <div class="page-section">@include('comprehensive.colored_map', [
                 'data' => $albashaerColoredMap,
                 'project_name' => 'أزيان البشائر',
             ])</div>
+            @endif
+            @if (in_array('albashaer', $requestSites)&& in_array('reserved_report', $requestSections))
             <div class="page-section">@include('comprehensive.reserved_report', [
                 'data' => $albashaerData,
                 'project_name' => 'أزيان البشائر',
             ])</div>
+            @endif
+            @if (in_array('albashaer', $requestSites)&& in_array('contracts_report', $requestSections))
             <div class="page-section">@include('comprehensive.contracts_report', [
                 'data' => $albashaerDataContract,
                 'project_name' => 'أزيان البشائر',
             ])</div>
+            @endif
+            @if (in_array('albashaer', $requestSites)&& in_array('status_item', $requestSections))
             <div class="page-section">@include('comprehensive.status_item', [
                 'statusData' => $bashaerStatusData,
                 'project_name' => 'أزيان البشائر',
             ])</div>
+            @endif
+            @if (in_array('albashaer', $requestSites)&& in_array('project_summary', $requestSections))
             <div class="page-section">@include('comprehensive.project_summary', [
                 'data' => $albashaerProjectSummary,
                 'project_name' => 'أزيان البشائر',
             ])</div>
+            @endif
+            @if (in_array('albashaer', $requestSites)&& in_array('unitStages', $requestSections))
             <div class="page-section">@include('comprehensive.unitStages', [
                 'unitStages' => $albashaerUnitStages,
                 'project_name' => 'أزيان البشائر',
             ])</div>
-            <div class="page-section">@include('comprehensive.unitStatisticsByStage', [
-                'unitStats' => $unitDetailsByStageResultAlbashaer,
-                'project_name' => 'أزيان البشائر',
-            ])</div>
+            @endif
+            @if (in_array('albashaer', $requestSites)&& in_array('unitStatisticsByStage', $requestSections))
+            <div class="page-section">
+                @include('comprehensive.unitStatisticsByStage', [
+                    'unitStats' => $unitDetailsByStageResultAlbashaer,
+                    'project_name' => 'أزيان البشائر',
+                ])
+            </div>
+            @endif
+            @if (in_array('albashaer', $requestSites)&& in_array('visits_payments_contracts', $requestSections))
             <div class="page-section">@include('comprehensive.visits_payments_contracts', [
                 'data' => $albashaerVPCData,
                 'project_name' => 'أزيان البشائر',
             ])</div>
+            @endif
+            @if (in_array('albashaer', $requestSites)&& in_array('disinterest_reasons', $requestSections))
             <div class="page-section">@include('comprehensive.disinterest_reasons', [
                 'data' => $albashaerDisinterestReasons,
                 'project_name' => 'أزيان البشائر',
             ])</div>
+            @endif
+            @if (in_array('albashaer', $requestSites)&& in_array('unit_sales', $requestSections))
             <div class="page-section">@include('comprehensive.unit_sales', [
                 'data' => $albashaerUnitSales,
                 'project_name' => 'أزيان البشائر',
             ])</div>
-
+            @endif
+            @if (in_array('albashaer', $requestSites)&& in_array('source_stats', $requestSections))
             <div class="page-section">@include('comprehensive.source_stats', [
                 'data' => $albashaerUnitStatisticsByStage,
                 'project_name' => 'أزيان البشائر',
             ])></div>
+              @endif
+              @if (in_array('albashaer', $requestSites)&& in_array('monthly_appointments', $requestSections))  
             <div class="page-section">@include('comprehensive.monthly_appointments', [
                 'data' => $albashaerMonthlyAppointments,
                 'project_name' => 'أزيان البشائر',
             ])</div>
+            @endif
+            @if (in_array('albashaer', $requestSites)&& in_array('targeted_report', $requestSections))
             <div class="page-section">@include('comprehensive.targeted_report', [
                 'data' => $albashaerTargetedReport,
                 'project_name' => 'أزيان البشائر',
             ])</div>
+              @endif
+                
         </div>
 
 
 
 
 
-
-        <!-- الصفحة الأخيرة -->
         <div class="page-section">
             <div class="logo-section">
                 <div class="main-logo">
                     <img src="{{ asset('build/logo5.png') }}" alt="Tatwir Logo">
                 </div>
                 <div style="margin-top: 20px; font-size: 24px; color: #ccc;">
-                    وشكرا
+                    {{ __('components.thanks') }}
                 </div>
                 <div class="projects-logos">
                     <div class="project-logo">
@@ -267,6 +363,17 @@
                         <img src="{{ asset('images/logo3.png') }}" alt="Azyan Al Bashaer">
                     </div>
                 </div>
+            </div>
+        </div>
+
+
+    </div>
+    <div id="pdf-loading-overlay" style="display: none;">
+        <div class="loading-backdrop"></div>
+        <div class="loading-spinner">
+            <div class="spinner-circle"></div>
+            <div class="loading-text" style="margin-top: 20px; color: #333; text-align: center; font-size: 18px;">
+                {{ __('messages.generating_report') }}
             </div>
         </div>
     </div>
@@ -285,27 +392,21 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
     <script>
         async function exportToPDF() {
             const {
                 jsPDF
             } = window.jspdf;
-            // const pdf = new jsPDF('p', 'mm', 'a4');
-            const pdf = new jsPDF('l', 'mm', 'a4'); // 'l' تعني landscape
+            const pdf = new jsPDF('l', 'mm', 'a4'); // Landscape A4
 
             const exportButton = document.getElementById('pdf-export-button');
             exportButton.style.display = 'none';
-
-
-            document.querySelectorAll('#pdf-export-button').forEach(el => el.style.display = 'none');
-
+            document.getElementById('pdf-loading-overlay').style.display = 'block';
 
             const pageSections = document.querySelectorAll('.page-section');
 
             for (let i = 0; i < pageSections.length; i++) {
                 const section = pageSections[i];
-
 
                 section.style.visibility = 'visible';
                 section.style.position = 'absolute';
@@ -313,26 +414,32 @@
                 section.style.top = '0';
                 section.style.width = '100%';
 
-
                 const canvas = await html2canvas(section, {
                     scale: 2,
-                    logging: true,
                     useCORS: true,
-                    allowTaint: true
+                    allowTaint: true,
+                    backgroundColor: null
                 });
 
-
                 const imgData = canvas.toDataURL('image/png');
-                const pdfWidth = pdf.internal.pageSize.getWidth();
-                const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
-                if (i > 0) {
-                    pdf.addPage();
-                }
+                const pageWidth = pdf.internal.pageSize.getWidth(); // A4 landscape width
+                const pageHeight = pdf.internal.pageSize.getHeight(); // A4 landscape height
 
-                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                // تصغير الصورة لتناسب تماماً داخل الصفحة
+                const imgProps = {
+                    width: canvas.width,
+                    height: canvas.height
+                };
 
-                // إعادة العناصر إلى وضعها الطبيعي
+                const ratio = Math.min(pageWidth / imgProps.width, pageHeight / imgProps.height);
+                const imgWidth = imgProps.width * ratio;
+                const imgHeight = imgProps.height * ratio;
+
+                if (i !== 0) pdf.addPage();
+
+                pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+
                 section.style.visibility = '';
                 section.style.position = '';
                 section.style.left = '';
@@ -340,12 +447,10 @@
                 section.style.width = '';
             }
 
-            // حفظ الملف
             pdf.save("{{ $site ?? 'report' }}_report.pdf");
 
-            // إعادة عرض زر التصدير
             exportButton.style.display = 'block';
-            document.querySelectorAll('#pdf-export-button').forEach(el => el.style.display = '');
+            document.getElementById('pdf-loading-overlay').style.display = 'none';
         }
     </script>
 @endsection

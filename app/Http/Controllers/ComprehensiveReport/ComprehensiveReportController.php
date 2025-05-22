@@ -14,6 +14,25 @@ class ComprehensiveReportController extends Controller
         return view('comprehensive.form');
     }
 
+    public function store(Request $request)
+    {
+        session()->put('report_filter', $request->all());
+        return redirect()->route('admin.comprehensive.show');
+    }
+
+    public function show()
+    {
+        $filter = session('report_filter');
+
+        if (!$filter || !isset($filter['from_date']) || !isset($filter['to_date'])) {
+            return redirect()->route('admin.comprehensive.form')->withErrors(['msg' => 'يرجى اختيار فترة زمنية.']);
+        }
+
+        $request = new \Illuminate\Http\Request($filter);
+        return $this->index($request);
+    }
+
+
     public function index(Request $request)
     {
         $from_date = $request->input('from_date');
@@ -43,7 +62,8 @@ class ComprehensiveReportController extends Controller
         $dhahranUnitSales = $this->getDhahranUnitSales($from_date, $to_date);
         $albashaerProjectSummary = $this->getAlbashaerProjectSummaryReport($from_date, $to_date);
         $dhahranProjectSummary = $this->getDhahranProjectSummaryReport($from_date, $to_date);
-
+        $selectedSites = $request->input('sites', []);
+        $selectedSections = $request->input('sections', []);
         $mergedProjects = collect($albashaerData['projects'] ?? [])
             ->merge($dhahranData['projects'] ?? [])
             ->merge($manualProjects ?? [])
@@ -119,7 +139,8 @@ class ComprehensiveReportController extends Controller
                 'labels' => $mergedChartLabelsContract,
                 'data' => $mergedChartDataContract
             ],
-
+            'requestSites' => $selectedSites,
+            'requestSections' => $selectedSections,
         ]);
     }
 

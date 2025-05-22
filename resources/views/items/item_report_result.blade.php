@@ -68,10 +68,10 @@
             <div class="row text-center my-4">
                 @php
                     $statuses = [
-                        'available' => ['label' => 'Available', 'color' => '#00b5ad', 'icon' => 'check-circle'],
-                        'blocked' => ['label' => 'Blocked', 'color' => '#e74c3c', 'icon' => 'ban'],
-                        'reserved' => ['label' => 'Reserved', 'color' => '#f39c12', 'icon' => 'clock'],
-                        'contracted' => ['label' => 'Contracted', 'color' => '#543829', 'icon' => 'file-signature'],
+                        'available' => ['label' => __('units.available'), 'color' => '#00b5ad', 'icon' => 'check-circle'],
+                        'blocked' => ['label' => __('units.blocked'), 'color' => '#e74c3c', 'icon' => 'ban'],
+                        'reserved' => ['label' => __('units.reserved'), 'color' => '#f39c12', 'icon' => 'clock'],
+                        'contracted' => ['label' => __('units.contracted'), 'color' => '#543829', 'icon' => 'file-signature'],
                     ];
                 @endphp
                 @php
@@ -91,7 +91,7 @@
                 @foreach ($statuses as $key => $info)
                     @php
                         $count = $result[$key] ?? 0;
-                        $total = $result['total'] ?? 1; // نتفادى القسمة على صفر
+                        $total = $result['total'] ?? 1;
                         $percentage = round(($count / $total) * 100);
                     @endphp
                     <div class="col-md-3 mb-4">
@@ -113,24 +113,25 @@
             @php
                 $logo = $site === 'dhahran' ? asset('images/logo1.png') : asset('images/logo2.png');
                 $darkColor = $site === 'dhahran' ? '#00262f' : '#543829';
+                $projectName = $site === 'dhahran' ? 'Azyan Dhahran' : 'Azyan Bashaer';
             @endphp
             {{-- Logo and Project Title --}}
             <div class="text-center my-4">
                 <img src="{{ $logo }}" class="logo" alt="Logo">
-                <h3 class="mt-2">{{ $site === 'dhahran' ? 'Azyan Dhahran' : 'Azyan Bashaer' }}</h3>
+                <h3 class="mt-2">{{ $projectName }}</h3>
             </div>
 
             {{-- Table Title --}}
-            <div class="section-title" style="background-color: {{ $darkColor }}">Unit Report</div>
+            <div class="section-title" style="background-color: {{ $darkColor }}">{{ __('units.title') }}</div>
 
             {{-- Data Table --}}
             <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th>Group</th>
-                        <th>Description</th>
-                        <th>Status</th>
-                        <th>Block</th>
+                        <th>{{ __('units.table.group') }}</th>
+                        <th>{{ __('units.table.description') }}</th>
+                        <th>{{ __('units.table.status') }}</th>
+                        <th>{{ __('units.table.block') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -145,13 +146,12 @@
                 </tbody>
             </table>
             <div class="text-center mt-2 mb-4">
-                <small class="text-muted">Report Export Date: {{ \Carbon\Carbon::now()->format('d-m-Y H:i:s') }}</small>
+                <small class="text-muted">{{ __('units.export_date', ['date' => \Carbon\Carbon::now()->format('d-m-Y H:i:s')]) }}</small>
             </div>
 
         </div>
         <div class="text-center my-4" id="pdf-export-button">
-
-            <a href="javascript:void(0);" onclick="exportPDF()" title="Export PDF"
+            <a href="javascript:void(0);" onclick="exportPDF()" title="{{ __('Export PDF') }}"
                 class="transition duration-300 transform hover:scale-110 hover:rotate-6 d-block mt-4">
                 <div class="fonticon-container flex items-center justify-center custom-hover-red">
                     <div class="fonticon-wrap"
@@ -161,7 +161,6 @@
                     </div>
                 </div>
             </a>
-
         </div>
     </div>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -177,13 +176,10 @@
             const pdf = new jsPDF('p', 'mm', 'a4');
             const element = document.getElementById('reportContent');
 
-           
             document.getElementById('pdf-export-button')?.classList.add('d-none');
 
-           
             await new Promise(resolve => setTimeout(resolve, 200));
 
-        
             const canvas = await html2canvas(element, {
                 scale: 2
             });
@@ -197,11 +193,9 @@
             let heightLeft = pdfHeight;
             let position = 0;
 
-            // إضافة أول صفحة
             pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
             heightLeft -= pageHeight;
 
-            // صفحات إضافية
             while (heightLeft > 0) {
                 position = heightLeft - pdfHeight;
                 pdf.addPage();
@@ -211,7 +205,6 @@
 
             pdf.save("{{ $site }}_unit_report.pdf");
 
-            // إظهار زر التصدير مرة أخرى
             document.getElementById('pdf-export-button')?.classList.remove('d-none');
         }
     </script>

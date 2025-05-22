@@ -17,9 +17,9 @@
     <img src="{{ $logo }}" alt="Azyan Logo" height="80" class="mb-3">
 
     <div class="py-3 mb-4 rounded text-white" style="background-color: {{ $darkColor }}">
-        <h5 class="mb-1">Sales Report</h5>
+        <h5 class="mb-1">{{ __('reports.sales_report') }}</h5>
         <div>
-            <span>Report from: {{ $fromDate }} to: {{ $toDate }}</span>
+            <span> {{__('reports.from')}}: {{ $fromDate }} {{__('reports.to')}}: {{ $toDate }}</span>
         </div>
     </div>
 
@@ -29,18 +29,18 @@
 
     @if (!empty($data))
         <div class="text-white text-center p-2 mb-4" style="background-color: {{ $darkColor }}">
-            <strong>Detailed Report</strong>
+            <strong>{{__('reports.detailed_report')}} </strong>
         </div>
 
         <div class="table-responsive">
             <table class="table table-bordered text-center">
                 <thead class="table-light">
                     <tr>
-                        <th>Entry Details</th>
-                        <th>Advertisements</th>
-                        <th>Offer Attendance</th>
-                        <th>Follow-up</th>
-                        <th>Final Bookings</th>
+                        <th>{{__('reports.entry_details')}} </th>
+                        <th>{{__('reports.advertisements')}} </th>
+                        <th>{{__('reports.offer_attendance')}} </th>
+                        <th>{{__('reports.follow_up')}} </th>
+                        <th>{{__('reports.final_bookings')}} </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -59,12 +59,12 @@
             <table class="table table-bordered text-center">
                 <thead class="table-light">
                     <tr>
-                        <th>Price</th>
-                        <th>City</th>
-                        <th>Area</th>
-                        <th>Not Interested in Area</th>
-                        <th>Design</th>
-                        <th>Other</th>
+                        <th>{{__('reports.price')}} </th>
+                        <th>{{__('reports.city')}} </th>
+                        <th>{{__('reports.area')}} </th>
+                        <th>{{__('reports.not_interested_in_area')}} </th>
+                        <th>{{__('reports.design')}} </th>
+                        <th>{{__('reports.other')}} </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -84,10 +84,10 @@
             <table class="table table-bordered text-center">
                 <thead class="table-light">
                     <tr>
-                        <th>Not Qualified Leads</th>
-                        <th>Financial Capacity</th>
-                        <th>Not Eligible</th>
-                        <th>Benefited Support</th>
+                        <th>{{__('reports.not_qualified_leads')}} </th>
+                        <th>{{__('reports.financial_capacity')}} </th>
+                        <th>{{__('reports.not_eligible')}} </th>
+                        <th>{{__('reports.benefited_support')}} </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -106,24 +106,25 @@
 <div class="container mt-4" id="team-performance">
     @if (!empty($data['cumulative_stuff_data']) && is_array($data['cumulative_stuff_data']))
         <div class="text-white text-center p-2 my-4" style="background-color: {{ $darkColor }}">
-            <strong>Team Cumulative Performance</strong>
+            <strong>{{__('reports.team_cumulative_performance')}} </strong>
         </div>
 
         <div class="table-responsive" style="overflow-x: auto;">
             <table class="table table-bordered text-center" style="table-layout: fixed; font-size: 12px;">
                 <thead class="table-light">
                     <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th style="min-width: 80px;">Sign-ins</th>
-                        <th style="min-width: 80px;">Not Eligible</th>
-                        <th style="min-width: 80px;">No Financial Capacity</th>
-                        <th style="min-width: 80px;">Sign-in Capacity</th>
-                        <th style="min-width: 80px;">Paid w/o Cancel</th>
-                        <th style="min-width: 80px;">Cancel After Pay</th>
-                        <th style="min-width: 80px;">Contracts</th>
-                        <th style="min-width: 80px;">Proposal</th>
-                        <th style="min-width: 80px;">Contract Count</th>
+                        <th>{{__('reports.id')}} </th>
+                        <th>{{__('reports.name')}} </th>
+                        <th style="min-width: 80px;">{{__('reports.sign_ins')}} </th>
+                        <th style="min-width: 80px;">{{__('reports.not_eligible')}} </th>
+                        <th style="min-width: 80px;">{{__('reports.no_financial_capacity')}} </th>
+                        <th style="min-width: 80px;">{{__('reports.sign_in_capacity')}} </th>
+                        <th style="min-width: 80px;">{{__('reports.paid_wo_cancel')}} </th>
+                        <th style="min-width: 80px;">{{__('reports.cancel_after_pay')}} </th>
+                        <th style="min-width: 80px;">{{__('reports.contracts')}} </th>
+                        <th style="min-width: 80px;">{{__('reports.proposal')}} </th>
+                        <th style="min-width: 80px;">{{__('reports.contract_count')}} </th>
+
                     </tr>
                 </thead>
                 <tbody>
@@ -147,7 +148,7 @@
         </div>
 
         <div class="text-center mt-2 mb-4">
-            <small class="text-muted">Report Export Date: {{ \Carbon\Carbon::now()->format('d-m-Y H:i:s') }}</small>
+            <small class="text-muted">{{__('reports.export_date')}}: {{ \Carbon\Carbon::now()->format('d-m-Y H:i:s') }}</small>
         </div>
     @endif
 </div>

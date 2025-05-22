@@ -1,0 +1,25 @@
+<?php
+
+return [
+    'title' => 'Contracts Report',
+    'select_site' => '-- Select Site --',
+    'dhahran' => 'Dhahran',
+    'bashaer' => 'Bashaer',
+    'from_date' => 'From Date:',
+    'to_date' => 'To Date:',
+    'submit' => 'Report',
+    'title' => 'Contracts Report',
+    'subtitle' => 'Cumulative Overview',
+    'total_contracts' => 'Total Contracts',
+    'visited_contracts' => 'Visited Contracts',
+    'signed_contracts' => 'Signed Contracts',
+    'total_value' => 'Total Value',
+    'section_title' => 'Indicators',
+    'metric' => 'Metric',
+    'count' => 'Count',
+    'percentage' => 'Percentage',
+    'visit_rate' => 'Visit Rate from All Contracts',
+    'contract_rate' => 'Contract Rate from Visits',
+    'generated_at' => 'Report generated at:',
+    'export_pdf' => 'Export PDF',
+];

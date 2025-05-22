@@ -13,4 +13,5 @@ return[
     'unit_statistics_by_stage'=>'إحصائيات الوحدات حسب المرحلة',
     'unit_stages'=>'المرحلة حسب النموذج',
     'visits_payments_contracts'=>' الزيارات والسداد والعقود لشهر',
+    'generating_report'=>'جاري تجهيز التقرير...',
 ];

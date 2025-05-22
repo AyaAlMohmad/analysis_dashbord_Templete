@@ -37,25 +37,26 @@
     </div>
 
     <div class="section-title" style="background-color: {{ $darkColor }}">
-        Team Report<br>
-        <small>Cumulative Report</small>
+        {{ __('reports.team_report') }}<br>
+        <small>{{ __('reports.cumulative_report') }}</small>
     </div>
-
+    
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th>Staff ID</th>
-                <th>Staff Name</th>
-                <th>Sign In</th>
-                <th>Not Eligible</th>
-                <th>No Financial Capacity</th>
-                <th>Payment w/o Cancel</th>
-                <th>Cancel After Payment</th>
-                <th>Contracts</th>
-                <th>Sakani Leads</th>
-                <th>Hazb Leads</th>
+                <th>{{ __('reports.staff_id') }}</th>
+                <th>{{ __('reports.staff_name') }}</th>
+                <th>{{ __('reports.sign_in') }}</th>
+                <th>{{ __('reports.not_eligible') }}</th>
+                <th>{{ __('reports.no_financial_capacity') }}</th>
+                <th>{{ __('reports.payment_without_cancellations') }}</th>
+                <th>{{ __('reports.cancellations_after_payment') }}</th>
+                <th>{{ __('reports.contracts') }}</th>
+                <th>{{ __('reports.sakani_leads') }}</th>
+                <th>{{ __('reports.hazb_leads') }}</th>
             </tr>
         </thead>
+    
         <tbody>
             @foreach($result['data'] ?? [] as $item)
                 <tr>
@@ -75,7 +76,8 @@
     </table>
 
     <div class="text-center mt-3">
-        <small class="text-muted">Exported at: {{ \Carbon\Carbon::now()->format('d-m-Y H:i:s') }}</small>
+        <small class="text-muted">{{ __('reports.exported_at') }} {{ \Carbon\Carbon::now()->format('d-m-Y H:i:s') }}</small>
+
     </div>
     <div class="text-center my-4" id="pdf-export-button">
     

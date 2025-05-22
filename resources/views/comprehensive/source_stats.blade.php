@@ -51,7 +51,7 @@
                         </tr>
                     @endforeach
                     <tr style="font-weight: bold; background-color: #ffe082;">
-                        <td style="border: 1px solid #ccc;">{{_('components.total')}}</td>
+                        <td style="border: 1px solid #ccc;">{{__('components.total')}}</td>
                         <td style="border: 1px solid #ccc;">{{ $data['totals']['total_leads'] }}</td>
                         <td style="border: 1px solid #ccc;">{{ $data['totals']['visited_leads'] }}</td>
                         <td style="border: 1px solid #ccc;">{{ number_format($data['totals']['visited_percent'], 2) }}%</td>

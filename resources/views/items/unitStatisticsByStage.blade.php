@@ -33,16 +33,16 @@
 
 <div class="container mt-4 text-center">
     <div class="centered-section">
-        <h4 id="reportTitle" class="no-export">Unit Statistics by Stage</h4>
+        <h4 id="reportTitle" class="no-export">{{ __('unit_stages_staticies.title') }}</h4>
         <select id="site" class="form-control w-25 mx-auto no-export mt-2">
-            <option value="">-- Select Site --</option>
-            <option value="dhahran">Dhahran</option>
-            <option value="bashaer">Bashaer</option>
+            <option value="">-- {{ __('unit_stages_staticies.select_site') }} --</option>
+            <option value="dhahran">{{ __('unit_stages_staticies.dhahran') }}</option>
+            <option value="bashaer">{{ __('unit_stages_staticies.bashaer') }}</option>
         </select>
         <img id="logo" src="" style="max-height: 70px; display: none;" class="mt-2">
     </div>
 
-    <div class="header-section d-none" id="reportHeader">Unit Statistics by Stage</div>
+    <div class="header-section d-none" id="reportHeader">{{ __('unit_stages_staticies.title') }}   </div>
 
     <table class="unit-table d-none" id="unitTable">
         <thead id="unitTableHead"></thead>
@@ -52,13 +52,28 @@
     <div class="text-muted mt-2" id="generatedAt"></div>
 
     <div class="text-center mt-4" id="pdf-export-button" style="display: none;">
-        <button onclick="exportPDF()" class="btn btn-dark">Export PDF</button>
+        <button onclick="exportPDF()" class="btn btn-dark"> {{ __('unit_stages_staticies.export_pdf') }}</button>
     </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+@php
+    $translations = [
+        'metric' => __('unit_stages_staticies.metric'),
+        'price_range' => __('unit_stages_staticies.price_range'),
+        'total_count' => __('unit_stages_staticies.total_count'),
+        'available' => __('unit_stages_staticies.available'),
+        'contracted' => __('unit_stages_staticies.contracted'),
+        'reserved' => __('unit_stages_staticies.reserved'),
+        'blocked' => __('unit_stages_staticies.blocked'),
+        'contracted_percentage' => __('unit_stages_staticies.contracted_percentage'),
+        'sold_percentage' => __('unit_stages_staticies.sold_percentage'),
+        'generated_at' => __('unit_stages_staticies.generated_at'),
+    ];
+@endphp
 <script>
+    
 function exportPDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
@@ -96,12 +111,8 @@ document.getElementById('site').addEventListener('change', function () {
 
         const data = response.data;
         const phases = Object.keys(data);
-        const metrics = [
-            'Price (Min - Max)', 'Total Count', 'Available', 'Contracted', 'Reserved', 'Blocked',
-            'Contracted %', 'Sold %'
-        ];
-
-        const headRow = `<tr><th>Metric</th>${phases.map(p => `<th>${p}</th>`).join('')}</tr>`;
+        const translations = @json($translations);
+        const headRow = `<tr><th>${translations.metric}</th>${phases.map(p => `<th>${p}</th>`).join('')}</tr>`;
         document.getElementById('unitTableHead').innerHTML = headRow;
 
         const body = document.getElementById('unitTableBody');
@@ -110,18 +121,19 @@ document.getElementById('site').addEventListener('change', function () {
         const getRow = (label, keyFn) => {
             return `<tr><td>${label}</td>` + phases.map(p => keyFn(data[p])).join('') + `</tr>`;
         };
+        body.innerHTML += getRow(translations.price_range, d => `<td>${d.min_price} - ${d.max_price}</td>`);
+        body.innerHTML += getRow(translations.total_count, d => `<td>${d.count}</td>`);
+        body.innerHTML += getRow(translations.available, d => `<td>${d.status_counts.available}</td>`);
+        body.innerHTML += getRow(translations.contracted, d => `<td>${d.status_counts.contracted}</td>`);
+        body.innerHTML += getRow(translations.reserved, d => `<td>${d.status_counts.reserved}</td>`);
+        body.innerHTML += getRow(translations.blocked, d => `<td>${d.status_counts.blocked}</td>`);
 
-        body.innerHTML += getRow('Price (Min - Max)', d => `<td>${d.min_price} - ${d.max_price}</td>`);
-        body.innerHTML += getRow('Total Count', d => `<td>${d.count}</td>`);
-        body.innerHTML += getRow('Available', d => `<td>${d.status_counts.available}</td>`);
-        body.innerHTML += getRow('Contracted', d => `<td>${d.status_counts.contracted}</td>`);
-        body.innerHTML += getRow('Reserved', d => `<td>${d.status_counts.reserved}</td>`);
-        body.innerHTML += getRow('Blocked', d => `<td>${d.status_counts.blocked}</td>`);
-        body.innerHTML += getRow('Contracted %', d => {
+        body.innerHTML += getRow(translations.contracted_percentage, d => {
             const val = d.count ? Math.round((d.status_counts.contracted / d.count) * 100) : 0;
             return `<td>${val}%</td>`;
         });
-        body.innerHTML += getRow('Sold %', d => {
+        body.innerHTML += getRow(translations.sold_percentage, d => {
+
             const sold = d.status_counts.contracted + d.status_counts.reserved;
             const val = d.count ? Math.round((sold / d.count) * 100) : 0;
             return `<td>${val}%</td>`;
