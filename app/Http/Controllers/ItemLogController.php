@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use App\Models\ItemLog;
+use Illuminate\Support\Facades\Log;
 
 class ItemLogController extends Controller
 {
@@ -41,7 +42,7 @@ class ItemLogController extends Controller
             return redirect()->back()->with('error', 'Failed to fetch data: '.$response->status());
             
         } catch (\Exception $e) {
-            \Log::error('Error processing logs from '.$site.': '.$e->getMessage());
+            Log::error('Error processing logs from '.$site.': '.$e->getMessage());
             return redirect()->back()->with('error', 'An error occurred: '.$e->getMessage());
         }
     }
@@ -63,7 +64,7 @@ class ItemLogController extends Controller
                 ]
             );
         } catch (\Exception $e) {
-            \Log::error('Error saving log '.$log['id'].': '.$e->getMessage());
+            Log::error('Error saving log '.$log['id'].': '.$e->getMessage());
         }
     }
 
@@ -76,34 +77,38 @@ class ItemLogController extends Controller
         return view('items.logs', compact('logs', 'site'));
     }
     public function statistics($site)
-{
-    $logs = ItemLog::where('site', $site)->get();
-
-    $modificationsPerDay = $logs->groupBy(function ($log) {
-        return \Carbon\Carbon::parse($log->created_at)->format('Y-m-d');
-    })->map(function ($group) {
-        return $group->count();
-    });
-
-    $fieldCounts = [];
-
-    foreach ($logs as $log) {
-        $dataNew = $log->data_new ?? [];
-        $dataOld = $log->data_old ?? [];
-
-        foreach (array_keys(array_merge($dataNew, $dataOld)) as $field) {
-            if (!isset($fieldCounts[$field])) {
-                $fieldCounts[$field] = 0;
+    {
+        $logs = ItemLog::where('site', $site)->get();
+    
+        $modificationsPerDay = $logs->groupBy(function ($log) {
+            return \Carbon\Carbon::parse($log->created_at)->format('Y-m-d');
+        })->map(function ($group) {
+            return $group->count();
+        });
+    
+        $fieldCounts = [];
+    
+        foreach ($logs as $log) {
+            // Ensure data_new and data_old are arrays
+            $dataNew = is_array($log->data_new) ? $log->data_new : (array) $log->data_new;
+            $dataOld = is_array($log->data_old) ? $log->data_old : (array) $log->data_old;
+    
+            // Only proceed if at least one of them has data
+            if (!empty($dataNew) || !empty($dataOld)) {
+                foreach (array_keys(array_merge($dataNew, $dataOld)) as $field) {
+                    if (!isset($fieldCounts[$field])) {
+                        $fieldCounts[$field] = 0;
+                    }
+                    $fieldCounts[$field]++;
+                }
             }
-            $fieldCounts[$field]++;
         }
+    
+        return view('items.statistics', [
+            'dailyCounts' => $modificationsPerDay,
+            'fieldCounts' => $fieldCounts,
+            'site' => $site,
+        ]);
     }
-
-    return view('items.statistics', [
-        'dailyCounts' => $modificationsPerDay,
-        'fieldCounts' => $fieldCounts,
-        'site' => $site,
-    ]);
-}
 
 }

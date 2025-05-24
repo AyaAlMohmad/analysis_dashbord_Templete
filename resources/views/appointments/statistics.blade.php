@@ -4,7 +4,7 @@
     <div class="py-12">
         <div class="max-w-5xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white p-6 rounded-lg shadow-lg">
-                <h1 class="text-2xl font-bold mb-6 text-center">Appointment Logs Statistics - {{ ucfirst($site) }}</h1>
+                <h1 class="text-2xl font-bold mb-6 text-center">{{ __('appointments_log.Appointment_Logs_Statistics') }} {{ ucfirst($site) }}</h1>
 
                 {{-- Line Chart for Daily Counts --}}
                 <canvas id="logChart" height="120" class="mb-12"></canvas>
@@ -14,7 +14,7 @@
                 <div class="mt-6">
                     <a href="{{ route('admin.appointments.logs', $site) }}"
                        >
-                        Back to Logs
+                        {{ __('appointments_log.Back_to_Logs') }}
                     </a>
                 </div>
             </div>

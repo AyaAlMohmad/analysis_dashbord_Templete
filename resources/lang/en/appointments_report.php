@@ -1,0 +1,25 @@
+<?php
+
+return [
+    'title' => 'Appointments Report',
+    'view_log_dhahran' => 'View Dhahran Log',
+    'view_log_bashaer' => 'View Bashaer Log',
+    'select_location' => 'Select Location',
+    'choose_location' => '-- Please choose a location --',
+    'location_dhahran' => 'Azyan Dhahran',
+    'location_bashaer' => 'Azyan Bashaer',
+    'location' => 'Location',
+    'total_appointments' => 'Total Appointments',
+    'distribution_by_date' => 'Distribution by Date',
+    'date' => 'Date',
+    'appointments_count' => 'Appointments Count',
+    'show_details' => 'Show Details',
+    'hide_details' => 'Hide Details',
+    'export_pdf' => 'Export PDF',
+    'export_zip' => 'Export ZIP',
+    'exported_by' => 'Exported by',
+    'export_date' => 'Export date',
+    'page_of' => 'Page :current of :total',
+    'chart_label' => 'Appointments Count',
+    'chart_title' => 'Daily Appointment Trend',
+];

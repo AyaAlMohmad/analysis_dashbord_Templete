@@ -1,0 +1,31 @@
+<?php
+
+return [
+    'title' => 'Call Logs Report',
+    'view_log_dhahran' => 'View Dhahran Log',
+    'view_log_bashaer' => 'View Bashaer Log',
+    'select_location' => 'Select Location',
+    'choose_location' => '-- Please choose a location --',
+    'location_dhahran' => 'Azyan Dhahran',
+    'location_bashaer' => 'Azyan Bashaer',
+    'location' => 'Location',
+    'total_calls' => 'Total Calls Added',
+    'distribution_by_date' => 'Distribution by Date',
+    'date' => 'Date',
+    'added' => 'Added',
+    'started' => 'Started',
+    'ended' => 'Ended',
+    'show_details' => 'Show Details',
+    'hide_details' => 'Hide Details',
+    'export_pdf' => 'Export PDF',
+    'export_zip' => 'Export ZIP',
+    'exported_by' => 'Exported by',
+    'export_date' => 'Export date',
+    'page_of' => 'Page :current of :total',
+    'chart_title' => 'Call Log Activity Trend',
+    'chart_labels' => [
+        'added' => 'Added',
+        'started' => 'Started',
+        'ended' => 'Ended',
+    ],
+];

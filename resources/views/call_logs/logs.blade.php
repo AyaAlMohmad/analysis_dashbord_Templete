@@ -3,7 +3,7 @@
 @section('content')
     <div class="py-12">
         <style>
-            /* (CSS محفوظ كما طلبت، بدون أي تغيير) */
+         
             .pagination {
                 display: flex;
                 justify-content: center;
@@ -134,16 +134,16 @@
 
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white shadow rounded-lg p-6">
-                <h1 class="text-2xl font-bold text-center text-gray-800 mb-8">Change Log - {{ $site }}</h1>
+                <h1 class="text-2xl font-bold text-center text-gray-800 mb-8">{{ __('call_details.change_log') }} {{ $site }}</h1>
 
                 <!-- زرار Update Data و View Analysis -->
                 <div class="flex flex-wrap justify-center mb-8">
-                    <a href="{{ route('admin.items.log', $site) }}" class="text-blue-500 hover:text-blue-600"
+                    <a href="{{ route('admin.call.logs', $site) }}" class="text-blue-500 hover:text-blue-600"
                         style="margin-right: 20px; color: blue">
-                        🔄 Update Data
+                  {{ __('call_details.update_data') }}
                     </a>
-                    <a href="{{ route('admin.items.statistics', $site) }}" class="text-blue-500 hover:text-blue-600">
-                        <i class="fas fa-chart-bar mr-2"></i>View Analysis
+                    <a href="{{ route('admin.call.statistics', $site) }}" class="text-blue-500 hover:text-blue-600">
+                        <i class="fas fa-chart-bar mr-2"></i>{{ __('call_details.view_analysis') }}
                     </a>
                 </div>
 
@@ -166,31 +166,32 @@
                                 <table class="log-table">
                                     <thead>
                                         <tr>
-                                            <th>Field</th>
-                                            <th>New Value</th>
-                                            <th>Old Value</th>
+                                            <th>{{ __('call_details.field') }}</th>
+                                            <th>{{ __('call_details.new_value') }}</th>
+                                            <th>{{ __('call_details.old_value') }}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @php
                                             $fields = [
-                                                'clientid' => 'Client ID',
-                                                'rel_type' => 'Relation Type',
-                                                'rel_id' => 'Relation ID',
-                                                'call_direction' => 'Call Direction',
-                                                'call_summary' => 'Call Summary',
-                                                'has_follow_up' => 'Has Follow Up',
-                                                'follow_up_schedule' => 'Follow Up Schedule',
-                                                'userphone' => 'User Phone',
-                                                'call_start_time' => 'Call Start Time',
-                                                'call_end_time' => 'Call End Time',
-                                                'call_duration' => 'Call Duration',
-                                                'status' => 'Call Status',
-                                                'staffid' => 'Staff ID',
-                                                'call_with_staffid' => 'Call With Staff ID',
-                                                'datestart' => 'Date Start',
-                                                'dateadded' => 'Date Added',
-                                                'customer_type' => 'Customer Type',
+                                                'clientid' => __('call_details.clientid'),
+                                                'rel_type' => __('call_details.rel_type'),
+                                                'rel_id' => __('call_details.rel_id'),
+                                                'call_direction' => __('call_details.call_direction'),
+                                                'call_summary' => __('call_details.call_summary'),
+                                                'has_follow_up' => __('call_details.has_follow_up'),
+                                                'follow_up_schedule' => __('call_details.follow_up_schedule'),
+                                                'userphone' => __('call_details.userphone'),
+                                                'call_start_time' => __('call_details.call_start_time'),
+                                                'call_end_time' => __('call_details.call_end_time'),
+                                                'call_duration' => __('call_details.call_duration'),
+                                                'status' => __('call_details.status'),
+                                                'staffid' => __('call_details.staffid'),
+                                                'call_with_staffid' => __('call_details.call_with_staffid'),
+                                                'datestart' => __('call_details.datestart'),
+                                                'dateadded' => __('call_details.dateadded'),
+                                                'customer_type' => __('call_details.customer_type'),
+                                          
                                             ];
                                         @endphp
                                         @foreach ($fields as $field => $label)
@@ -199,7 +200,8 @@
                                                 $new = $log->data_new[$field] ?? null;
                                             @endphp
                                             <tr>
-                                                <td>{{ $label }}</td>
+                                                <td>{{ __('call_details.' . $field) }}</td>
+
                                                 <td>
                                                     <div class="{{ $old !== $new ? 'new-value' : '' }}">
                                                         {{ is_array($new) ? json_encode($new) : ($new ?? 'Not Available') }}

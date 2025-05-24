@@ -1,0 +1,26 @@
+<?php
+
+return [
+    'report_title' => 'Leads Report',
+    'select_location' => '📍 Select Location',
+    'choose_location' => '-- Please choose a location --',
+    'site_dhahran' => 'Azyan Dhahran',
+    'site_bashaer' => 'Azyan Bashaer',
+    'daily_details' => 'Daily Leads Details',
+    'date' => 'Date',
+    'added' => 'Added',
+    'edited' => 'Edited',
+    'total' => 'Total',
+    'show_details' => 'Show Details',
+    'hide_details' => 'Hide Details',
+    'export_pdf' => 'Export PDF',
+    'export_zip' => 'Export ZIP',
+    'exported_by' => 'Exported by',
+    'export_date' => 'Export date',
+    'view_log_dhahran' => 'View Dhahran Log',
+    'view_log_bashaer' => 'View Bashaer Log',
+    'status_overview' => 'Status Overview',
+    'status' => 'Status',
+    'count' => 'Count',
+    'report_title'=>'Leads Status Report',
+];

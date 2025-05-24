@@ -15,31 +15,31 @@
                             <div class="card-body">
                                 <div class="form-group">
                                     <div class="text-bold-600 font-medium-2">
-                                        <h1 class="text-2xl font-bold text-gray-800 text-center">Units Report</h1>
+                                        <h1 class="text-2xl font-bold text-gray-800 text-center">{{ __('units_report.title') }} </h1>
                                         <div class="flex items-center gap-4 mt-4">
                                             <!-- Dhahran Log -->
                                             <a href="{{ route('admin.items.log', 'dhahran') }}"
                                                 class="p-3 rounded-xl hover:bg-gray-100 transition text-gray-600 text-2xl"
                                                 title="View Dhahran Log">
-                                                <i class="fas fa-clipboard-list"></i> dhahran
+                                                <i class="fas fa-clipboard-list"></i> {{ __('units_report.dhahran') }}
                                             </a>
 
                                             <!-- Bashaer Log -->
                                             <a href="{{ route('admin.items.log', 'bashaer') }}"
                                                 class="p-3 rounded-xl hover:bg-gray-100 transition text-gray-600 text-2xl"
                                                 title="View Bashaer Log">
-                                                <i class="fas fa-clipboard-list"></i> bashaer
+                                                <i class="fas fa-clipboard-list"></i> {{ __('units_report.bashaer') }}
                                             </a>
                                         </div>
                                     </div>
                                 </div>
 
-                                <p class="text-center mt-4">📍 Select Location</p>
+                                <p class="text-center mt-4">{{ __('units_report.select_location') }}</p>
 
                                 <select id="siteSelect" class="select2-placeholder form-control mt-2">
-                                    <option value="">-- Please choose a location --</option>
-                                    <option value="dhahran">Azyan Dhahran</option>
-                                    <option value="bashaer">Azyan Bashaer</option>
+                                    <option value="">{{ __('units_report.choose_location') }}</option>
+                                    <option value="dhahran">{{ __('units_report.dhahran') }} </option>
+                                    <option value="bashaer">{{ __('units_report.bashaer') }} </option>
                                 </select>
                             </div>
                             <form id="exportForm" class="flex items-center gap-12 mt-12 justify-center">
@@ -92,16 +92,15 @@
                     $data = $key === 'dhahran' ? $dataDhahran : $dataBashaer;
                 @endphp
                 <div class="export-header hidden" id="export-header-{{ $key }}">
-                    <h1 class="text-xl font-bold mb-1">Units Report</h1>
-                    <h2 class="text-lg text-gray-600">Location: {{ ucfirst($label) }}</h2>
+                    <h1 class="text-xl font-bold mb-1">{{ __('units_report.title') }}</h1>
+                    <h2 class="text-lg text-gray-600">{{ __('units_report.location') }}: {{ ucfirst($label) }}</h2>
                     <br>
                 </div>
                 <div class="bg-white my-8 shadow-sm rounded-lg">
                     <div class="p-4 bg-white shadow-sm rounded-lg">
                         <h2 class="text-2xl font-bold text-gray-800 text-center">
                             {{ $label }} -
-                            Units
-                            Overview</h2>
+                            {{ __('units_report.overview') }}</h2>
                     </div>
 
                     @if ($errors[$key])
@@ -116,7 +115,7 @@
 
                             <div
                                 style="flex: 1 1 calc(50% - 12px); background-color: #A2C2D6; color: #00262f; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                                <h3 style="font-size: 18px; font-weight: bold; margin-bottom: 12px;">Available</h3>
+                                <h3 style="font-size: 18px; font-weight: bold; margin-bottom: 12px;">{{ __('units_report.available') }}</h3>
                                 <div style="font-size: 32px; font-weight: bold;">
                                     {{ number_format($data['available'] ?? 0) }}
                                 </div>
@@ -124,7 +123,7 @@
 
                             <div
                                 style="flex: 1 1 calc(50% - 12px); background-color: #D6B29C; color: #543829; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                                <h3 style="font-size: 18px; font-weight: bold; margin-bottom: 12px;">Reserved</h3>
+                                <h3 style="font-size: 18px; font-weight: bold; margin-bottom: 12px;">{{ __('units_report.reserved') }}</h3>
                                 <div style="font-size: 32px; font-weight: bold;">
                                     {{ number_format($data['reserved']['total'] ?? 0) }}
                                 </div>
@@ -132,7 +131,7 @@
 
                             <div
                                 style="flex: 1 1 calc(50% - 12px); background-color: #00262f; color: #ffffff; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                                <h3 style="font-size: 18px; font-weight: bold; margin-bottom: 12px;">Blocked</h3>
+                                <h3 style="font-size: 18px; font-weight: bold; margin-bottom: 12px;">{{ __('units_report.blocked') }}</h3>
                                 <div style="font-size: 32px; font-weight: bold;">
                                     {{ number_format($data['blocked'] ?? 0) }}
                                 </div>
@@ -140,7 +139,7 @@
 
                             <div
                                 style="flex: 1 1 calc(50% - 12px); background-color: #543829; color: #ffffff; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                                <h3 style="font-size: 18px; font-weight: bold; margin-bottom: 12px;">Contracted</h3>
+                                <h3 style="font-size: 18px; font-weight: bold; margin-bottom: 12px;">{{ __('units_report.contracted') }}</h3>
                                 <div style="font-size: 32px; font-weight: bold;">
                                     {{ number_format($data['contracted']['total'] ?? 0) }}
                                 </div>
@@ -193,14 +192,12 @@
     </script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // عندما يختار المستخدم الموقع
+        
             const siteSelect = document.getElementById('siteSelect');
             siteSelect.addEventListener('change', function () {
                 const selected = this.value;
                 if (!selected) return;
-    
-                // إزالة الرسوم السابقة لو موجودة
-                if (window.currentChart) {
+         if (window.currentChart) {
                     window.currentChart.destroy();
                 }
     
@@ -208,7 +205,8 @@
                 window.currentChart = new Chart(ctx, {
                     type: 'doughnut',
                     data: {
-                        labels: ['Available', 'Reserved', 'Blocked', 'Contracted'],
+                        labels: ['{{ __('units_report.available') }}', '{{ __('units_report.reserved') }}', '{{ __('units_report.blocked') }}', '{{ __('units_report.contracted') }}'],
+
                         datasets: [{
                             data: [
                                 @json($dataDhahran['available'] ?? 0),

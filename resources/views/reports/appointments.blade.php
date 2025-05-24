@@ -14,31 +14,33 @@
                             <div class="card-body">
                                 <div class="form-group">
                                     <div class="text-bold-600 font-medium-2">
-                                        <h1 class="text-2xl font-bold text-gray-800 text-center">Appointments Report</h1>
+                                        <h1 class="text-2xl font-bold text-gray-800 text-center">{{ __('appointments_report.title') }}</h1>
                                         <div class="flex items-center gap-4 mt-4">
                                             <!-- Dhahran Log -->
                                             <a href="{{ route('admin.appointments.log', 'dhahran') }}"
                                                 class="p-3 rounded-xl hover:bg-gray-100 transition text-gray-600 text-2xl"
                                                 title="View Dhahran Log">
-                                                <i class="fas fa-clipboard-list"></i> dhahran
+                                                <i class="fas fa-clipboard-list"></i> {{ __('appointments_report.view_log_dhahran') }}
                                             </a>
 
                                             <!-- Bashaer Log -->
                                             <a href="{{ route('admin.appointments.log', 'bashaer') }}"
                                                 class="p-3 rounded-xl hover:bg-gray-100 transition text-gray-600 text-2xl"
                                                 title="View Bashaer Log">
-                                                <i class="fas fa-clipboard-list"></i> bashaer
+                                                <i class="fas fa-clipboard-list"></i>{{__('appointments_report.view_log_bashaer')}}
                                             </a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <p class="text-center mt-4">📍 Select Location</p>
+                     
+                            <p class="text-center mt-4">{{ __('appointments_report.select_location') }}</p>
                             <select id="siteSelect" class="select2-placeholder form-control mt-2">
-                                <option value="">-- Please choose a location --</option>
-                                <option value="dhahran">Azyan Dhahran</option>
-                                <option value="bashaer">Azyan Bashaer</option>
+                                <option value="">{{ __('appointments_report.choose_location') }}</option>
+                                <option value="dhahran">{{ __('appointments_report.location_dhahran') }}</option>
+                                <option value="bashaer">{{ __('appointments_report.location_bashaer') }}</option>
+
                             </select>
                         </div>
                         <form id="exportForm" class="flex items-center gap-12 mt-12 justify-center">
@@ -72,12 +74,12 @@
         </section>
 
 
-        @foreach (['dhahran' => 'Azyan Dhahran', 'bashaer' => 'Azyan Bashaer'] as $key => $label)
+        @foreach (['dhahran' =>  __('appointments_report.location_dhahran') , 'bashaer' => __('appointments_report.location_bashaer') ] as $key => $label)
             <div class="site-section" id="site-{{ $key }}" style="display: none;">
                 <!-- Hidden Export Header -->
                 <div class="export-header hidden" id="export-header-{{ $key }}">
-                    <h1 class="text-xl font-bold mb-1">Appointments Report</h1>
-                    <h2 class="text-lg text-gray-600">Location: {{ ucfirst($label) }}</h2><br>
+                    <h1 class="text-xl font-bold mb-1">{{ __('appointments_report.title') }}</h1>
+                    <h2 class="text-lg text-gray-600">{{ __('appointments_report.location') }} {{ ucfirst($label) }}</h2><br>
                 </div>
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg my-8">
                     <div class="p-4 bg-white shadow-sm rounded-lg">
@@ -93,8 +95,8 @@
                         <!-- Summary -->
                         <div class="p-6">
                             <div class="bg-indigo-50 p-6 rounded-lg shadow-sm max-w-xs mx-auto">
-                                <h3 class="text-lg font-semibold text-indigo-800 mb-2">Total
-                                    Appointments</h3>
+                                <h3 class="text-lg font-semibold text-indigo-800 mb-2">
+                                    {{ __('appointments_report.total_appointments') }}</h3>
                                 <div class="text-3xl font-bold text-indigo-600">
                                     {{ number_format($appointments[$key]['total']) }}
                                 </div>
@@ -110,7 +112,7 @@
 
                         <!-- Toggle Table -->
                         <div class="bg-white p-6 rounded-lg shadow-sm mt-8">
-                            <h3 class="text-lg font-semibold mb-4 text-gray-700 text-center">Distribution by Source</h3>
+                            <h3 class="text-lg font-semibold mb-4 text-gray-700 text-center">{{ __('appointments_report.distribution_by_date') }}</h3>
                             <section id="section-content-{{ $key }}" class="hidden">
                                 <div class="row">
                                     <div class="col-12">
@@ -122,11 +124,10 @@
                                                             <tr>
                                                                 <th
                                                                     class="py-2 px-4 text-gray-600 font-semibold text-center">
-                                                                    Date</th>
+                                                                    {{ __('appointments_report.date') }}</th>
                                                                 <th
                                                                     class="py-2 px-4 text-green-700 font-semibold text-center">
-                                                                    count Appointments</th>
-
+                                                                    {{ __('appointments_report.appointments_count') }}</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -152,7 +153,7 @@
                             <a href="javascript:void(0);"
                                 class="text-blue-500 hover:text-blue-700 hover:underline mt-4 block text-center"
                                 onclick="toggleTable('{{ $key }}')">
-                                Show Details
+                              {{ __('appointments_report.show_details') }}
                             </a>
                         </div>
                     @endif
@@ -188,12 +189,12 @@
         }
     </script>
     <script>
-        let charts = {}; // نحفظ كل الرسوم داخل هذا المتغير
+        let charts = {};
 
         document.getElementById('siteSelect').addEventListener('change', function() {
             var selectedSite = this.value;
 
-            // اخفاء كل الأقسام أولاً
+           
             document.querySelectorAll('.site-section').forEach(section => {
                 section.style.display = 'none';
             });
@@ -204,7 +205,7 @@
                     siteDiv.style.display = 'block';
                 }
 
-                // إذا لم يتم رسم الرسم البياني لهذا الموقع، نرسمه الآن
+         
                 if (!charts[selectedSite]) {
                     createChart(selectedSite);
                 }
@@ -235,7 +236,7 @@
                 data: {
                     labels: labels[siteKey],
                     datasets: [{
-                        label: 'Appointments Count',
+                        label: '{{ __('appointments_report.appointments_count') }}',
                         data: data[siteKey],
                         backgroundColor: '#5C4033',
                         borderColor: '#2F2F2F',
@@ -280,12 +281,12 @@
         document.getElementById('siteSelect').addEventListener('change', function() {
             var selectedSite = this.value;
 
-            // اخفاء كل الأقسام أولاً
+         
             document.querySelectorAll('.site-section').forEach(section => {
                 section.style.display = 'none';
             });
 
-            // إظهار القسم المختار إذا موجود
+          
             if (selectedSite) {
                 var siteDiv = document.getElementById('site-' + selectedSite);
                 if (siteDiv) {
@@ -321,23 +322,22 @@
             logoImg.src = logoUrl;
 
             logoImg.onload = async function() {
-                // ✨ إضافة الشعار
+              
                 doc.addImage(logoImg, 'PNG', 80, 10, 50, 30);
 
-                // ✨ إضافة عنوان التقرير
+             
                 doc.setFontSize(16);
                 doc.text(`Appointments Report - Azyan ${site.charAt(0).toUpperCase() + site.slice(1)}`, 105, 50, { align: 'center' });
                 doc.line(10, 55, 200, 55);
 
                 let yPos = 60;
 
-                // ✨ إضافة الرسم البياني
+                
                 const chartImg = await html2canvas(chartCanvas);
                 const chartDataUrl = chartImg.toDataURL('image/png');
                 doc.addImage(chartDataUrl, 'PNG', 10, yPos, 190, 80);
                 yPos += 90;
 
-                // ✨ تجهيز بيانات الجدول
                 const rows = [];
                 const tableRows = detailsTable.querySelectorAll('tbody tr');
                 tableRows.forEach(row => {
@@ -346,7 +346,7 @@
                     rows.push([date, count]);
                 });
 
-                // ✨ رسم الجدول
+         
                 await doc.autoTable({
                     head: [['Date', 'Appointments Count']],
                     body: rows,
@@ -358,7 +358,7 @@
                         valign: 'middle',
                     },
                     headStyles: {
-                        fillColor: [92, 64, 51] // لون رأس الجدول بني مثل الأعمدة
+                        fillColor: [92, 64, 51] 
                     },
                     alternateRowStyles: {
                         fillColor: [240, 240, 240]
@@ -366,7 +366,7 @@
                     margin: { top: 10 },
                 });
 
-                // ✨ إضافة توقيع أخير
+               
                 const totalPages = doc.internal.getNumberOfPages();
                 doc.setPage(totalPages);
 
@@ -378,7 +378,7 @@
                 doc.text(`Export date: ${exportDate}`, 10, pageHeight - 15);
                 doc.text(`Page ${totalPages} of ${totalPages}`, 200 - 10, pageHeight - 15, { align: 'right' });
 
-                // حفظ PDF
+              
                 doc.save(`${site}_appointments_report.pdf`);
             };
 

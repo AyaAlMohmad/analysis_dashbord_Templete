@@ -16,23 +16,24 @@
                             <div class="card-body">
                                 <div class="form-group">
                                     <div class="text-bold-600 font-medium-2">
-                                        <h1 class="text-2xl font-bold text-gray-800 text-center">Call Logs Report</h1>
+                                        <h1 class="text-2xl font-bold text-gray-800 text-center">{{ __('call_logs.title') }}</h1>
                                         <div class="flex items-center gap-4 mt-4">
                                             <a href="{{ route('admin.call.log', 'dhahran') }}" class="p-3 rounded-xl hover:bg-gray-100 transition text-gray-600 text-2xl">
-                                                <i class="fas fa-clipboard-list"></i> dhahran
-                                            </a>
-                                            <a href="{{ route('admin.call.log', 'bashaer') }}" class="p-3 rounded-xl hover:bg-gray-100 transition text-gray-600 text-2xl">
-                                                <i class="fas fa-clipboard-list"></i> bashaer
+                                             
+                                            <i class="fas fa-clipboard-list"></i>{{ __('call_logs.view_log_dhahran') }}
+                                        </a>
+                                        <a href="{{ route('admin.call.log', 'bashaer') }}" class="p-3 rounded-xl hover:bg-gray-100 transition text-gray-600 text-2xl">
+                                            <i class="fas fa-clipboard-list"></i>{{ __('call_logs.view_log_bashaer') }}
                                             </a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <p class="text-center mt-4">📍 Select Location</p>
+                            <p class="text-center mt-4">{{ __('call_logs.select_location') }}</p>
                             <select id="siteSelect" class="select2-placeholder form-control mt-2">
-                                <option value="">-- Please choose a location --</option>
-                                <option value="dhahran">Azyan Dhahran</option>
-                                <option value="bashaer">Azyan Bashaer</option>
+                                <option value="">{{ __('call_logs.choose_location') }}</option>
+                                <option value="dhahran">{{ __('call_logs.location_dhahran') }}</option>
+                                <option value="bashaer">{{ __('call_logs.location_bashaer') }}</option>
                             </select>
                         </div>
                         <form id="exportForm" class="flex items-center gap-12 mt-12 justify-center">
@@ -62,8 +63,8 @@
         @foreach (['dhahran' => 'Azyan Dhahran', 'bashaer' => 'Azyan Bashaer'] as $key => $label)
             <div class="site-section" id="site-{{ $key }}" style="display: none;">
                 <div class="export-header hidden" id="export-header-{{ $key }}">
-                    <h1 class="text-xl font-bold mb-1">Call Logs Report</h1>
-                    <h2 class="text-lg text-gray-600">Location: {{ ucfirst($label) }}</h2><br>
+                    <h1 class="text-xl font-bold mb-1">{{ __('call_logs.title') }}</h1>
+                    <h2 class="text-lg text-gray-600">{{ __('call_logs.location') }} {{ ucfirst($label) }}</h2><br>
                 </div>
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg my-8">
                     <div class="p-4 bg-white shadow-sm rounded-lg">
@@ -77,7 +78,7 @@
                     @else
                         <div class="p-6">
                             <div class="bg-indigo-50 p-6 rounded-lg shadow-sm max-w-xs mx-auto">
-                                <h3 class="text-lg font-semibold text-indigo-800 mb-2">Total Calls Added</h3>
+                                <h3 class="text-lg font-semibold text-indigo-800 mb-2">{{ __('call_logs.total_calls') }}</h3>
                                 <div class="text-3xl font-bold text-indigo-600">
                                     {{ number_format($totals[$key]['added']) }}
                                 </div>
@@ -89,7 +90,7 @@
                             </div>
                         </div>
                         <div class="bg-white p-6 rounded-lg shadow-sm mt-8">
-                            <h3 class="text-lg font-semibold mb-4 text-gray-700 text-center">Distribution by Date</h3>
+                            <h3 class="text-lg font-semibold mb-4 text-gray-700 text-center">{{ __('call_logs.distribution_by_date') }}</h3>
                             <section id="section-content-{{ $key }}" class="hidden">
                                 <div class="row">
                                     <div class="col-12">
@@ -99,10 +100,10 @@
                                                     <table class="table table-striped table-bordered dataex-key-basic">
                                                         <thead class="bg-gray-100">
                                                             <tr>
-                                                                <th class="py-2 px-4 text-center">Date</th>
-                                                                <th class="py-2 px-4 text-center">Added</th>
-                                                                <th class="py-2 px-4 text-center">Started</th>
-                                                                <th class="py-2 px-4 text-center">Ended</th>
+                                                                <th class="py-2 px-4 text-center">{{ __('call_logs.date') }}</th>
+                                                                <th class="py-2 px-4 text-center">{{ __('call_logs.added') }}</th>
+                                                                <th class="py-2 px-4 text-center">{{ __('call_logs.started') }}</th>
+                                                                <th class="py-2 px-4 text-center">{{ __('call_logs.ended') }}</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -123,7 +124,7 @@
                                 </div>
                             </section>
                             <a href="javascript:void(0);" class="text-blue-500 hover:text-blue-700 hover:underline mt-4 block text-center" onclick="toggleTable('{{ $key }}')">
-                                Show Details
+                              {{ __('call_logs.show_details') }}
                             </a>
                         </div>
                     @endif
@@ -157,23 +158,22 @@
                 logoImg.src = logoUrl;
     
                 logoImg.onload = async function() {
-                    // ✨ إضافة الشعار
+                 
                     doc.addImage(logoImg, 'PNG', 80, 10, 50, 30);
     
-                    // ✨ إضافة عنوان التقرير
                     doc.setFontSize(16);
                     doc.text(`Call Logs Report - Azyan ${site.charAt(0).toUpperCase() + site.slice(1)}`, 105, 50, { align: 'center' });
                     doc.line(10, 55, 200, 55);
     
                     let yPos = 60;
     
-                    // ✨ إضافة الرسم البياني
+            
                     const chartImg = await html2canvas(chartCanvas);
                     const chartDataUrl = chartImg.toDataURL('image/png');
                     doc.addImage(chartDataUrl, 'PNG', 10, yPos, 190, 80);
                     yPos += 90;
     
-                    // ✨ تجهيز بيانات الجدول
+          
                     const rows = [];
                     const tableRows = detailsTable.querySelectorAll('tbody tr');
                     tableRows.forEach(row => {
@@ -184,7 +184,6 @@
                         rows.push([date, added, started, ended]);
                     });
     
-                    // ✨ رسم الجدول
                     await doc.autoTable({
                         head: [['Date', 'Added', 'Started', 'Ended']],
                         body: rows,
@@ -196,7 +195,7 @@
                             valign: 'middle',
                         },
                         headStyles: {
-                            fillColor: [92, 64, 51] // لون رأس الجدول بني
+                            fillColor: [92, 64, 51] 
                         },
                         alternateRowStyles: {
                             fillColor: [240, 240, 240]
@@ -204,7 +203,7 @@
                         margin: { top: 10 },
                     });
     
-                    // ✨ إضافة توقيع أخير
+                    
                     const totalPages = doc.internal.getNumberOfPages();
                     doc.setPage(totalPages);
     
@@ -216,7 +215,7 @@
                     doc.text(`Export date: ${exportDate}`, 10, pageHeight - 15);
                     doc.text(`Page ${totalPages} of ${totalPages}`, 200 - 10, pageHeight - 15, { align: 'right' });
     
-                    // ✨ حفظ الملف
+                    
                     doc.save(`${site}_call_logs_report.pdf`);
                 };
     
@@ -254,24 +253,24 @@
         }
     </script>
     <script>
-        let charts = {}; // متغير لتخزين الرسوم البيانية حتى لا يتم رسمها مرتين
+        let charts = {}; 
     
         document.getElementById('siteSelect').addEventListener('change', function () {
             const selectedSite = this.value;
     
-            // إخفاء جميع الأقسام أولاً
+           
             document.querySelectorAll('.site-section').forEach(section => {
                 section.style.display = 'none';
             });
     
-            // عرض القسم المختار فقط
+          
             if (selectedSite) {
                 const siteDiv = document.getElementById('site-' + selectedSite);
                 if (siteDiv) {
                     siteDiv.style.display = 'block';
                 }
     
-                // رسم الرسم البياني إذا لم يتم رسمه من قبل
+                
                 if (!charts[selectedSite]) {
                     createChart(selectedSite);
                 }
@@ -284,8 +283,7 @@
                 console.error('Canvas not found for site:', siteKey);
                 return;
             }
-    
-            // إعداد البيانات للعرض
+
             const labels = @json([
                 'dhahran' => array_keys($callLogs['dhahran']['added'] ?? []),
                 'bashaer' => array_keys($callLogs['bashaer']['added'] ?? []),

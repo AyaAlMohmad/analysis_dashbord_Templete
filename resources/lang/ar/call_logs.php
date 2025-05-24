@@ -1,0 +1,31 @@
+<?php
+
+return [
+    'title' => 'تقرير سجلات المكالمات',
+    'view_log_dhahran' => 'عرض سجل الظهران',
+    'view_log_bashaer' => 'عرض سجل البشائر',
+    'select_location' => 'اختر الموقع',
+    'choose_location' => '-- الرجاء اختيار موقع --',
+    'location_dhahran' => 'أزيان الظهران',
+    'location_bashaer' => 'أزيان البشائر',
+    'location' => 'الموقع',
+    'total_calls' => 'إجمالي المكالمات المُضافة',
+    'distribution_by_date' => 'التوزيع حسب التاريخ',
+    'date' => 'التاريخ',
+    'added' => 'تمت الإضافة',
+    'started' => 'بدأت',
+    'ended' => 'انتهت',
+    'show_details' => 'عرض التفاصيل',
+    'hide_details' => 'إخفاء التفاصيل',
+    'export_pdf' => 'تصدير PDF',
+    'export_zip' => 'تصدير ZIP',
+    'exported_by' => 'تم التصدير بواسطة',
+    'export_date' => 'تاريخ التصدير',
+    'page_of' => 'الصفحة :current من :total',
+    'chart_title' => 'اتجاه نشاط المكالمات',
+    'chart_labels' => [
+        'added' => 'تمت الإضافة',
+        'started' => 'بدأت',
+        'ended' => 'انتهت',
+    ],
+];

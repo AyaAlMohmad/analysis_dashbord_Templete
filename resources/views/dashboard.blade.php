@@ -34,7 +34,8 @@
                                         <div class="my-1 text-center">
                                             <div class="card-header mb-2 pt-0">
                                                 {{-- <h5 class="{{ $item['color'] }}">{{ $item['label'] }}</h5> --}}
-                                                <h5 class="{{ $item['color'] }}">{{ __('comparison_report.' . $item['key']) }}</h5>
+                                                <h5 class="{{ $item['color'] }}">
+                                                    {{ __('comparison_report.' . $item['key']) }}</h5>
 
                                                 <h3 class="font-large-2 text-bold-200">{{ $total }}</h3>
                                             </div>
@@ -50,12 +51,14 @@
                                                     <li class="border-right-grey border-right-lighten-2 pr-2">
                                                         <h2 class="grey darken-1 text-bold-400">{{ $dh_percent }}%</h2>
                                                         <span class="{{ $item['color'] }}">
-                                                            <span class="ft-arrow-up"></span> Dhahran</span>
+                                                            <span class="ft-arrow-up"></span>
+                                                            {{ __('comparison_report.dhahran') }}</span>
                                                     </li>
                                                     <li class="pl-2">
                                                         <h2 class="grey darken-1 text-bold-400">{{ $bs_percent }}%</h2>
                                                         <span class="{{ $item['color'] }}">
-                                                            <span class="ft-arrow-down"></span> Bashaer</span>
+                                                            <span class="ft-arrow-down"></span>
+                                                            {{ __('comparison_report.bashaer') }}</span>
                                                     </li>
                                                 </ul>
                                             </div>
@@ -72,9 +75,11 @@
                 <div class="col-xl-8 col-lg-12">
                     <div class="card">
                         <div class="card-header border-0-bottom">
-                            <h4 class="card-title">Activity Chart
-                                <span class="text-muted text-bold-400">Leads Added & Edited</span>
+                            <h4 class="card-title">{{ __('comparison_report.activity_chart_title') }}
+                                <span
+                                    class="text-muted text-bold-400">{{ __('comparison_report.activity_chart_sub') }}</span>
                             </h4>
+
                             <a class="heading-elements-toggle"><i class="fa fa-ellipsis-v font-medium-3"></i></a>
                             <div class="heading-elements">
                                 <ul class="list-inline mb-0">
@@ -85,18 +90,23 @@
                         <div class="card-content">
                             <div class="card-body">
                                 <canvas id="weekly-activity-chart" class="height-250"></canvas>
+
                                 <ul class="list-inline text-center m-0">
                                     <li>
-                                        <h6><i class="ft-circle danger"></i> Dhahran - Added</h6>
+                                        <h6><i class="ft-circle danger"></i> {{ __('comparison_report.dhahran_added') }}
+                                        </h6>
                                     </li>
                                     <li class="ml-1">
-                                        <h6><i class="ft-circle success"></i> Bashaer - Added</h6>
+                                        <h6><i class="ft-circle success"></i> {{ __('comparison_report.bashaer_added') }}
+                                        </h6>
                                     </li>
                                     <li class="ml-1">
-                                        <h6><i class="ft-circle warning"></i> Dhahran - Edited</h6>
+                                        <h6><i class="ft-circle warning"></i> {{ __('comparison_report.dhahran_edited') }}
+                                        </h6>
                                     </li>
                                     <li class="ml-1">
-                                        <h6><i class="ft-circle info"></i> Bashaer - Edited</h6>
+                                        <h6><i class="ft-circle info"></i> {{ __('comparison_report.bashaer_edited') }}
+                                        </h6>
                                     </li>
                                 </ul>
                             </div>
@@ -141,7 +151,8 @@
                                                 $totalDhahranAdded = $added['dhahran']['added'] ?? 0;
                                             @endphp
                                             <h3 class="primary">{{ $totalDhahranAdded }}</h3>
-                                            <span>Added Calls (Dhahran)</span>
+                                            <span>{{ __('comparison_report.added_calls_dhahran') }}</span>
+
                                         </div>
                                         <div class="media-right media-middle">
                                             <i class="icon-call-in primary font-large-2 float-right"></i>
@@ -167,7 +178,8 @@
                                                 $totalBashaerAdded = $added['bashaer']['added'] ?? 0;
                                             @endphp
                                             <h3 class="info">{{ $totalBashaerAdded }}</h3>
-                                            <span>Added Calls (Bashaer)</span>
+                                            <span>{{ __('comparison_report.added_calls_bashaer') }}</span>
+
                                         </div>
                                         <div class="media-right media-middle">
                                             <i class="icon-call-in info font-large-2 float-right"></i>
@@ -256,11 +268,11 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="col-xl-6 col-lg-12">
                     <div class="card">
                         <div class="card-header border-0">
-                            <h4 class="card-title">Appointments by Date</h4>
+                            <h4 class="card-title">{{ __('comparison_report.appointments_by_date') }} </h4>
                             <a class="heading-elements-toggle"><i class="fa fa-ellipsis-v font-medium-3"></i></a>
                             <div class="heading-elements">
                                 <ul class="list-inline mb-0">
@@ -272,38 +284,41 @@
                             <div id="goal-list-scroll" class="table-responsive height-250 position-relative">
                                 <table class="table mb-0">
                                     <thead>
+
                                         <tr>
-                                            <th>Date</th>
-                                            <th>Location</th>
-                                            <th>Appointment Count</th>
+                                            <th>{{ __('comparison_report.date') }}</th>
+                                            <th>{{ __('comparison_report.location') }}</th>
+                                            <th>{{ __('comparison_report.appointment_count') }}</th>
                                         </tr>
+
+
                                     </thead>
                                     <tbody>
                                         @foreach ($comparisonData['appointments']['timeline'] as $row)
                                             <tr>
                                                 <td>{{ $row['date'] }}</td>
-                                                <td>Dhahran</td>
+                                                <td>{{ __('comparison_report.dhahran') }}</td>
                                                 <td class="text-center font-small-2">
-                                                    {{ round($row['dhahran'] / max(1, ($row['bashaer'] + $row['dhahran'])) * 100, 1) }}%
+                                                    {{ round(($row['dhahran'] / max(1, $row['bashaer'] + $row['dhahran'])) * 100, 1) }}%
                                                     <div class="progress progress-sm mt-1 mb-0">
                                                         <div class="progress-bar bg-primary" role="progressbar"
-                                                            style="width: {{ round($row['dhahran'] / max(1, ($row['bashaer'] + $row['dhahran'])) * 100, 1) }}%"
-                                                            aria-valuenow="{{ $row['dhahran'] }}"
-                                                            aria-valuemin="0" aria-valuemax="100">
+                                                            style="width: {{ round(($row['dhahran'] / max(1, $row['bashaer'] + $row['dhahran'])) * 100, 1) }}%"
+                                                            aria-valuenow="{{ $row['dhahran'] }}" aria-valuemin="0"
+                                                            aria-valuemax="100">
                                                         </div>
                                                     </div>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td>{{ $row['date'] }}</td>
-                                                <td>Bashaer</td>
+                                                <td>{{ __('comparison_report.bashaer') }}</td>
                                                 <td class="text-center font-small-2">
-                                                    {{ round($row['bashaer'] / max(1, ($row['bashaer'] + $row['dhahran'])) * 100, 1) }}%
+                                                    {{ round(($row['bashaer'] / max(1, $row['bashaer'] + $row['dhahran'])) * 100, 1) }}%
                                                     <div class="progress progress-sm mt-1 mb-0">
                                                         <div class="progress-bar bg-success" role="progressbar"
-                                                            style="width: {{ round($row['bashaer'] / max(1, ($row['bashaer'] + $row['dhahran'])) * 100, 1) }}%"
-                                                            aria-valuenow="{{ $row['bashaer'] }}"
-                                                            aria-valuemin="0" aria-valuemax="100">
+                                                            style="width: {{ round(($row['bashaer'] / max(1, $row['bashaer'] + $row['dhahran'])) * 100, 1) }}%"
+                                                            aria-valuenow="{{ $row['bashaer'] }}" aria-valuemin="0"
+                                                            aria-valuemax="100">
                                                         </div>
                                                     </div>
                                                 </td>
@@ -324,15 +339,14 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         // Appointments Chart
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const ctx = document.getElementById('appointments-chart').getContext('2d');
             new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: @json(collect($comparisonData['appointments']['timeline'])->pluck('date')),
-                    datasets: [
-                        {
-                            label: 'Dhahran',
+                    datasets: [{
+                            label: '{{ __('comparison_report.dhahran') }}',
                             data: @json(collect($comparisonData['appointments']['timeline'])->pluck('dhahran')),
                             borderColor: '#4CAF50',
                             backgroundColor: 'rgba(76, 175, 80, 0.2)',
@@ -340,7 +354,7 @@
                             fill: true,
                         },
                         {
-                            label: 'Bashaer',
+                            label: '{{ __('comparison_report.bashaer') }}',
                             data: @json(collect($comparisonData['appointments']['timeline'])->pluck('bashaer')),
                             borderColor: '#2196F3',
                             backgroundColor: 'rgba(33, 150, 243, 0.2)',
@@ -351,10 +365,23 @@
                 },
                 options: {
                     responsive: true,
-                    plugins: { legend: { position: 'top' } },
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        }
+                    },
                     scales: {
-                        y: { beginAtZero: true, grid: { color: '#f5f5f5' } },
-                        x: { grid: { display: false } }
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: '#f5f5f5'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
                     }
                 }
             });
@@ -373,17 +400,46 @@
             type: 'line',
             data: {
                 labels: labels,
-                datasets: [
-                    { label: 'Dhahran - Added', borderColor: '#FF6384', data: dhahranAdded, tension: 0.4 },
-                    { label: 'Bashaer - Added', borderColor: '#4BC0C0', data: bashaerAdded, tension: 0.4 },
-                    { label: 'Dhahran - Edited', borderColor: '#FFCD56', data: dhahranEdited, tension: 0.4 },
-                    { label: 'Bashaer - Edited', borderColor: '#36A2EB', data: bashaerEdited, tension: 0.4 }
+                datasets: [{
+                        label: "{{ __('comparison_report.dhahran_added') }}",
+                        borderColor: '#FF6384',
+                        data: dhahranAdded,
+                        tension: 0.4
+                    },
+                    {
+                        label: "{{ __('comparison_report.bashaer_added') }}",
+                        borderColor: '#4BC0C0',
+                        data: bashaerAdded,
+                        tension: 0.4
+                    },
+                    {
+                        label: "{{ __('comparison_report.dhahran_edited') }}",
+                        borderColor: '#FFCD56',
+                        data: dhahranEdited,
+                        tension: 0.4
+                    },
+                    {
+                        label: "{{ __('comparison_report.bashaer_edited') }}",
+                        borderColor: '#36A2EB',
+                        data: bashaerEdited,
+                        tension: 0.4
+                    }
+
+
                 ]
             },
             options: {
                 responsive: true,
-                plugins: { legend: { display: false } },
-                scales: { y: { beginAtZero: true } }
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
             }
         });
 
@@ -391,7 +447,12 @@
         new Chart(document.getElementById('activity-division').getContext('2d'), {
             type: 'doughnut',
             data: {
-                labels: ['Dhahran-Added', 'Bashaer-Added', 'Dhahran-Edited', 'Bashaer-Edited'],
+                labels: [
+                    '{{ __('comparison_report.dhahran_added') }}',
+                    '{{ __('comparison_report.bashaer_added') }}',
+                    '{{ __('comparison_report.dhahran_edited') }}',
+                    '{{ __('comparison_report.bashaer_edited') }}'
+                ],
                 datasets: [{
                     data: [
                         dhahranAdded.reduce((a, b) => a + b, 0),
@@ -404,12 +465,15 @@
             },
             options: {
                 responsive: true,
-                plugins: { legend: { position: 'bottom' } }
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
             }
         });
     </script>
     @push('scripts')
-    <script src="{{ asset('app-assets/js/scripts/pages/dashboard-fitness.js') }}" type="text/javascript"></script>
-@endpush
-
+        <script src="{{ asset('app-assets/js/scripts/pages/dashboard-fitness.js') }}" type="text/javascript"></script>
+    @endpush
 @endsection

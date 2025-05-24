@@ -13,13 +13,14 @@
                             <div class="card-body">
                                 <div class="form-group">
                                     <div class="text-bold-600 font-medium-2">
-                                        <h1 class="text-2xl font-bold text-gray-800 text-center">Leads Sources Report</h1>
+                                        <h1 class="text-2xl font-bold text-gray-800 text-center">{{ __('comparison_report.leads_sources_report') }}</h1>
 
                                     </div>
-                                    <p> 📍 Select Location</p>
+                                    <p>{{ __('comparison_report.select_location') }}</p>
+                                   
                                     <select class="select2-placeholder form-control" id="location-filter">
 
-                                        <option value="">-- Please choose a location --</option>
+                                        <option value="">{{ __('comparison_report.choose_location') }}</option>
                                         <optgroup label="sites">
                                             @foreach (array_keys($allData) as $location)
                                                 <option value="{{ $location }}">Azyan {{ ucfirst($location) }}</option>
@@ -81,7 +82,7 @@
 
                     <!-- Data List -->
                     <div class="bg-white p-6 rounded-lg shadow-sm mt-8">
-                        <h3 class="text-lg font-semibold mb-4 text-gray-700 text-center">Distribution by Source</h3>
+                        <h3 class="text-lg font-semibold mb-4 text-gray-700 text-center">{{ __('comparison_report.distribution_by_source') }}</h3>
                         <section id="section-content-{{ $location }}" class="hidden">
                             <div class="row">
                                 <div class="col-12">
@@ -91,8 +92,8 @@
                                                 <table class="table table-striped table-bordered dataex-key-basic">
                                                     <thead class="bg-gray-100">
                                                         <tr>
-                                                            <th class="py-2 px-4 text-gray-600 font-semibold">Source</th>
-                                                            <th class="py-2 px-4 text-gray-600 font-semibold">Count</th>
+                                                            <th class="py-2 px-4 text-gray-600 font-semibold">{{ __('comparison_report.source') }}</th>
+                                                            <th class="py-2 px-4 text-gray-600 font-semibold">{{ __('comparison_report.count') }}</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -119,13 +120,13 @@
                         <!-- زر التفاصيل كـ <a> بدل <button> -->
                         <a href="javascript:void(0);" class="text-blue-500 hover:text-blue-700 hover:underline"
                             onclick="toggleTable('{{ $location }}')">
-                            Show Details
-                        </a>
+                            {{ __('comparison_report.show_details') }}</a>
                     </div>
                 </div>
             @else
                 <div class="bg-white p-6 rounded-lg shadow-sm mt-10">
-                    <div class="text-center text-gray-500">No data available for {{ ucfirst($location) }}</div>
+                    <div class="text-center text-gray-500"> {{ __('comparison_report.no_data', ['location' => ucfirst($location)]) }}
+                    </div>
                 </div>
             @endif
         @endforeach
@@ -148,7 +149,6 @@
             locationSelect.addEventListener('change', function() {
                 const selected = this.value;
 
-                // إخفاء كل الأقسام
                 allSections.forEach(section => {
                     section.style.display = 'none';
                 });
@@ -168,7 +168,7 @@
                                 data: {
                                     labels: Object.keys(chartData[selected]),
                                     datasets: [{
-                                        label: 'Number of Leads',
+                                        label: "{{ __('comparison_report.number_of_leads') }}",
                                         data: Object.values(chartData[selected]),
                                         backgroundColor: 'rgba(60, 60, 60, 0.8)',
                                     }]

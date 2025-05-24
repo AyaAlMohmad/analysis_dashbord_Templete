@@ -15,31 +15,31 @@
                             <div class="card-body">
                                 <div class="form-group">
                                     <div class="text-bold-600 font-medium-2">
-                                        <h1 class="text-2xl font-bold text-gray-800 text-center">Leads Report</h1>
+                                        <h1 class="text-2xl font-bold text-gray-800 text-center"> {{ __('leads.report_title') }}</h1>
                                         <div class="flex items-center gap-4 mt-4">
                                             <!-- Dhahran Log -->
                                             <a href="{{ route('admin.leads.log', 'dhahran') }}"
                                                 class="p-3 rounded-xl hover:bg-gray-100 transition text-gray-600 text-2xl"
                                                 title="View Dhahran Log">
-                                                <i class="fas fa-clipboard-list"></i> dhahran
+                                              {{ __('leads.view_log_dhahran') }}<i class="fas fa-clipboard-list"></i> 
                                             </a>
 
                                             <!-- Bashaer Log -->
                                             <a href="{{ route('admin.leads.log', 'bashaer') }}"
                                                 class="p-3 rounded-xl hover:bg-gray-100 transition text-gray-600 text-2xl"
                                                 title="View Bashaer Log">
-                                                <i class="fas fa-clipboard-list"></i> bashaer
+                                                {{ __('leads.view_log_bashaer') }} <i class="fas fa-clipboard-list"></i>
                                             </a>
                                         </div>
                                     </div>
                                 </div>
 
-                                <p class="text-center mt-4">📍 Select Location</p>
+                                <p class="text-center mt-4">{{ __('leads.select_location') }}</p>
 
                                 <select id="siteSelect" class="select2-placeholder form-control mt-2">
-                                    <option value="">-- Please choose a location --</option>
-                                    <option value="dhahran">Azyan Dhahran</option>
-                                    <option value="bashaer">Azyan Bashaer</option>
+                                    <option value="">{{ __('leads.choose_location') }}</option>
+                                    <option value="dhahran">{{ __('leads.site_dhahran') }} </option>
+                                    <option value="bashaer">{{ __('leads.site_bashaer') }} </option>
                                 </select>
                             </div>
 
@@ -94,7 +94,8 @@
                         </div>
 
                         <div class="bg-white p-6 rounded-lg shadow-sm mt-8">
-                            <h3 class="text-lg font-semibold mb-4 text-gray-700 text-center">Daily Leads Details</h3>
+                   
+                            <h3 class="text-lg font-semibold mb-4 text-gray-700 text-center">{{ __('leads.daily_details') }}  </h3>
 
                             <section id="daily-details-{{ $key }}" class="hidden">
                                 <div class="row">
@@ -107,16 +108,16 @@
                                                             <tr>
                                                                 <th
                                                                     class="py-2 px-4 text-gray-600 font-semibold text-center">
-                                                                    Date</th>
+                                                                    {{ __('leads.date') }}</th>
                                                                 <th
                                                                     class="py-2 px-4 text-green-700 font-semibold text-center">
-                                                                    Added</th>
+                                                                    {{ __('leads.added') }}</th>
                                                                 <th
                                                                     class="py-2 px-4 text-purple-700 font-semibold text-center">
-                                                                    Edited</th>
+                                                                    {{ __('leads.edited') }}</th>
                                                                 <th
                                                                     class="py-2 px-4 text-blue-700 font-semibold text-center">
-                                                                    Total</th>
+                                                                    {{ __('leads.total') }}</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -145,7 +146,7 @@
                             <a href="javascript:void(0);"
                                 class="text-blue-500 hover:text-blue-700 hover:underline mt-4 block text-center"
                                 onclick="toggleTable('{{ $key }}')">
-                                Show Details
+                                {{ __('leads.show_details') }}
                             </a>
                         </div>
 
@@ -189,12 +190,12 @@
                             data: {
                                 labels: data[site].dates,
                                 datasets: [{
-                                        label: 'Added',
+                                    label: "{{ __('leads.added') }}",
                                         data: data[site].added,
                                         backgroundColor: '#A2C2D6',
                                     },
                                     {
-                                        label: 'Edited',
+                                        label: "{{ __('leads.edited') }}",
                                         data: data[site].edited,
                                         backgroundColor: '#543829',
                                     }
@@ -246,11 +247,8 @@
                 logoImg.src = logoUrl;
 
                 logoImg.onload = async function() {
-                    // إضافة الشعار
                     doc.addImage(logoImg, 'PNG', 80, 10, 50, 30);
-
-                    // إضافة العنوان
-                    doc.setFontSize(16);
+   doc.setFontSize(16);
                     doc.text(`Leads Report - Azyan ${site.charAt(0).toUpperCase() + site.slice(1)}`, 105, 50, {
                         align: 'center'
                     });
@@ -258,13 +256,11 @@
 
                     let yPos = 60;
 
-                    // إضافة الرسم البياني
                     const chartImg = await html2canvas(chartCanvas);
                     const chartDataUrl = chartImg.toDataURL('image/png');
                     doc.addImage(chartDataUrl, 'PNG', 10, yPos, 190, 80);
                     yPos += 90;
 
-                    // تجهيز بيانات الجدول
                     const rows = [];
                     const tableRows = detailsTable.querySelectorAll('tbody tr');
                     tableRows.forEach(row => {
@@ -275,8 +271,7 @@
                         rows.push([date, added, edited, total]);
                     });
 
-                    // رسم الجدول
-                    await doc.autoTable({
+                   await doc.autoTable({
                         head: [
                             ['Date', 'Added', 'Edited', 'Total']
                         ],
@@ -297,7 +292,6 @@
                         },
                     });
 
-                    // 📄 إضافة التوقيع النهائي في آخر صفحة فقط
                     const totalPages = doc.internal.getNumberOfPages();
                     doc.setPage(totalPages);
 
@@ -316,8 +310,7 @@
             } else if (type === 'csv') {
                 const zip = new JSZip();
 
-                // تجهيز CSV
-                let csvContent = "Date,Added,Edited,Total\n";
+                 let csvContent = "Date,Added,Edited,Total\n";
                 const tableRows = detailsTable.querySelectorAll('tbody tr');
                 tableRows.forEach(row => {
                     const date = row.children[0]?.innerText.trim() ?? '';
@@ -329,7 +322,6 @@
 
                 csvContent += `\nExported by,${exportedBy}\nExport date,${exportDate}`;
 
-                // حفظ الرسم البياني كصورة مع CSV في zip
                 html2canvas(chartCanvas).then(canvas => {
                     canvas.toBlob(blob => {
                         zip.file(`${site}_details.csv`, csvContent);

@@ -3,7 +3,7 @@
 @section('content')
     <div class="py-12">
         <style>
-            /* (CSS محفوظ كما طلبت، بدون أي تغيير) */
+       
             .pagination {
                 display: flex;
                 justify-content: center;
@@ -155,15 +155,15 @@
 
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white shadow rounded-lg p-6">
-                <h1 class="text-2xl font-bold text-center text-gray-800 mb-8">Change Log - {{ $site }}</h1>
+                <h1 class="text-2xl font-bold text-center text-gray-800 mb-8">{{ __('appointments_log.title') }} {{ $site }}</h1>
 
-                <!-- أزرار Update و View Analysis -->
+
                 <div class="flex flex-wrap justify-center mb-8 gap-4">
                     <a href="{{ route('admin.appointments.log', $site) }}" style="color: blue">
-                        🔄 Update Data
+                        {{ __('appointments_log.update_data') }}
                     </a>
                     <a href="{{ route('admin.appointments.statistics', $site) }}" class="text-blue-500 hover:text-blue-600">
-                        <i class="fas fa-chart-bar mr-2"></i>View Analysis
+                        <i class="fas fa-chart-bar mr-2"></i>{{ __('appointments_log.view_analysis') }}
                     </a>
                 </div>
 
@@ -176,7 +176,7 @@
                                         {{ ucfirst($log->action) }}
                                     </span>
                                     <span class="log-meta">
-                                        {{ $log->created_at->format('Y-m-d H:i') }} by {{ $log->changed_by }}
+                                        {{ $log->created_at->format('Y-m-d H:i') }} {{ __('appointments_log.by_user') }} {{ $log->changed_by }}
                                     </span>
                                 </div>
                                 <div id="arrow-{{ $index }}" class="log-arrow">▼</div>
@@ -187,27 +187,28 @@
                                 <table class="log-table">
                                     <thead>
                                         <tr>
-                                            <th>Field</th>
-                                            <th>New Value</th>
-                                            <th>Old Value</th>
+                                            <th>{{ __('appointments_log.field') }}</th>
+                                            <th>{{ __('appointments_log.new_value') }}</th>
+                                            <th>{{ __('appointments_log.old_value')}}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @php
                                             $fields = [
-                                                'description' => 'Description',
-                                                'date' => 'Date',
-                                                'address' => 'Address',
-                                                'reminder_before' => 'Reminder Before',
-                                                'reminder_before_type' => 'Reminder Before Type',
-                                                'name' => 'Name',
-                                                'email' => 'Email',
-                                                'phone' => 'Phone',
-                                                'source' => 'Source',
-                                                'notes' => 'Notes',
-                                                'approved' => 'Approved',
-                                                'start_hour' => 'Start Hour',
-                                                'recurring' => 'Recurring',
+                                                'description' => __('appointments_log.description'),
+                                                'date' => __('appointments_log.date'),
+                                                'address' => __('appointments_log.address'),
+                                                'reminder_before' => __('appointments_log.reminder_before'),
+                                                'reminder_before_type' => __('appointments_log.reminder_before_type'),
+                                                'name' => __('appointments_log.name'),
+                                                'email' => __('appointments_log.email'),
+                                                'phone' => __('appointments_log.phone'),
+                                                'source' => __('appointments_log.source'),
+                                                'notes' => __('appointments_log.notes'),
+                                                'approved' => __('appointments_log.approved'),
+                                                'start_hour' => __('appointments_log.start_hour'),
+                                                'recurring' => __('appointments_log.recurring'),
+                                       
                                             ];
                                         @endphp
 

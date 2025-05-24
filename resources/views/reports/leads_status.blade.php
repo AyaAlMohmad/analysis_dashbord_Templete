@@ -15,17 +15,17 @@
                             <div class="card-body">
                                 <div class="form-group">
                                     <div class="text-bold-600 font-medium-2">
-                                        <h1 class="text-2xl font-bold text-gray-800 text-center">Leads Status Report</h1>
+                                        <h1 class="text-2xl font-bold text-gray-800 text-center">{{ __('leads.report_title') }}</h1>
                                     </div>
                                 </div>
 
 
-                                <p class="text-center mt-4">📍 Select Location</p>
+                                <p class="text-center mt-4">{{ __('leads.select_location') }}</p>
 
                                 <select id="siteSelect" class="select2-placeholder form-control mt-2">
-                                    <option value="">-- Please choose a location --</option>
-                                    <option value="dhahran">Azyan Dhahran</option>
-                                    <option value="bashaer">Azyan Bashaer</option>
+                                    <option value="">{{ __('leads.choose_location') }}</option>
+                                    <option value="dhahran">{{ __('leads.dhahran') }}</option>
+                                    <option value="bashaer">{{ __('leads.bashaer') }}</option>
                                 </select>
                             </div>
                             <form id="exportForm" class="flex items-center gap-12 mt-12 justify-center">
@@ -66,7 +66,7 @@
                     <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg my-8">
                         <div class="p-4 bg-white shadow-sm rounded-lg">
                             <h2 class="text-2xl font-bold text-gray-800 text-center">
-                                {{ $label }} - Status Overview</h2>
+                                {{ $label }} {{ __('leads.status_overview') }}</h2>
                         </div>
 
                         @if ($errors[$key])
@@ -77,8 +77,9 @@
                             <!-- Total Leads Card -->
                             <div class="p-9 text-center">
                                 <div class="bg-indigo-50 p-6 rounded-lg shadow-sm max-w-xs mx-auto">
-                                    <h3 class="text-lg font-semibold text-indigo-800 mb-2">Total
-                                        Leads</h3>
+                                    <h3 class="text-lg font-semibold text-indigo-800 mb-2">
+                                        {{ __('leads.total') }}
+                                        </h3>
                                     <h3 class="text-3xl font-bold text-indigo-600"> {{ number_format($totals[$key]) }}</h3>
                                 </div>
                             </div>
@@ -97,7 +98,7 @@
 
                             <!-- Details Section -->
                             <div class="bg-white p-6 rounded-lg shadow-sm mt-8">
-                                <h3 class="text-lg font-semibold mb-4 text-gray-700 text-center">Daily Leads Details</h3>
+                                <h3 class="text-lg font-semibold mb-4 text-gray-700 text-center">{{ __('leads.status_overview') }}</h3>
 
                                 <section id="daily-details-{{ $key }}" class="hidden">
                                     <div class="row">
@@ -110,10 +111,10 @@
                                                                 <tr>
                                                                     <th
                                                                         class="py-2 px-4 text-gray-600 font-semibold text-center">
-                                                                        status</th>
+                                                                        {{ __('leads.status') }}</th>
                                                                     <th
                                                                         class="py-2 px-4 text-green-700 font-semibold text-center">
-                                                                        count</th>
+                                                                        {{ __('leads.count') }}</th>
 
                                                                 </tr>
                                                             </thead>
@@ -141,7 +142,7 @@
                                 <a href="javascript:void(0);"
                                     class="text-blue-500 hover:text-blue-700 hover:underline mt-4 block text-center"
                                     onclick="toggleTable('{{ $key }}')">
-                                    Show Details
+                                    {{ __('leads.show_details') }}
                                 </a>
                             </div>
                         @endif
@@ -156,7 +157,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             const siteSelect = document.getElementById('siteSelect');
             const containers = document.querySelectorAll('.site-section');
-            const charts = {}; // لتخزين الرسوميات حتى لا نرسم مرتين
+            const charts = {}; 
 
             const data = {
                 dhahran: {
@@ -170,17 +171,15 @@
             };
 
             siteSelect.addEventListener('change', function() {
-                // إخفاء كل الحاويات
+                
                 containers.forEach(div => div.style.display = 'none');
 
                 const site = this.value;
 
                 if (site && data[site]) {
-                    // إظهار الحاوية المختارة
+             
                     document.getElementById(`site-${site}`).style.display = 'block';
-
-                    // رسم الرسم البياني فقط مرة واحدة
-                    if (!charts[site]) {
+    if (!charts[site]) {
                         const canvas = document.getElementById(`chart-${site}`);
                         const ctx = canvas.getContext('2d');
 
@@ -253,10 +252,10 @@
                 logoImg.src = logoUrl;
 
                 logoImg.onload = async function() {
-                    // إضافة الشعار
+                   
                     doc.addImage(logoImg, 'PNG', 80, 10, 50, 30);
 
-                    // إضافة العنوان
+                 
                     doc.setFontSize(16);
                     doc.text(`Leads Report - Azyan ${site.charAt(0).toUpperCase() + site.slice(1)}`, 105, 50, {
                         align: 'center'
@@ -265,13 +264,13 @@
 
                     let yPos = 60;
 
-                    // إضافة الرسم البياني
+                 
                     const chartImg = await html2canvas(chartCanvas);
                     const chartDataUrl = chartImg.toDataURL('image/png');
                     doc.addImage(chartDataUrl, 'PNG', 10, yPos, 190, 80);
                     yPos += 90;
 
-                    // تجهيز بيانات الجدول
+                 
                     const rows = [];
                     const tableRows = detailsTable.querySelectorAll('tbody tr');
                     tableRows.forEach(row => {

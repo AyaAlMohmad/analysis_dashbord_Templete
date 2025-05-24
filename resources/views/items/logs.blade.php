@@ -167,15 +167,15 @@
                         {{ session('error') }}
                     </div>
                 @endif
-                <h1 class="text-2xl font-bold text-center text-gray-800 mb-8">Change Log - {{ $site }}</h1>
+                <h1 class="text-2xl font-bold text-center text-gray-800 mb-8">{{ __('unit_log.change_log') }} {{ $site }}</h1>
 
                 <div class="flex flex-wrap justify-center mb-8">
                     <a href="{{ route('admin.items.log', $site) }}" class="text-blue-500 hover:text-blue-600"
                         style="margin-right: 20px; color: blue">
-                        🔄 Update Data
+                        {{ __('unit_log.update_data') }}
                     </a>
                     <a href="{{ route('admin.items.statistics', $site) }}" class="text-blue-500 hover:text-blue-600">
-                        <i class="fas fa-chart-bar mr-2"></i>View Analysis
+                        <i class="fas fa-chart-bar mr-2"></i>{{ __('unit_log.view_analysis') }}
                     </a>
 
                 </div>
@@ -190,7 +190,7 @@
                                         {{ ucfirst($log->action) }}
                                     </span>
                                     <span class="log-meta">
-                                        {{ $log->created_at->format('Y-m-d H:i') }} by {{ $log->changed_by }}
+                                        {{ $log->created_at->format('Y-m-d H:i') }} {{ __('unit_log.by') }} {{ $log->changed_by }}
                                     </span>
                                 </div>
                                 <div id="arrow-{{ $index }}" class="log-arrow">▼</div>
@@ -200,22 +200,22 @@
                                 <table class="log-table">
                                     <thead>
                                         <tr>
-                                            <th>Field</th>
-                                            <th>New Value</th>
-                                            <th>Old Value</th>
+                                            <th>{{ __('unit_log.field') }}</th>
+                                            <th>{{ __('unit_log.new_value') }}</th>
+                                            <th>{{ __('unit_log.old_value') }}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @php
                                             $fields = [
-                                                'description' => 'Description',
-                                                'long_description' => 'long_description',
-                                                'rate' => 'rate',
-                                                'unit' => 'unit ',
-                                                'group_id' => 'group_id  ',
+                                                'description' => __('unit_log.description'),
+                                                'long_description' => __('unit_log.long_description'),
+                                                'rate' => __('unit_log.rate'),
+                                                'unit' => __('unit_log.unit'),
+                                                'group_id' => __('unit_log.group_id'),
 
-                                                'unit_status' => 'unit_status',
-                                                'updated_at' => 'updated_at',
+                                                'unit_status' => __('unit_log.unit_status'),
+                                                'updated_at' => __('unit_log.updated_at'),
                                             ];
                                         @endphp
                                         @foreach ($fields as $field => $label)
@@ -227,12 +227,12 @@
                                                 <td>{{ $label }}</td>
                                                 <td>
                                                     <div class="{{ $old !== $new ? 'new-value' : '' }}">
-                                                        {{ is_array($new) ? json_encode($new) : $new ?? 'Not Available' }}
+                                                        {{ is_array($new) ? json_encode($new) : $new ?? __('unit_log.not_available')}}
                                                     </div>
                                                 </td>
                                                 <td>
                                                     <div class="{{ $old !== $new ? 'old-value' : '' }}">
-                                                        {{ is_array($old) ? json_encode($old) : $old ?? 'Not Available' }}
+                                                        {{ is_array($old) ? json_encode($old) : $old ??  __('unit_log.not_available')}} 
                                                     </div>
                                                 </td>
                                             </tr>
