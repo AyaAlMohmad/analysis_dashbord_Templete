@@ -1,6 +1,5 @@
 @extends('layouts.app')
 @section('content')
-
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
@@ -15,7 +14,8 @@
                             <div class="card-body">
                                 <div class="form-group">
                                     <div class="text-bold-600 font-medium-2">
-                                        <h1 class="text-2xl font-bold text-gray-800 text-center">{{ __('units_report.title') }} </h1>
+                                        <h1 class="text-2xl font-bold text-gray-800 text-center">
+                                            {{ __('units_report.title') }} </h1>
                                         <div class="flex items-center gap-4 mt-4">
                                             <!-- Dhahran Log -->
                                             <a href="{{ route('admin.items.log', 'dhahran') }}"
@@ -115,7 +115,8 @@
 
                             <div
                                 style="flex: 1 1 calc(50% - 12px); background-color: #A2C2D6; color: #00262f; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                                <h3 style="font-size: 18px; font-weight: bold; margin-bottom: 12px;">{{ __('units_report.available') }}</h3>
+                                <h3 style="font-size: 18px; font-weight: bold; margin-bottom: 12px;">
+                                    {{ __('units_report.available') }}</h3>
                                 <div style="font-size: 32px; font-weight: bold;">
                                     {{ number_format($data['available'] ?? 0) }}
                                 </div>
@@ -123,7 +124,8 @@
 
                             <div
                                 style="flex: 1 1 calc(50% - 12px); background-color: #D6B29C; color: #543829; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                                <h3 style="font-size: 18px; font-weight: bold; margin-bottom: 12px;">{{ __('units_report.reserved') }}</h3>
+                                <h3 style="font-size: 18px; font-weight: bold; margin-bottom: 12px;">
+                                    {{ __('units_report.reserved') }}</h3>
                                 <div style="font-size: 32px; font-weight: bold;">
                                     {{ number_format($data['reserved']['total'] ?? 0) }}
                                 </div>
@@ -131,7 +133,8 @@
 
                             <div
                                 style="flex: 1 1 calc(50% - 12px); background-color: #00262f; color: #ffffff; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                                <h3 style="font-size: 18px; font-weight: bold; margin-bottom: 12px;">{{ __('units_report.blocked') }}</h3>
+                                <h3 style="font-size: 18px; font-weight: bold; margin-bottom: 12px;">
+                                    {{ __('units_report.blocked') }}</h3>
                                 <div style="font-size: 32px; font-weight: bold;">
                                     {{ number_format($data['blocked'] ?? 0) }}
                                 </div>
@@ -139,7 +142,8 @@
 
                             <div
                                 style="flex: 1 1 calc(50% - 12px); background-color: #543829; color: #ffffff; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                                <h3 style="font-size: 18px; font-weight: bold; margin-bottom: 12px;">{{ __('units_report.contracted') }}</h3>
+                                <h3 style="font-size: 18px; font-weight: bold; margin-bottom: 12px;">
+                                    {{ __('units_report.contracted') }}</h3>
                                 <div style="font-size: 32px; font-weight: bold;">
                                     {{ number_format($data['contracted']['total'] ?? 0) }}
                                 </div>
@@ -156,10 +160,10 @@
                         <!-- Chart -->
                         <div class="w-full max-w-3xl mx-auto mt-6 p-6">
                             <div class="bg-white p-6 rounded-lg shadow-sm relative">
-                          
-                                    <div>
-                                        <canvas id="chart-{{ $key }}" style="width:100%; height:400px;"></canvas>
-                                    </div>          
+
+                                <div>
+                                    <canvas id="chart-{{ $key }}" style="width:100%; height:400px;"></canvas>
+                                </div>
                             </div>
                         </div>
                     @endif
@@ -167,8 +171,27 @@
             </div>
         @endforeach
     </div>
-
+    <div id="pdf-loading-overlay" style="display: none;">
+        <div class="loading-spinner">
+            <div class="spinner-circle"></div>
+            <div class="loading-text" style="margin-top: 20px; color: #333; text-align: center; font-size: 18px;">
+                {{ __('messages.generating_report') }}
+            </div>
+        </div>
+    </div>
     <!-- Scripts -->
+    <script>
+        function goToMap() {
+            const site = document.getElementById('siteSelect').value;
+            if (!site) {
+                alert('Please select a site first');
+                return;
+            }
+                window.location.href = `/admin/items/map/${site}`;
+        }
+    </script>
+    
+    
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const siteSelect = document.getElementById('siteSelect');
@@ -191,21 +214,25 @@
         });
     </script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-        
+        document.addEventListener('DOMContentLoaded', function() {
+
             const siteSelect = document.getElementById('siteSelect');
-            siteSelect.addEventListener('change', function () {
+            siteSelect.addEventListener('change', function() {
                 const selected = this.value;
                 if (!selected) return;
-         if (window.currentChart) {
+                if (window.currentChart) {
                     window.currentChart.destroy();
                 }
-    
+
                 const ctx = document.getElementById('chart-' + selected).getContext('2d');
                 window.currentChart = new Chart(ctx, {
                     type: 'doughnut',
                     data: {
-                        labels: ['{{ __('units_report.available') }}', '{{ __('units_report.reserved') }}', '{{ __('units_report.blocked') }}', '{{ __('units_report.contracted') }}'],
+                        labels: ['{{ __('units_report.available') }}',
+                            '{{ __('units_report.reserved') }}',
+                            '{{ __('units_report.blocked') }}',
+                            '{{ __('units_report.contracted') }}'
+                        ],
 
                         datasets: [{
                             data: [
@@ -248,7 +275,7 @@
             });
         });
     </script>
-    
+
     <script>
         function toggleTable(key) {
             const section = document.getElementById(`daily-details-${key}`);
@@ -266,119 +293,164 @@
 
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script>
-        function goToMap() {
-            const site = document.getElementById('siteSelect').value;
-            if (!site) {
-                alert('Please select a site to view the map.');
-                return;
-            }
-            window.location.href = `/admin/items/map/${site}`;
-        }
-
-        function submitExport(type) {
-            const site = document.getElementById('siteSelect').value;
-            if (!site) return alert('Please select a site');
-
-            const exportHeader = document.getElementById(`export-header-${site}`);
-            const chartCanvas = document.getElementById(`chart-${site}`);
-            const siteSection = document.getElementById(`site-${site}`);
-
-
-            if (!exportHeader || !chartCanvas) {
-                alert('Required elements not found');
-                return;
-            }
-
-            const originalHeaderDisplay = exportHeader.style.display;
-
-            exportHeader.style.display = 'block';
-
-
-            const exportedBy = "{{ Auth::user()->name }}";
-            const exportDate = new Date().toLocaleString();
-            if (type === 'pdf') {
-                const stats = siteSection.querySelectorAll('.stats-cards > .p-6');
-
-                html2canvas(chartCanvas).then((chartImg) => {
-                    const doc = new jspdf.jsPDF();
-                    const imgWidth = 190;
-                    let yPos = 10;
-
-                    // Header (text only)
-                    doc.setFontSize(16);
-                    doc.text(`Units Report`, 14, yPos);
-                    yPos += 10;
-
-                    doc.setFontSize(12);
-                    doc.text(`Site: ${site}`, 14, yPos);
-                    yPos += 8;
-
-                    // Add footer only on the last page
-                    const pageHeight = doc.internal.pageSize.height;
-                    const margin = 10;
-                    doc.setFontSize(10);
-                    doc.text(`Exported by: ${exportedBy}`, margin, pageHeight - 20);
-                    doc.text(`Export date: ${exportDate}`, margin, pageHeight - 15);
-
-                    // Chart image
-                    doc.addImage(chartImg, 'PNG', 10, yPos, imgWidth, 100);
-                    yPos += 110;
-
-                    // Details (daily details)
-                    doc.setFontSize(12);
-                    doc.text(`Statistics:`, 14, yPos);
-                    yPos += 8;
-
-                    stats.forEach(card => {
-                        const title = card.querySelector('h3')?.textContent.trim() ?? '';
-                        const value = card.querySelector('div.text-3xl')?.textContent.trim() ?? '';
-                        doc.text(`${title}: ${value}`, 14, yPos);
-                        yPos += 7;
-
-                        // Add new page if content overflows
-                        if (yPos > 270) {
-                            doc.addPage();
-                            yPos = 10;
-                        }
-                    });
-
-
-                    doc.save(`${site}_Units.pdf`);
-                });
-            } else if (type === 'zip') {
-                const zip = new JSZip();
-
-                // Create CSV file
-                let csvContent = "Metric,Value\n";
-                const stats = siteSection.querySelectorAll('.stats-cards > .p-6');
-
-                stats.forEach(card => {
-                    const title = card.querySelector('h3')?.textContent.trim() ?? '';
-                    const value = card.querySelector('.text-3xl')?.textContent.trim() ?? '';
-                    csvContent += `${title},${value}\n`;
-                });
-                // Add metadata
-                csvContent += `\nExported by,${exportedBy}\nExport date,${exportDate}`;
-
-                // Add files to zip
-                zip.file(`${site}_Units.csv`, csvContent);
-
-                html2canvas(chartCanvas).then(canvas => {
-                    canvas.toBlob(blob => {
-                        zip.file(`${site}_chart.png`, blob);
-                        zip.generateAsync({
-                            type: "blob"
-                        }).then(content => {
-                            const url = URL.createObjectURL(content);
-                            const a = document.createElement('a');
-                            a.href = url;
-                            a.download = `${site}_Units_report.zip`;
-                            a.click();
-                            URL.revokeObjectURL(url);
+        async function submitExport(type) {
+            try {
+                const site = document.getElementById('siteSelect').value;
+                if (!site) return alert('Please select a site');
+    
+                const loadingOverlay = document.getElementById('pdf-loading-overlay');
+                if (loadingOverlay) loadingOverlay.style.display = 'flex';
+    
+                const { jsPDF } = window.jspdf;
+                const exportedBy = "{{ Auth::user()->name }}";
+                const exportDate = new Date().toLocaleString('en-US');
+    
+                const siteName = site === 'dhahran' ? 'Azyan Dhahran' : 'Azyan Bashaer';
+    
+                const leftLogoUrl = "{{ asset('build/logo.png') }}";
+                const rightLogoUrl = site === 'dhahran'
+                    ? "{{ asset('images/logo5.png') }}"
+                    : "{{ asset('images/logo6.png') }}";
+    
+                const chartCanvas = document.getElementById(`chart-${site}`);
+                const siteSection = document.getElementById(`site-${site}`);
+                const statsCards = siteSection.querySelectorAll('[style*="background-color"]');
+    
+                if (!chartCanvas || !siteSection || !statsCards.length) {
+                    if (loadingOverlay) loadingOverlay.style.display = 'none';
+                    alert('Required elements not found');
+                    return;
+                }
+    
+                if (type === 'pdf') {
+                    const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
+    
+                    const loadImage = (url) => {
+                        return new Promise((resolve, reject) => {
+                            const img = new Image();
+                            img.crossOrigin = "anonymous";
+                            img.onload = () => resolve(img);
+                            img.onerror = () => reject(new Error('Failed to load image'));
+                            img.src = url;
                         });
-                    });
-                });
+                    };
+    
+                    try {
+                        const [leftLogoImg, rightLogoImg] = await Promise.all([
+                            loadImage(leftLogoUrl),
+                            loadImage(rightLogoUrl)
+                        ]);
+    
+                        doc.addImage(leftLogoImg, 'PNG', 15, 10, 20, 20);
+                        doc.addImage(rightLogoImg, 'PNG', 155, 10, 20, 20);
+    
+                        doc.setFontSize(16);
+                        doc.text(`Units Report - ${siteName}`, 105, 50, { align: 'center' });
+                        doc.line(10, 55, 200, 55);
+    
+                        let yPos = 60;
+    
+                        const chartImg = await html2canvas(chartCanvas, {
+                            scale: 2,
+                            useCORS: true,
+                            backgroundColor: '#FFFFFF'
+                        });
+    
+                        const chartDataUrl = chartImg.toDataURL('image/png', 1.0);
+                        const chartAspectRatio = chartCanvas.height / chartCanvas.width;
+                        const chartWidth = 190;
+                        const chartHeight = chartWidth * chartAspectRatio;
+    
+                        doc.addImage(chartDataUrl, 'PNG', 10, yPos, chartWidth, chartHeight);
+                        yPos += chartHeight + 10;
+    
+                        doc.setFontSize(14);
+                        doc.text('Statistics:', 14, yPos);
+                        yPos += 10;
+    
+                        doc.setFontSize(12);
+                        statsCards.forEach(card => {
+                            const title = card.querySelector('h3')?.textContent.trim() ?? '';
+                            const value = card.querySelector('div[style*="font-size: 32px"]')?.textContent.trim() ?? '';
+                            doc.text(`${title}: ${value}`, 14, yPos);
+                            yPos += 8;
+    
+                            if (yPos > 270) {
+                                doc.addPage();
+                                yPos = 10;
+                            }
+                        });
+    
+                        const totalPages = doc.internal.getNumberOfPages();
+                        for (let i = 1; i <= totalPages; i++) {
+                            doc.setPage(i);
+                            const pageHeight = doc.internal.pageSize.getHeight();
+                            doc.setFontSize(10);
+                            doc.text(`Exported by: ${exportedBy}`, 10, pageHeight - 20);
+                            doc.text(`Export date: ${exportDate}`, 10, pageHeight - 15);
+                            doc.text(`Page ${i} of ${totalPages}`, 200 - 10, pageHeight - 15, { align: 'right' });
+                        }
+    
+                        doc.save(`${siteName}_Units_Report.pdf`);
+                    } catch (error) {
+                        console.error('PDF generation error:', error);
+                        alert('Failed to generate PDF');
+                    }
+    
+                } else if (type === 'csv') {
+                    try {
+                        const zip = new JSZip();
+                        let csvContent = "\uFEFFMetric,Value\n";
+    
+                        statsCards.forEach(card => {
+                            const title = card.querySelector('h3')?.textContent.trim() ?? '';
+                            const value = card.querySelector('div[style*="font-size: 32px"]')?.textContent.trim() ?? '';
+                            csvContent += `"${title.replace(/"/g, '""')}",${value}\n`;
+                        });
+    
+                        csvContent += `\nExported by,${exportedBy}\nExport date,${exportDate}`;
+    
+                        const chartImg = await html2canvas(chartCanvas, {
+                            scale: 2,
+                            useCORS: true,
+                            backgroundColor: '#FFFFFF'
+                        });
+    
+                        const blob = await new Promise((resolve) =>
+                            chartImg.toBlob(resolve, 'image/png', 1.0)
+                        );
+    
+                        const csvBlob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    
+                        zip.file(`${siteName}_Units_Data.csv`, csvBlob);
+                        zip.file(`${siteName}_Units_Chart.png`, blob);
+    
+                        const content = await zip.generateAsync({ type: "blob" });
+                        const url = URL.createObjectURL(content);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = `${siteName}_Units_Report.zip`;
+                        document.body.appendChild(a);
+                        a.click();
+                        setTimeout(() => {
+                            document.body.removeChild(a);
+                            URL.revokeObjectURL(url);
+                        }, 100);
+                    } catch (error) {
+                        console.error('CSV/ZIP generation error:', error);
+                        alert('Failed to generate ZIP');
+                    }
+                }
+    
+            } catch (error) {
+                console.error('Export error:', error);
+                alert('Unexpected export error');
+            } finally {
+                const loadingOverlay = document.getElementById('pdf-loading-overlay');
+                if (loadingOverlay) loadingOverlay.style.display = 'none';
             }
         }
     </script>
+    
+    
 @endsection

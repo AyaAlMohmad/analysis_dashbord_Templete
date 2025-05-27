@@ -146,12 +146,102 @@
             </ul>
         </li>
 
-        <li class="nav-item {{ Route::is('admin.comprehensive.form') ? 'active' : '' }}">
+        {{-- <li class="nav-item {{ Route::is('admin.comprehensive.form') ? 'active' : '' }}">
             <a href="{{ route('admin.comprehensive.form') }}">
                 <i class="ft-layers"></i>
                 <span>{{ __('sidebar.comprehensive_report') }}</span>
             </a>
+        </li> --}}
+        <li class="nav-item has-sub {{ Route::is('admin.comprehensive.*') ? 'open' : '' }}">
+            <a href="#">
+                <i class="ft-layers"></i>
+                <span>{{ __('sidebar.comprehensive_report') }}</span>
+            </a>
+            <ul class="menu-content">
+                <li class="{{ Route::is('admin.comprehensive.form') ? 'active' : '' }}">
+                    <a class="menu-item" href="{{ route('admin.comprehensive.form') }}">
+                        <i class="ft-layers"></i>
+                        <span>{{ __('sidebar.report_form') }}</span>
+                    </a>
+                </li>
+        
+                <li class="has-sub {{ Route::is('admin.comprehensive.*') ? 'open' : '' }}">
+                    <a href="#">
+                        <i class="ft-copy"></i>
+                        <span>{{ __('sidebar.report_parts') }}</span>
+                    </a>
+                    <ul class="menu-content">
+                        <li class="{{ Route::is('admin.comprehensive.map.form') ? 'active' : '' }}">
+                            <a class="menu-item" href="{{ route('admin.comprehensive.map.form') }}">
+                                <i class="ft-map"></i>
+                                <span>{{ __('sidebar.colored_map') }}</span>
+                            </a>
+                        </li>
+                        <li class="{{ Route::is('admin.comprehensive.appointments.form') ? 'active' : '' }}">
+                            <a class="menu-item" href="{{ route('admin.comprehensive.appointments.form') }}">
+                                <i class="ft-bookmark"></i>
+                                <span>{{ __('sidebar.appointments_report') }}</span>
+                            </a>
+                        </li>
+                        <li class="{{ Route::is('admin.comprehensive.project-summary.form') ? 'active' : '' }}">
+                            <a class="menu-item" href="{{ route('admin.comprehensive.project-summary.form') }}">
+                                <i class="ft-file-text"></i>
+                                <span>{{ __('sidebar.summary_report') }}</span>
+                            </a>
+                        </li>
+                        <li class="{{ Route::is('admin.comprehensive.unit-stages.form') ? 'active' : '' }}">
+                            <a class="menu-item" href="{{ route('admin.comprehensive.unit-stages.form') }}">
+                                <i class="ft-layers"></i>
+                                <span>{{ __('sidebar.unit_satage_report') }}</span>
+                            </a>
+                        </li>
+                        <li class="{{ Route::is('admin.comprehensive.status.form') ? 'active' : '' }}">
+                            <a class="menu-item" href="{{ route('admin.comprehensive.status.form') }}">
+                                <i class="ft-activity"></i>
+                                <span>{{ __('sidebar.status_report') }}</span>
+                            </a>
+                        </li>
+                        <li class="{{ Route::is('admin.comprehensive.unit-details.form') ? 'active' : '' }}">
+                            <a class="menu-item" href="{{ route('admin.comprehensive.unit-details.form') }}">
+                                <i class="ft-grid"></i>
+                                <span>{{ __('sidebar.unit_details_report') }}</span>
+                            </a>
+                        </li>
+                        <li class="{{ Route::is('admin.comprehensive.vpc.form') ? 'active' : '' }}">
+                            <a class="menu-item" href="{{ route('admin.comprehensive.vpc.form') }}">
+                                <i class="ft-credit-card"></i>
+                                <span>{{ __('sidebar.vpc_report') }}</span>
+                            </a>
+                        </li>
+                        <li class="{{ Route::is('admin.comprehensive.disinterest.form') ? 'active' : '' }}">
+                            <a class="menu-item" href="{{ route('admin.comprehensive.disinterest.form') }}">
+                                <i class="ft-slash"></i>
+                                <span>{{ __('sidebar.disinterest_report') }}</span>
+                            </a>
+                        </li>
+                        <li class="{{ Route::is('admin.comprehensive.unit-statistics.form') ? 'active' : '' }}">
+                            <a class="menu-item" href="{{ route('admin.comprehensive.unit-statistics.form') }}">
+                                <i class="ft-bar-chart"></i>
+                                <span>{{ __('sidebar.unit_statistics_report') }}</span>
+                            </a>
+                        </li>
+                        <li class="{{ Route::is('admin.comprehensive.targeted.form') ? 'active' : '' }}">
+                            <a class="menu-item" href="{{ route('admin.comprehensive.targeted.form') }}">
+                                <i class="ft-target"></i>
+                                <span>{{ __('sidebar.targeted_report') }}</span>
+                            </a>
+                        </li>
+                        <li class="{{ Route::is('admin.comprehensive.unit-sales.form') ? 'active' : '' }}">
+                            <a class="menu-item" href="{{ route('admin.comprehensive.unit-sales.form') }}">
+                                <i class="ft-shopping-cart"></i>
+                                <span>{{ __('sidebar.unit_sales_report') }}</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                
+            </ul>
         </li>
-
+        
     </ul>
 </div>

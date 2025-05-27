@@ -24,6 +24,20 @@ return [
     'unit_report' => 'تقرير الوحدة',
     'contracts_report' => 'تقرير العقود',
     'source_report' => 'تقرير المصدر',
+
     'comprehensive_report' => 'التقرير الشامل',
+    'report_form' => 'نموذج التقرير',
+    'report_parts' => 'أجزاء التقرير',
+    'colored_map' => 'الخريطة الملونة',
+    'appointments_report' => 'تقرير المواعيد',
+    'summary_report' => 'ملخص المشاريع',
+    'unit_satage_report' => 'مراحل الوحدات',
+    'status_report' => 'تقرير الحالة',
+    'unit_details_report' => 'تفاصيل الوحدات',
+    'vpc_report' => 'الزيارات/الدفعات/العقود',
+    'disinterest_report' => 'أسباب عدم الاهتمام',
+    'unit_statistics_report' => 'إحصائيات الوحدات',
+    'targeted_report' => 'تقرير المستهدفين',
+    'unit_sales_report' => 'تقرير مبيعات الوحدات',
 ];
 

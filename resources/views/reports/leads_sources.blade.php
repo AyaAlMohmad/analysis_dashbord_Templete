@@ -75,7 +75,7 @@
         @foreach ($allData as $location => $data)
             @if (count($data) > 0)
                 <div class="mt-10 chart-section" id="chart-section-{{ $location }}" style="display: none;">
-                    <!-- الرسم البياني -->
+                  
                     <div class="bg-white p-6 rounded-lg shadow-sm mt-8">
                         <canvas id="chart-{{ $location }}" height="120"></canvas>
                     </div>
@@ -117,7 +117,6 @@
                             </div>
                         </section>
 
-                        <!-- زر التفاصيل كـ <a> بدل <button> -->
                         <a href="javascript:void(0);" class="text-blue-500 hover:text-blue-700 hover:underline"
                             onclick="toggleTable('{{ $location }}')">
                             {{ __('comparison_report.show_details') }}</a>
@@ -131,7 +130,14 @@
             @endif
         @endforeach
     </div>
-
+    <div id="pdf-loading-overlay" style="display: none;">
+        <div class="loading-spinner">
+            <div class="spinner-circle"></div>
+            <div class="loading-text" style="margin-top: 20px; color: #333; text-align: center; font-size: 18px;">
+                {{ __('messages.generating_report') }}
+            </div>
+        </div>
+    </div>
 
     <!-- JS Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -227,113 +233,135 @@
         function submitExport(type) {
             const site = document.getElementById('location-filter').value;
             if (!site) return alert('Please select a site');
-
-            // const exportHeader = document.getElementById(`export-header-${site}`);
+    
+            // Show loading overlay
+            const loadingOverlay = document.getElementById('pdf-loading-overlay');
+            loadingOverlay.style.display = 'flex';
+    
             const chartSection = document.getElementById(`chart-section-${site}`);
             const chartCanvas = chartSection.querySelector('canvas');
             const detailsContent = document.getElementById(`section-content-${site}`);
-
+    
             if (!chartCanvas || !detailsContent) {
+                loadingOverlay.style.display = 'none';
                 alert('Required elements not found');
                 return;
             }
-
-            // const originalHeaderDisplay = exportHeader.style.display;
+    
+            // Store original state
             const originalDetailsClass = detailsContent.classList.contains('hidden');
-            // exportHeader.style.display = 'block';
             detailsContent.classList.remove('hidden');
-
-            const exportedBy = "{{ Auth::user()->name }}";
+    
+            const exportedBy = document.getElementById('exportedBy').value;
             const exportDate = new Date().toLocaleString();
-            const logoUrl = "{{ asset('build/logo.png') }}";
-
+            
+            // Left logo (always the same)
+            const leftLogoUrl = "{{ asset('build/logo.png') }}";
+            
+            // Right logo (different for Aldhahran)
+            const rightLogoUrl = site.toLowerCase() === 'aldhahran' 
+                ? "{{ asset('images/logo5.png') }}" 
+                : "{{ asset('images/logo6.png') }}";
+    
             if (type === 'pdf') {
-                const doc = new jspdf.jsPDF('p', 'mm', 'a4');
-
-                const logoImg = new Image();
-                logoImg.crossOrigin = "anonymous";
-                logoImg.src = logoUrl;
-
-                logoImg.onload = function() {
-                    Promise.all([
-                        html2canvas(exportHeader),
-                        html2canvas(chartCanvas),
-                        html2canvas(detailsContent)
-                    ]).then(([headerImg, chartImg, detailsImg]) => {
-                        const imgWidth = 190;
-                        let yPos = 10;
-
-                   
-                        doc.addImage(logoImg, 'PNG', 80, yPos, 50, 30);
-
-                        yPos += 35;
-              
-                        doc.setFontSize(16); 
-                        doc.text(`Leads Sources Report - Azyan ${site.charAt(0).toUpperCase() + site.slice(1)}`,
-                            105, yPos, {
-                                align: 'center'
-                            });
-
-                        yPos += 5;
-                      
-                        const headerHeight = (headerImg.height * imgWidth) / headerImg.width;
-                        doc.addImage(headerImg, 'PNG', 10, yPos, imgWidth, headerHeight);
-                        yPos += headerHeight + 10;
-
-                        const chartHeight = (chartImg.height * imgWidth) / chartImg.width;
-                        doc.addImage(chartImg, 'PNG', 10, yPos, imgWidth, chartHeight);
-                        yPos += chartHeight + 10;
-
-                        const detailsHeight = (detailsImg.height * imgWidth) / detailsImg.width;
-                        doc.addImage(detailsImg, 'PNG', 10, yPos, imgWidth, detailsHeight);
-
-                        doc.setFontSize(10);
-                        const pageHeight = doc.internal.pageSize.height;
-                        doc.text(`Exported by: ${exportedBy}`, 10, pageHeight - 20);
-                        doc.text(`Export date: ${exportDate}`, 10, pageHeight - 15);
-
-                        doc.save(`${site}_leads_report.pdf`);
-                    }).catch(error => {
-                        console.error('Export failed:', error);
-                        alert('Export failed, check console for details');
-                    }).finally(() => {
-                        exportHeader.style.display = originalHeaderDisplay;
-                        if (originalDetailsClass) {
-                            detailsContent.classList.add('hidden');
-                        }
-                    });
-                };
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF('p', 'mm', 'a4');
+    
+                // Load logos
+                const leftLogoImg = new Image();
+                leftLogoImg.crossOrigin = "anonymous";
+                leftLogoImg.src = leftLogoUrl;
+    
+                const rightLogoImg = new Image();
+                rightLogoImg.crossOrigin = "anonymous";
+                rightLogoImg.src = rightLogoUrl;
+    
+                Promise.all([
+                    new Promise((resolve) => { leftLogoImg.onload = resolve; }),
+                    new Promise((resolve) => { rightLogoImg.onload = resolve; }),
+                    html2canvas(chartCanvas),
+                    html2canvas(detailsContent)
+                ]).then(([_, __, chartImg, detailsImg]) => {
+                    const imgWidth = 190;
+                    let yPos = 10;
+    
+                    // Add logos
+                    doc.addImage(leftLogoImg, 'PNG', 15, yPos, 20, 20); // Left logo (Tatwir)
+                    doc.addImage(rightLogoImg, 'PNG', 155, yPos, 20, 20); // Right logo (conditional)
+    
+                    yPos += 45;
+                    
+                    // Add title
+                    doc.setFontSize(16);
+                    doc.text(`Leads Sources Report - Azyan ${site.charAt(0).toUpperCase() + site.slice(1)}`,
+                        105, yPos, {
+                            align: 'center'
+                        });
+    
+                    yPos += 15;
+                    
+                    // Add chart
+                    const chartHeight = (chartImg.height * imgWidth) / chartImg.width;
+                    doc.addImage(chartImg, 'PNG', 10, yPos, imgWidth, chartHeight);
+                    yPos += chartHeight + 10;
+    
+                    // Add details table
+                    const detailsHeight = (detailsImg.height * imgWidth) / detailsImg.width;
+                    doc.addImage(detailsImg, 'PNG', 10, yPos, imgWidth, detailsHeight);
+    
+                    // Add footer
+                    doc.setFontSize(10);
+                    const pageHeight = doc.internal.pageSize.height;
+                    doc.text(`Exported by: ${exportedBy}`, 10, pageHeight - 20);
+                    doc.text(`Export date: ${exportDate}`, 10, pageHeight - 15);
+    
+                    doc.save(`${site}_leads_report.pdf`);
+                }).catch(error => {
+                    console.error('Export failed:', error);
+                    alert('Export failed, check console for details');
+                }).finally(() => {
+                    loadingOverlay.style.display = 'none';
+                    if (originalDetailsClass) {
+                        detailsContent.classList.add('hidden');
+                    }
+                });
             } else if (type === 'csv') {
-                const zip = new JSZip();
-
                 const data = @json($allData);
                 let csvContent = "Source,Count\n";
                 csvContent += Object.entries(data[site])
                     .map(([source, count]) => `${source},${count}`)
                     .join("\n");
-
+    
                 csvContent += `\n\nExported by:,${exportedBy}`;
                 csvContent += `\nExport date:,${exportDate}`;
-
+    
+                // Create a blob for the CSV
+                const csvBlob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                
+                // Create chart image
                 html2canvas(chartCanvas).then(canvas => {
-                    canvas.toBlob(blob => {
-                        zip.file(`${site}_data.csv`, csvContent);
-                        zip.file(`${site}_chart.png`, blob);
-
-                        zip.generateAsync({
-                            type: "blob"
-                        }).then(content => {
+                    canvas.toBlob(chartBlob => {
+                        // Create zip file
+                        const zip = new JSZip();
+                        zip.file(`${site}_data.csv`, csvBlob);
+                        zip.file(`${site}_chart.png`, chartBlob);
+    
+                        zip.generateAsync({ type: "blob" }).then(content => {
                             const url = window.URL.createObjectURL(content);
                             const a = document.createElement('a');
                             a.href = url;
                             a.download = `${site}_report.zip`;
                             a.click();
                             window.URL.revokeObjectURL(url);
+                            loadingOverlay.style.display = 'none';
                         });
                     }, 'image/png');
+                }).catch(error => {
+                    console.error('Export failed:', error);
+                    loadingOverlay.style.display = 'none';
+                    alert('Export failed, check console for details');
                 });
             }
         }
     </script>
-
 @endsection

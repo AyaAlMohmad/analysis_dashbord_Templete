@@ -14,4 +14,6 @@ return[
     'unit_stages'=>'Unit Stages',
     'visits_payments_contracts'=>'Visits & Payments & Contracts For The Month',
     'generating_report'=>'Report is being prepared...',
+    'If no dates are selected, the report will be generated cumulatively.' => 'If no dates are selected, the report will be generated cumulatively.',
+
 ];

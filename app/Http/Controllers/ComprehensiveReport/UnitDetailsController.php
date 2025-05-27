@@ -1,0 +1,75 @@
+<?php
+
+namespace App\Http\Controllers\ComprehensiveReport;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+
+class UnitDetailsController extends ReportBaseController
+{
+    protected $reportView = 'comprehensive.partials.unit-details';
+    protected $formRouteName = 'admin.comprehensive.unit-details.process';
+
+    public function index(Request $request)
+    {
+        $unitDetailsByStageResultDhahran = $this->unitDetailsByStageResultDhahran();
+        $unitDetailsByStageResultAlbashaer = $this->unitDetailsByStageResultAlbashaer();
+        
+        return view($this->reportView, [
+            'from_date' => $request->input('from_date'),
+            'to_date' => $request->input('to_date'),
+            'unitDetailsByStageResultDhahran' => $unitDetailsByStageResultDhahran,
+            'unitDetailsByStageResultAlbashaer' => $unitDetailsByStageResultAlbashaer,
+        ]);
+    }
+       /**
+     * Get Dhahran Unit Statistics by Stage
+     */
+    private function unitDetailsByStageResultDhahran()
+    {
+        try {
+            $response = Http::post('https://crm.azyanaldhahran.com/api/Item_reports/unit_details_by_stage_result');
+
+            if ($response->successful()) {
+                $data = $response->json();
+
+                if ($data['status'] ?? false) {
+                    return $data['data'] ?? [];
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error("Dhahran Unit Statistics by Stage API Error: " . $e->getMessage());
+        }
+
+        return [
+            'statistics' => [],
+            'totals' => [],
+        ];
+    }
+
+    /**
+     * Get Albashaer Unit Statistics by Stage
+     */
+    private function unitDetailsByStageResultAlbashaer()
+    {
+        try {
+            $response = Http::post('https://crm.azyanalbashaer.com/api/Item_reports/unit_details_by_stage_result');
+
+            if ($response->successful()) {
+                $data = $response->json();
+
+                if ($data['status'] ?? false) {
+                    return $data['data'] ?? [];
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error("Albashaer Unit Statistics by Stage API Error: " . $e->getMessage());
+        }
+
+        return [
+            'statistics' => [],
+            'totals' => [],
+        ];
+    }
+}

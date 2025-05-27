@@ -1,13 +1,5 @@
 <section>
-    <header>
-        <h2 class="text-lg font-medium text-gray-900">
-            {{ __('Update Password') }}
-        </h2>
 
-        <p class="mt-1 text-sm text-gray-600">
-            {{ __('Ensure your account is using a long, random password to stay secure.') }}
-        </p>
-    </header>
 
   
     <form method="post" action="{{ route('password.update') }}">
@@ -16,7 +8,7 @@
 
         <div style="margin-bottom: 20px;">
             <label for="update_password_current_password" style="display: block; font-weight: 500; color: #374151; margin-bottom: 6px;">
-                {{ __('Current Password') }}
+                {{ __('profile.current_password') }}
             </label>
             <input 
                 id="update_password_current_password" 
@@ -32,7 +24,7 @@
 
         <div style="margin-bottom: 20px;">
             <label for="update_password_password" style="display: block; font-weight: 500; color: #374151; margin-bottom: 6px;">
-                {{ __('New Password') }}
+                {{ __('profile.new_password') }}
             </label>
             <input 
                 id="update_password_password" 
@@ -48,7 +40,7 @@
 
         <div style="margin-bottom: 20px;">
             <label for="update_password_password_confirmation" style="display: block; font-weight: 500; color: #374151; margin-bottom: 6px;">
-                {{ __('Confirm Password') }}
+                {{ __('profile.confirm_password') }}
             </label>
             <input 
                 id="update_password_password_confirmation" 
@@ -67,7 +59,7 @@
                 type="submit"
                 style="background-color: #1f2937; color: white; padding: 8px 16px; font-size: 14px; border-radius: 6px; border: none; cursor: pointer;"
             >
-                {{ __('Save') }}
+                {{ __('profile.save') }}
             </button>
 
             @if (session('status') === 'password-updated')
@@ -78,7 +70,7 @@
                     x-init="setTimeout(() => show = false, 2000)"
                     style="font-size: 14px; color: #6b7280;"
                 >
-                    {{ __('Saved.') }}
+                    {{ __('profile.saved') }}
                 </p>
             @endif
         </div>

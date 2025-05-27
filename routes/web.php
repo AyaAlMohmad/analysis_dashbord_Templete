@@ -4,7 +4,18 @@ use App\Http\Controllers\AppointmentLogController;
 use App\Http\Controllers\AppointmentReportController;
 use App\Http\Controllers\CallLogsLogController;
 use App\Http\Controllers\CallLogsReportController;
+use App\Http\Controllers\ComprehensiveReport\AppointmentsController;
 use App\Http\Controllers\ComprehensiveReport\ComprehensiveReportController;
+use App\Http\Controllers\ComprehensiveReport\DisinterestReasonsController;
+use App\Http\Controllers\ComprehensiveReport\MapController;
+use App\Http\Controllers\ComprehensiveReport\ProjectSummaryController;
+use App\Http\Controllers\ComprehensiveReport\StatusController;
+use App\Http\Controllers\ComprehensiveReport\TargetedReportController;
+use App\Http\Controllers\ComprehensiveReport\UnitDetailsController;
+use App\Http\Controllers\ComprehensiveReport\UnitSalesController;
+use App\Http\Controllers\ComprehensiveReport\UnitStagesController;
+use App\Http\Controllers\ComprehensiveReport\UnitStatisticsController;
+use App\Http\Controllers\ComprehensiveReport\VisitsPaymentsContractsController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ItemLogController;
@@ -43,7 +54,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
 });
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->as('admin.')->group(function () {
@@ -109,19 +119,19 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->as('admin.')->group(funct
 
     Route::get('/reports/itemReport', [ItemReportController::class, 'itemReport'])->name('reports.item');
     Route::post('/reports/itemReport/result', [ItemReportController::class, 'itemReportResult'])->name('reports.itemReport.result');
-  
+
     Route::get('/reports/team-category', [TeamController::class, 'teamCategoryReport'])->name('reports.teamCategory');
     Route::post('/reports/team-category/result', [TeamController::class, 'teamCategorySearch'])->name('reports.teamCategory.result');
     Route::get('/reports/team', [TeamController::class, 'teamReport'])->name('reports.teamReport');
     Route::post('/reports/team/result', [TeamController::class, 'teamReportSearch'])->name('reports.teamReport.result');
     Route::get('/sales/report', [SalesController::class, 'salesReport'])->name('sales.report');
     Route::post('/sales/report/result', [SalesController::class, 'salesReportResult'])->name('sales.report.result');
- 
+
 
 
     Route::get('/reports/contracts', [ItemReportController::class, 'contractsReport'])->name('reports.contracts');
     Route::post('/reports/contracts/result', [ItemReportController::class, 'contractsReportResult'])->name('reports.contracts.result');
-    
+
     Route::get('/reports/source', [LeadsSourcesReportController::class, 'sourceReport'])->name('reports.source');
     Route::post('/reports/source/result', [LeadsSourcesReportController::class, 'sourceReportResult'])->name('reports.source.result');
 
@@ -131,8 +141,50 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->as('admin.')->group(funct
     Route::get('/comprehensive/form', [ComprehensiveReportController::class, 'form'])->name('comprehensive.form');
     // Route::post('/comprehensive', [ComprehensiveReportController::class, 'index'])->name('comprehensive.index');
     Route::post('/comprehensive', [ComprehensiveReportController::class, 'store'])->name('comprehensive.store');
-Route::get('/comprehensive', [ComprehensiveReportController::class, 'show'])->name('comprehensive.show');
+    Route::get('/comprehensive', [ComprehensiveReportController::class, 'show'])->name('comprehensive.show');
+    // Map Report
+    Route::get('/comprehensive/map', [MapController::class, 'showForm'])->name('comprehensive.map.form');
+    Route::post('/comprehensive/map', [MapController::class, 'processForm'])->name('comprehensive.map.process');
 
+    // Status Report
+    Route::get('/comprehensive/status', [StatusController::class, 'showForm'])->name('comprehensive.status.form');
+    Route::post('/comprehensive/status', [StatusController::class, 'processForm'])->name('comprehensive.status.process');
+
+    // Unit Stages
+    Route::get('/comprehensive/unit-stages', [UnitStagesController::class, 'showForm'])->name('comprehensive.unit-stages.form');
+    Route::post('/comprehensive/unit-stages', [UnitStagesController::class, 'processForm'])->name('comprehensive.unit-stages.process');
+
+    // Unit Details
+    Route::get('/comprehensive/unit-details', [UnitDetailsController::class, 'showForm'])->name('comprehensive.unit-details.form');
+    Route::post('/comprehensive/unit-details', [UnitDetailsController::class, 'processForm'])->name('comprehensive.unit-details.process');
+
+    // Visits/Payments/Contracts
+    Route::get('/comprehensive/vpc', [VisitsPaymentsContractsController::class, 'showForm'])->name('comprehensive.vpc.form');
+    Route::post('/comprehensive/vpc', [VisitsPaymentsContractsController::class, 'processForm'])->name('comprehensive.vpc.process');
+
+    // Disinterest Reasons
+    Route::get('/comprehensive/disinterest', [DisinterestReasonsController::class, 'showForm'])->name('comprehensive.disinterest.form');
+    Route::post('/comprehensive/disinterest', [DisinterestReasonsController::class, 'processForm'])->name('comprehensive.disinterest.process');
+
+    // Unit Statistics
+    Route::get('/comprehensive/unit-statistics', [UnitStatisticsController::class, 'showForm'])->name('comprehensive.unit-statistics.form');
+    Route::post('/comprehensive/unit-statistics', [UnitStatisticsController::class, 'processForm'])->name('comprehensive.unit-statistics.process');
+
+    // Appointments
+    Route::get('/comprehensive/appointments', [AppointmentsController::class, 'showForm'])->name('comprehensive.appointments.form');
+    Route::post('/comprehensive/appointments', [AppointmentsController::class, 'processForm'])->name('comprehensive.appointments.process');
+
+    // Targeted Report
+    Route::get('/comprehensive/targeted', [TargetedReportController::class, 'showForm'])->name('comprehensive.targeted.form');
+    Route::post('/comprehensive/targeted', [TargetedReportController::class, 'processForm'])->name('comprehensive.targeted.process');
+
+    // Unit Sales
+    Route::get('/comprehensive/unit-sales', [UnitSalesController::class, 'showForm'])->name('comprehensive.unit-sales.form');
+    Route::post('/comprehensive/unit-sales', [UnitSalesController::class, 'processForm'])->name('comprehensive.unit-sales.process');
+
+    // Project Summary
+    Route::get('/comprehensive/project-summary', [ProjectSummaryController::class, 'showForm'])->name('comprehensive.project-summary.form');
+    Route::post('/comprehensive/project-summary', [ProjectSummaryController::class, 'processForm'])->name('comprehensive.project-summary.process');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

@@ -1,4 +1,4 @@
-[media pointer="file-service://file-YH69SPM5e7pZvxCBDPr7TQ"]
+
 @extends('layouts.app')
 
 @section('content')

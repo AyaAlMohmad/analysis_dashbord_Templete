@@ -15,13 +15,14 @@
                             <div class="card-body">
                                 <div class="form-group">
                                     <div class="text-bold-600 font-medium-2">
-                                        <h1 class="text-2xl font-bold text-gray-800 text-center"> {{ __('leads.report_title') }}</h1>
+                                        <h1 class="text-2xl font-bold text-gray-800 text-center">
+                                            {{ __('leads.report_title') }}</h1>
                                         <div class="flex items-center gap-4 mt-4">
                                             <!-- Dhahran Log -->
                                             <a href="{{ route('admin.leads.log', 'dhahran') }}"
                                                 class="p-3 rounded-xl hover:bg-gray-100 transition text-gray-600 text-2xl"
                                                 title="View Dhahran Log">
-                                              {{ __('leads.view_log_dhahran') }}<i class="fas fa-clipboard-list"></i> 
+                                                {{ __('leads.view_log_dhahran') }}<i class="fas fa-clipboard-list"></i>
                                             </a>
 
                                             <!-- Bashaer Log -->
@@ -88,14 +89,14 @@
                             <hr class="my-4">
                         </div>
 
-                        <!-- الرسم البياني -->
                         <div class="bg-white p-6 rounded-lg shadow-sm mt-8">
                             <canvas id="chart-{{ $key }}" class="w-full" style="height:400px;"></canvas>
                         </div>
 
                         <div class="bg-white p-6 rounded-lg shadow-sm mt-8">
-                   
-                            <h3 class="text-lg font-semibold mb-4 text-gray-700 text-center">{{ __('leads.daily_details') }}  </h3>
+
+                            <h3 class="text-lg font-semibold mb-4 text-gray-700 text-center">
+                                {{ __('leads.daily_details') }} </h3>
 
                             <section id="daily-details-{{ $key }}" class="hidden">
                                 <div class="row">
@@ -155,7 +156,14 @@
             @endforeach
         </section>
     </div>
-
+    <div id="pdf-loading-overlay" style="display: none;">
+        <div class="loading-spinner">
+            <div class="spinner-circle"></div>
+            <div class="loading-text" style="margin-top: 20px; color: #333; text-align: center; font-size: 18px;">
+                {{ __('messages.generating_report') }}
+            </div>
+        </div>
+    </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 
     <script>
@@ -190,7 +198,7 @@
                             data: {
                                 labels: data[site].dates,
                                 datasets: [{
-                                    label: "{{ __('leads.added') }}",
+                                        label: "{{ __('leads.added') }}",
                                         data: data[site].added,
                                         backgroundColor: '#A2C2D6',
                                     },
@@ -220,128 +228,146 @@
             });
         });
     </script>
-    <script>
-        async function submitExport(type) {
-            const site = document.getElementById('siteSelect').value;
-            if (!site) return alert('Please select a site');
+<script>
+    async function submitExport(type) {
+        const site = document.getElementById('siteSelect').value;
+        if (!site) return alert('Please select a site');
 
-            const {
-                jsPDF
-            } = window.jspdf;
-            const exportedBy = "{{ Auth::user()->name }}";
-            const exportDate = new Date().toLocaleString();
-            const logoUrl = "{{ asset('build/logo.png') }}";
+        // Show loading overlay
+        const loadingOverlay = document.getElementById('pdf-loading-overlay');
+        if (loadingOverlay) loadingOverlay.style.display = 'flex';
 
-            const chartCanvas = document.getElementById(`chart-${site}`);
-            const detailsTable = document.querySelector(`#daily-details-${site} table`);
+        const { jsPDF } = window.jspdf;
+        const exportedBy = "{{ Auth::user()->name }}";
+        const exportDate = new Date().toLocaleString();
+        
+        // Left logo (always Tatwir logo)
+        const leftLogoUrl = "{{ asset('build/logo.png') }}";
+        
+        // Right logo (conditional based on site)
+        const rightLogoUrl = site.toLowerCase() === 'aldhahran' 
+            ? "{{ asset('images/logo5.png') }}" 
+            : "{{ asset('images/logo6.png') }}";
 
-            if (!chartCanvas || !detailsTable) {
-                alert('Required elements not found');
-                return;
-            }
+        const chartCanvas = document.getElementById(`chart-${site}`);
+        const detailsTable = document.querySelector(`#daily-details-${site} table`);
 
-            if (type === 'pdf') {
-                const doc = new jsPDF('p', 'mm', 'a4');
-                const logoImg = new Image();
-                logoImg.crossOrigin = "anonymous";
-                logoImg.src = logoUrl;
-
-                logoImg.onload = async function() {
-                    doc.addImage(logoImg, 'PNG', 80, 10, 50, 30);
-   doc.setFontSize(16);
-                    doc.text(`Leads Report - Azyan ${site.charAt(0).toUpperCase() + site.slice(1)}`, 105, 50, {
-                        align: 'center'
-                    });
-                    doc.line(10, 55, 200, 55);
-
-                    let yPos = 60;
-
-                    const chartImg = await html2canvas(chartCanvas);
-                    const chartDataUrl = chartImg.toDataURL('image/png');
-                    doc.addImage(chartDataUrl, 'PNG', 10, yPos, 190, 80);
-                    yPos += 90;
-
-                    const rows = [];
-                    const tableRows = detailsTable.querySelectorAll('tbody tr');
-                    tableRows.forEach(row => {
-                        const date = row.children[0]?.innerText.trim() ?? '';
-                        const added = row.children[1]?.innerText.trim() ?? '';
-                        const edited = row.children[2]?.innerText.trim() ?? '';
-                        const total = row.children[3]?.innerText.trim() ?? '';
-                        rows.push([date, added, edited, total]);
-                    });
-
-                   await doc.autoTable({
-                        head: [
-                            ['Date', 'Added', 'Edited', 'Total']
-                        ],
-                        body: rows,
-                        startY: yPos,
-                        theme: 'grid',
-                        styles: {
-                            fontSize: 10
-                        },
-                        headStyles: {
-                            fillColor: [41, 128, 185]
-                        },
-                        alternateRowStyles: {
-                            fillColor: [240, 240, 240]
-                        },
-                        margin: {
-                            top: 10
-                        },
-                    });
-
-                    const totalPages = doc.internal.getNumberOfPages();
-                    doc.setPage(totalPages);
-
-                    const pageSize = doc.internal.pageSize;
-                    const pageHeight = pageSize.height || pageSize.getHeight();
-
-                    doc.setFontSize(10);
-                    doc.text(`Exported by: ${exportedBy}`, 10, pageHeight - 20);
-                    doc.text(`Export date: ${exportDate}`, 10, pageHeight - 15);
-                    doc.text(`Page ${totalPages} of ${totalPages}`, 200 - 10, pageHeight - 15, {
-                        align: 'right'
-                    });
-
-                    doc.save(`${site}_leads_report.pdf`);
-                };
-            } else if (type === 'csv') {
-                const zip = new JSZip();
-
-                 let csvContent = "Date,Added,Edited,Total\n";
-                const tableRows = detailsTable.querySelectorAll('tbody tr');
-                tableRows.forEach(row => {
-                    const date = row.children[0]?.innerText.trim() ?? '';
-                    const added = row.children[1]?.innerText.trim() ?? '';
-                    const edited = row.children[2]?.innerText.trim() ?? '';
-                    const total = row.children[3]?.innerText.trim() ?? '';
-                    csvContent += `${date},${added},${edited},${total}\n`;
-                });
-
-                csvContent += `\nExported by,${exportedBy}\nExport date,${exportDate}`;
-
-                html2canvas(chartCanvas).then(canvas => {
-                    canvas.toBlob(blob => {
-                        zip.file(`${site}_details.csv`, csvContent);
-                        zip.file(`${site}_chart.png`, blob);
-
-                        zip.generateAsync({
-                            type: "blob"
-                        }).then(content => {
-                            const url = URL.createObjectURL(content);
-                            const a = document.createElement('a');
-                            a.href = url;
-                            a.download = `${site}_leads_report.zip`;
-                            a.click();
-                            URL.revokeObjectURL(url);
-                        });
-                    }, 'image/png');
-                });
-            }
+        if (!chartCanvas || !detailsTable) {
+            if (loadingOverlay) loadingOverlay.style.display = 'none';
+            alert('Required elements not found');
+            return;
         }
-    </script>
+
+        if (type === 'pdf') {
+            const doc = new jsPDF('p', 'mm', 'a4');
+            
+            // Load both logos
+            const leftLogoImg = new Image();
+            leftLogoImg.crossOrigin = "anonymous";
+            leftLogoImg.src = leftLogoUrl;
+
+            const rightLogoImg = new Image();
+            rightLogoImg.crossOrigin = "anonymous";
+            rightLogoImg.src = rightLogoUrl;
+
+            // Wait for both logos to load
+            await Promise.all([
+                new Promise(resolve => { leftLogoImg.onload = resolve; }),
+                new Promise(resolve => { rightLogoImg.onload = resolve; })
+            ]);
+
+            // Add logos (left and right)
+            doc.addImage(leftLogoImg, 'PNG', 15, 10, 20, 20); // Left logo (Tatwir)
+            doc.addImage(rightLogoImg, 'PNG', 155, 10, 20, 20); // Right logo (conditional)
+
+            // Add title and line
+            doc.setFontSize(16);
+            doc.text(`Leads Report - Azyan ${site.charAt(0).toUpperCase() + site.slice(1)}`, 105, 50, {
+                align: 'center'
+            });
+            doc.line(10, 55, 200, 55);
+
+            let yPos = 60;
+
+            // Add chart
+            const chartImg = await html2canvas(chartCanvas);
+            const chartDataUrl = chartImg.toDataURL('image/png');
+            doc.addImage(chartDataUrl, 'PNG', 10, yPos, 190, 80);
+            yPos += 90;
+
+            // Prepare table data
+            const rows = [];
+            const tableRows = detailsTable.querySelectorAll('tbody tr');
+            tableRows.forEach(row => {
+                const date = row.children[0]?.innerText.trim() ?? '';
+                const added = row.children[1]?.innerText.trim() ?? '';
+                const edited = row.children[2]?.innerText.trim() ?? '';
+                const total = row.children[3]?.innerText.trim() ?? '';
+                rows.push([date, added, edited, total]);
+            });
+
+            // Add table
+            await doc.autoTable({
+                head: [['Date', 'Added', 'Edited', 'Total']],
+                body: rows,
+                startY: yPos,
+                theme: 'grid',
+                styles: { fontSize: 10 },
+                headStyles: { fillColor: [41, 128, 185] },
+                alternateRowStyles: { fillColor: [240, 240, 240] },
+                margin: { top: 10 }
+            });
+
+            // Add footer
+            const totalPages = doc.internal.getNumberOfPages();
+            doc.setPage(totalPages);
+            const pageHeight = doc.internal.pageSize.height || doc.internal.pageSize.getHeight();
+            
+            doc.setFontSize(10);
+            doc.text(`Exported by: ${exportedBy}`, 10, pageHeight - 20);
+            doc.text(`Export date: ${exportDate}`, 10, pageHeight - 15);
+            doc.text(`Page ${totalPages} of ${totalPages}`, 200 - 10, pageHeight - 15, {
+                align: 'right'
+            });
+
+            doc.save(`${site}_leads_report.pdf`);
+            
+        } else if (type === 'csv') {
+            const zip = new JSZip();
+
+            let csvContent = "Date,Added,Edited,Total\n";
+            const tableRows = detailsTable.querySelectorAll('tbody tr');
+            tableRows.forEach(row => {
+                const date = row.children[0]?.innerText.trim() ?? '';
+                const added = row.children[1]?.innerText.trim() ?? '';
+                const edited = row.children[2]?.innerText.trim() ?? '';
+                const total = row.children[3]?.innerText.trim() ?? '';
+                csvContent += `${date},${added},${edited},${total}\n`;
+            });
+
+            csvContent += `\nExported by,${exportedBy}\nExport date,${exportDate}`;
+
+            html2canvas(chartCanvas).then(canvas => {
+                canvas.toBlob(blob => {
+                    zip.file(`${site}_details.csv`, csvContent);
+                    zip.file(`${site}_chart.png`, blob);
+
+                    zip.generateAsync({ type: "blob" }).then(content => {
+                        const url = URL.createObjectURL(content);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = `${site}_leads_report.zip`;
+                        a.click();
+                        URL.revokeObjectURL(url);
+                    });
+                }, 'image/png');
+            });
+        }
+
+        // Hide loading overlay
+        if (loadingOverlay) loadingOverlay.style.display = 'none';
+    }
+</script>
 
     <script>
         function toggleTable(key) {

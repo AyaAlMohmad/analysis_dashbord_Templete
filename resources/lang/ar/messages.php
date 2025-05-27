@@ -14,4 +14,6 @@ return[
     'unit_stages'=>'المرحلة حسب النموذج',
     'visits_payments_contracts'=>' الزيارات والسداد والعقود لشهر',
     'generating_report'=>'جاري تجهيز التقرير...',
+    'If no dates are selected, the report will be generated cumulatively.' => 'إذا لم يتم اختيار التاريخ، سيتم عرض التقرير بشكل تراكمي.',
+
 ];

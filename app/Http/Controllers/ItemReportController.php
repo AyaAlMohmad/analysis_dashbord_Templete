@@ -82,9 +82,9 @@ class ItemReportController extends Controller
     {
         $validSites = ['dhahran', 'bashaer'];
 
-        if (!in_array($site, $validSites)) {
+       if (!in_array($site, $validSites)) {
             return redirect()->back()->with('error', 'Invalid site selected.');
-        }
+        } 
 
         $apiUrls = [
             'dhahran' => 'https://crm.azyanaldhahran.com/api/items/all',
@@ -93,9 +93,9 @@ class ItemReportController extends Controller
 
         $response = Http::timeout(30)->get($apiUrls[$site]);
 
-        if (!$response->ok()) {
-            return redirect()->back()->with('error', 'Failed to fetch data from ' . $site);
-        }
+        // if (!$response->ok()) {
+        //     return redirect()->back()->with('error', 'Failed to fetch data from ' . $site);
+        // }
 
         $result = $response->json();
         $siteData = [

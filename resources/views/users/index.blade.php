@@ -7,20 +7,20 @@
       
       <!-- Page Header -->
       <div style="padding: 1.5rem; text-align: center;">
-        <h1 style="font-size: 1.875rem; font-weight: 700; color: #1f2937;">Users Management</h1>
+        <h1 style="font-size: 1.875rem; font-weight: 700; color: #1f2937;">{{ __('users.title') }}</h1>
       </div>
 
       <div style="padding: 1.5rem;">
         @if (session('success'))
           <div style="background-color: #d1fae5; color: #065f46; padding: 1rem 1.25rem; border-radius: 0.375rem; margin-bottom: 1.5rem;">
             <i class="fas fa-check-circle" style="margin-right: 0.5rem;"></i>
-            {{ session('success') }}
+            {{ __('users.success') }}
           </div>
         @endif
 
         <div style="display: flex; justify-content: flex-end; margin-bottom: 1.5rem;">
           <a href="{{ route('admin.users.create') }}" style="background: #2563eb; color: white; padding: 0.5rem 1rem; border-radius: 0.375rem; text-decoration: none;">
-            + New User
+            + {{ __('users.new_user') }}
           </a>
         </div>
 
@@ -29,10 +29,10 @@
           <table style="width: 100%; border-collapse: collapse;">
             <thead style="background: #f3f4f6;">
               <tr>
-                <th style="padding: 0.75rem; text-align: center; font-weight: 600; color: #374151;">Name</th>
-                <th style="padding: 0.75rem; text-align: center; font-weight: 600; color: #374151;">Email</th>
-                <th style="padding: 0.75rem; text-align: center; font-weight: 600; color: #374151;">Role</th>
-                <th style="padding: 0.75rem; text-align: center; font-weight: 600; color: #374151;">Actions</th>
+                <th style="padding: 0.75rem; text-align: center; font-weight: 600; color: #374151;">{{ __('users.name') }}</th>
+                <th style="padding: 0.75rem; text-align: center; font-weight: 600; color: #374151;">{{ __('users.email') }}</th>
+                <th style="padding: 0.75rem; text-align: center; font-weight: 600; color: #374151;">{{ __('users.role') }}</th>
+                <th style="padding: 0.75rem; text-align: center; font-weight: 600; color: #374151;">{{ __('users.actions') }}</th>
               </tr>
             </thead>
             <tbody>
@@ -42,9 +42,9 @@
                 <td style="padding: 1rem; text-align: center; color: #4b5563;">{{ $user->email }}</td>
                 <td style="padding: 1rem; text-align: center;">
                   @if($user->is_admin)
-                    <span style="display: inline-block; padding: 0.25rem 0.5rem; background: #dcfce7; color: #166534; border-radius: 9999px; font-size: 0.875rem;">Admin</span>
+                    <span style="display: inline-block; padding: 0.25rem 0.5rem; background: #dcfce7; color: #166534; border-radius: 9999px; font-size: 0.875rem;">{{ __('users.admin') }}</span>
                   @else
-                    <span style="display: inline-block; padding: 0.25rem 0.5rem; background: #f3f4f6; color: #374151; border-radius: 9999px; font-size: 0.875rem;">User</span>
+                    <span style="display: inline-block; padding: 0.25rem 0.5rem; background: #f3f4f6; color: #374151; border-radius: 9999px; font-size: 0.875rem;">{{ __('users.user') }}</span>
                   @endif
                 </td>
                 <td style="padding: 1rem; text-align: center;">
@@ -52,7 +52,7 @@
                     <i class="fas fa-edit"></i>
                   </a>
                   
-                  <form action="{{ route('admin.users.destroy', $user) }}" method="POST" style="display: inline-block;" onsubmit="return confirm('Are you sure?');">
+                  <form action="{{ route('admin.users.destroy', $user) }}" method="POST" style="display: inline-block;" onsubmit="return confirm('{{ __('users.are_you_sure') }}');">
                     @csrf
                     @method('DELETE')
                     <button type="submit" style="background: none; border: none; color: #dc2626; cursor: pointer; margin: 0 0.5rem;">

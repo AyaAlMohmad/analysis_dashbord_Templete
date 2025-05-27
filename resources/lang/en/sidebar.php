@@ -23,6 +23,23 @@ return [
     'unit_report' => 'Unit Report',
     'contracts_report' => 'Contracts Report',
     'source_report' => 'Source Report',
+
+    
     'comprehensive_report' => 'Comprehensive Report',
+    'report_form' => 'Report Form',
+    'report_parts' => 'Report Parts',
+    'colored_map' => 'Colored Map',
+    'appointments_report' => 'Appointments Report',
+    'summary_report' => 'Project Summary',
+    'unit_satage_report' => 'Unit Stages',
+    'status_report' => 'Status Report',
+    'unit_details_report' => 'Unit Details',
+    'vpc_report' => 'Visits / Payments / Contracts',
+    'disinterest_report' => 'Disinterest Reasons',
+    'unit_statistics_report' => 'Unit Statistics',
+    'targeted_report' => 'Targeted Report',
+    'unit_sales_report' => 'Unit Sales Report',
+  
+
 ];
 

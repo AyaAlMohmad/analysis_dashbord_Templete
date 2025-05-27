@@ -15,7 +15,8 @@
                             <div class="card-body">
                                 <div class="form-group">
                                     <div class="text-bold-600 font-medium-2">
-                                        <h1 class="text-2xl font-bold text-gray-800 text-center">{{ __('leads.report_title') }}</h1>
+                                        <h1 class="text-2xl font-bold text-gray-800 text-center">
+                                            {{ __('leads.report_title') }}</h1>
                                     </div>
                                 </div>
 
@@ -79,7 +80,7 @@
                                 <div class="bg-indigo-50 p-6 rounded-lg shadow-sm max-w-xs mx-auto">
                                     <h3 class="text-lg font-semibold text-indigo-800 mb-2">
                                         {{ __('leads.total') }}
-                                        </h3>
+                                    </h3>
                                     <h3 class="text-3xl font-bold text-indigo-600"> {{ number_format($totals[$key]) }}</h3>
                                 </div>
                             </div>
@@ -98,7 +99,8 @@
 
                             <!-- Details Section -->
                             <div class="bg-white p-6 rounded-lg shadow-sm mt-8">
-                                <h3 class="text-lg font-semibold mb-4 text-gray-700 text-center">{{ __('leads.status_overview') }}</h3>
+                                <h3 class="text-lg font-semibold mb-4 text-gray-700 text-center">
+                                    {{ __('leads.status_overview') }}</h3>
 
                                 <section id="daily-details-{{ $key }}" class="hidden">
                                     <div class="row">
@@ -151,13 +153,23 @@
             @endforeach
         </section>
     </div>
+    <div id="pdf-loading-overlay" style="display: none;">
+        <div class="loading-spinner">
+            <div class="spinner-circle"></div>
+            <div class="loading-text" style="margin-top: 20px; color: #333; text-align: center; font-size: 18px;">
+                {{ __('messages.generating_report') }}
+            </div>
+        </div>
+    </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
-
+    <script src="jsPDF/dist/jspdf.umd.min.js"></script>
+    <script src="jsPDF/fonts/Amiri-normal.js"></script>
+    
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const siteSelect = document.getElementById('siteSelect');
             const containers = document.querySelectorAll('.site-section');
-            const charts = {}; 
+            const charts = {};
 
             const data = {
                 dhahran: {
@@ -171,15 +183,15 @@
             };
 
             siteSelect.addEventListener('change', function() {
-                
+
                 containers.forEach(div => div.style.display = 'none');
 
                 const site = this.value;
 
                 if (site && data[site]) {
-             
+
                     document.getElementById(`site-${site}`).style.display = 'block';
-    if (!charts[site]) {
+                    if (!charts[site]) {
                         const canvas = document.getElementById(`chart-${site}`);
                         const ctx = canvas.getContext('2d');
 
@@ -225,37 +237,64 @@
     </script>
 
 
-    <script>
-        async function submitExport(type) {
+<script>
+    async function submitExport(type) {
+        try {
             const site = document.getElementById('siteSelect').value;
-            if (!site) return alert('Please select a site first.');
+            if (!site) {
+                alert('Please select a site first.');
+                return;
+            }
 
-            const {
-                jsPDF
-            } = window.jspdf;
+            const loadingOverlay = document.getElementById('pdf-loading-overlay');
+            if (loadingOverlay) loadingOverlay.style.display = 'flex';
+
+            const { jsPDF } = window.jspdf;
             const exportedBy = "{{ Auth::user()->name }}";
             const exportDate = new Date().toLocaleString();
-            const logoUrl = "{{ asset('build/logo.png') }}";
+
+            // Left logo (always Tatwir logo)
+            const leftLogoUrl = "{{ asset('build/logo.png') }}";
+            
+            // Right logo (conditional based on site)
+            const rightLogoUrl = site.toLowerCase() === 'dhahran' 
+                ? "{{ asset('images/logo5.png') }}" 
+                : "{{ asset('images/logo6.png') }}";
 
             const chartCanvas = document.getElementById(`chart-${site}`);
             const detailsTable = document.querySelector(`#daily-details-${site} table`);
 
             if (!chartCanvas || !detailsTable) {
-                alert('Required elements not found.');
+                if (loadingOverlay) loadingOverlay.style.display = 'none';
+                alert('Required elements not found');
                 return;
             }
 
             if (type === 'pdf') {
                 const doc = new jsPDF('p', 'mm', 'a4');
-                const logoImg = new Image();
-                logoImg.crossOrigin = "anonymous";
-                logoImg.src = logoUrl;
+                
+                // Load both logos with error handling
+                const loadImage = (url) => {
+                    return new Promise((resolve, reject) => {
+                        const img = new Image();
+                        img.crossOrigin = "anonymous";
+                        img.onload = () => resolve(img);
+                        img.onerror = () => reject(new Error(`Failed to load image: ${url}`));
+                        img.src = url;
+                    });
+                };
 
-                logoImg.onload = async function() {
-                   
-                    doc.addImage(logoImg, 'PNG', 80, 10, 50, 30);
+                try {
+                    const [leftLogoImg, rightLogoImg] = await Promise.all([
+                        loadImage(leftLogoUrl),
+                        loadImage(rightLogoUrl)
+                    ]);
 
-                 
+                    // Add logos (left and right)
+                    doc.addImage(leftLogoImg, 'PNG', 15, 10, 20, 20);
+                    doc.addImage(rightLogoImg, 'PNG', 155, 10, 20, 20);
+
+                    // Add title and line
                     doc.setFontSize(16);
                     doc.text(`Leads Report - Azyan ${site.charAt(0).toUpperCase() + site.slice(1)}`, 105, 50, {
                         align: 'center'
@@ -264,13 +303,28 @@
 
                     let yPos = 60;
 
-                 
-                    const chartImg = await html2canvas(chartCanvas);
-                    const chartDataUrl = chartImg.toDataURL('image/png');
-                    doc.addImage(chartDataUrl, 'PNG', 10, yPos, 190, 80);
-                    yPos += 90;
+                    // Render chart with better quality settings
+                    const chartImg = await html2canvas(chartCanvas, {
+                        scale: 2, // Higher quality
+                        logging: true,
+                        useCORS: true,
+                        allowTaint: true,
+                        backgroundColor: '#FFFFFF'
+                    });
 
-                 
+                    const chartDataUrl = chartImg.toDataURL('image/png', 1.0);
+                    if (!chartDataUrl || chartDataUrl === 'data:,') {
+                        throw new Error('Failed to generate chart image');
+                    }
+
+                    // Add chart with proper aspect ratio
+                    const chartAspectRatio = chartCanvas.height / chartCanvas.width;
+                    const chartWidth = 190;
+                    const chartHeight = chartWidth * chartAspectRatio;
+                    doc.addImage(chartDataUrl, 'PNG', 10, yPos, chartWidth, chartHeight);
+                    yPos += chartHeight + 10;
+
+                    // Prepare table data
                     const rows = [];
                     const tableRows = detailsTable.querySelectorAll('tbody tr');
                     tableRows.forEach(row => {
@@ -279,74 +333,105 @@
                         rows.push([status, count]);
                     });
 
+                    // Add table
                     await doc.autoTable({
-                        head: [
-                            ['Status', 'Count']
-                        ],
+                        head: [['Status', 'Count']],
                         body: rows,
                         startY: yPos,
                         theme: 'grid',
-                        styles: {
-                            fontSize: 10
-                        },
-                        headStyles: {
-                            fillColor: [41, 128, 185]
-                        },
-                        alternateRowStyles: {
-                            fillColor: [240, 240, 240]
-                        },
-                        margin: {
-                            top: 10
-                        },
+                        styles: { fontSize: 10 },
+                        headStyles: { fillColor: [41, 128, 185] },
+                        alternateRowStyles: { fillColor: [240, 240, 240] },
+                        margin: { top: 10 }
                     });
 
+                    // Add footer to all pages
                     const totalPages = doc.internal.getNumberOfPages();
-                    doc.setPage(totalPages);
-                    const pageSize = doc.internal.pageSize;
-                    const pageHeight = pageSize.height || pageSize.getHeight();
-
-                    doc.setFontSize(10);
-                    doc.text(`Exported by: ${exportedBy}`, 10, pageHeight - 20);
-                    doc.text(`Export date: ${exportDate}`, 10, pageHeight - 15);
-                    doc.text(`Page ${totalPages} of ${totalPages}`, 200 - 10, pageHeight - 15, {
-                        align: 'right'
-                    });
+                    for (let i = 1; i <= totalPages; i++) {
+                        doc.setPage(i);
+                        const pageHeight = doc.internal.pageSize.getHeight();
+                        
+                        doc.setFontSize(10);
+                        doc.text(`Exported by: ${exportedBy}`, 10, pageHeight - 20);
+                        doc.text(`Export date: ${exportDate}`, 10, pageHeight - 15);
+                        doc.text(`Page ${i} of ${totalPages}`, 200 - 10, pageHeight - 15, {
+                            align: 'right'
+                        });
+                    }
 
                     doc.save(`${site}_leads_report.pdf`);
-                };
+                    
+                } catch (error) {
+                    console.error('PDF generation error:', error);
+                    alert('Failed to generate PDF. See console for details.');
+                }
+
             } else if (type === 'csv') {
-                const zip = new JSZip();
+                try {
+                    const zip = new JSZip();
 
-                let csvContent = "Status,Count\n";
-                const tableRows = detailsTable.querySelectorAll('tbody tr');
-                tableRows.forEach(row => {
-                    const status = row.children[0]?.innerText.trim() ?? '';
-                    const count = row.children[1]?.innerText.trim() ?? '';
-                    csvContent += `${status},${count}\n`;
-                });
+                    // Prepare CSV content
+                    let csvContent = "Status,Count\n";
+                    const tableRows = detailsTable.querySelectorAll('tbody tr');
+                    tableRows.forEach(row => {
+                        const status = row.children[0]?.innerText.trim() ?? '';
+                        const count = row.children[1]?.innerText.trim() ?? '';
+                        csvContent += `"${status.replace(/"/g, '""')}",${count}\n`;
+                    });
 
-                csvContent += `\nExported by,${exportedBy}\nExport date,${exportDate}`;
+                    csvContent += `\nExported by,${exportedBy}\nExport date,${exportDate}`;
 
-                html2canvas(chartCanvas).then(canvas => {
-                    canvas.toBlob(blob => {
-                        zip.file(`${site}_details.csv`, csvContent);
-                        zip.file(`${site}_chart.png`, blob);
+                    // Generate chart image with better settings
+                    const chartImg = await html2canvas(chartCanvas, {
+                        scale: 2,
+                        logging: true,
+                        useCORS: true,
+                        allowTaint: true,
+                        backgroundColor: '#FFFFFF'
+                    });
 
-                        zip.generateAsync({
-                            type: "blob"
-                        }).then(content => {
-                            const url = URL.createObjectURL(content);
-                            const a = document.createElement('a');
-                            a.href = url;
-                            a.download = `${site}_leads_report.zip`;
-                            a.click();
-                            URL.revokeObjectURL(url);
-                        });
-                    }, 'image/png');
-                });
+                    const blob = await new Promise((resolve) => {
+                        chartImg.toBlob(resolve, 'image/png', 1.0);
+                    });
+
+                    if (!blob) {
+                        throw new Error('Failed to generate chart image blob');
+                    }
+
+                    // Add files to zip
+                    zip.file(`${site}_details.csv`, csvContent);
+                    zip.file(`${site}_chart.png`, blob);
+
+                    // Generate and download zip
+                    const content = await zip.generateAsync({ type: "blob" });
+                    const url = URL.createObjectURL(content);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `${site}_leads_report.zip`;
+                    document.body.appendChild(a);
+                    a.click();
+                    
+                    // Cleanup
+                    setTimeout(() => {
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                    }, 100);
+
+                } catch (error) {
+                    console.error('CSV/ZIP generation error:', error);
+                    alert('Failed to generate CSV/ZIP. See console for details.');
+                }
             }
+
+        } catch (error) {
+            console.error('Export error:', error);
+            alert('An unexpected error occurred during export.');
+        } finally {
+            const loadingOverlay = document.getElementById('pdf-loading-overlay');
+            if (loadingOverlay) loadingOverlay.style.display = 'none';
         }
-    </script>
+    }
+</script>
 
     <script>
         function toggleTable(key) {

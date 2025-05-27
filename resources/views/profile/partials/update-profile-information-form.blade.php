@@ -1,13 +1,5 @@
 <section>
-    <header>
-        <h2 class="text-lg font-medium text-gray-900">
-            {{ __('Profile Information') }}
-        </h2>
 
-        <p class="mt-1 text-sm text-gray-600">
-            {{ __("Update your account's profile information and email address.") }}
-        </p>
-    </header>
 
     <form id="send-verification" method="post" action="{{ route('verification.send') }}">
         @csrf
@@ -19,7 +11,7 @@
 
         <div style="margin-bottom: 20px;">
             <label for="name" style="display: block; font-weight: 500; color: #374151; margin-bottom: 6px;">
-                {{ __('Name') }}
+                {{ __('profile.name') }}
             </label>
             <input 
                 id="name" 
@@ -38,7 +30,7 @@
 
         <div style="margin-bottom: 20px;">
             <label for="email" style="display: block; font-weight: 500; color: #374151; margin-bottom: 6px;">
-                {{ __('Email') }}
+                {{ __('profile.email') }}
             </label>
             <input 
                 id="email" 
