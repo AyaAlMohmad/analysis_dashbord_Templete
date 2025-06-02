@@ -23,8 +23,8 @@ return [
     'unit_report' => 'Unit Report',
     'contracts_report' => 'Contracts Report',
     'source_report' => 'Source Report',
+'crm_advertising_campaign'=>'Advertising Campaign',
 
-    
     'comprehensive_report' => 'Comprehensive Report',
     'report_form' => 'Report Form',
     'report_parts' => 'Report Parts',
@@ -39,7 +39,7 @@ return [
     'unit_statistics_report' => 'Unit Statistics',
     'targeted_report' => 'Targeted Report',
     'unit_sales_report' => 'Unit Sales Report',
-  
+
 
 ];
 

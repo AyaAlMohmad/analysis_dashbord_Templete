@@ -36,7 +36,7 @@ return [
     'attachments' => 'Attachments',
     'hash' => 'Unique Hash',
     'not_available' => 'Not Available',
-    'title' => 'Appointment Logs Statistics - :site',
+    'title' => 'Leads Logs Statistics - :site',
     'back_to_logs' => 'Back to Logs',
     'chart_title' => 'Daily Activity Log Trend',
     'x_axis' => 'Date',

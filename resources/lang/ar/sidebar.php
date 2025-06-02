@@ -24,6 +24,7 @@ return [
     'unit_report' => 'تقرير الوحدة',
     'contracts_report' => 'تقرير العقود',
     'source_report' => 'تقرير المصدر',
+    'crm_advertising_campaign' => 'حملات التسويق',
 
     'comprehensive_report' => 'التقرير الشامل',
     'report_form' => 'نموذج التقرير',

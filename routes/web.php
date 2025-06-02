@@ -16,6 +16,7 @@ use App\Http\Controllers\ComprehensiveReport\UnitSalesController;
 use App\Http\Controllers\ComprehensiveReport\UnitStagesController;
 use App\Http\Controllers\ComprehensiveReport\UnitStatisticsController;
 use App\Http\Controllers\ComprehensiveReport\VisitsPaymentsContractsController;
+use App\Http\Controllers\CrmAdvertisingCampaignController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ItemLogController;
@@ -138,6 +139,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->as('admin.')->group(funct
     Route::get('/customers/report', [CustomerController::class, 'showForm'])->name('customers.report');
     Route::post('/customers/report/result', [CustomerController::class, 'fetchReport'])->name('customers.report.result');
 
+    Route::get('/campaign/form', [CrmAdvertisingCampaignController::class, 'form'])->name('campaign.form');
+    Route::post('/campaign/result', [CrmAdvertisingCampaignController::class, 'submitCampaign'])->name('campaign.result');
+    Route::get('/campaign/result', [CrmAdvertisingCampaignController::class, 'show'])->name('campaign.show');
+
+    Route::get('/admin/campaign/sources', [CrmAdvertisingCampaignController::class, 'getSources'])->name('campaign.sources');
     Route::get('/comprehensive/form', [ComprehensiveReportController::class, 'form'])->name('comprehensive.form');
     // Route::post('/comprehensive', [ComprehensiveReportController::class, 'index'])->name('comprehensive.index');
     Route::post('/comprehensive', [ComprehensiveReportController::class, 'store'])->name('comprehensive.store');
@@ -185,6 +191,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->as('admin.')->group(funct
     // Project Summary
     Route::get('/comprehensive/project-summary', [ProjectSummaryController::class, 'showForm'])->name('comprehensive.project-summary.form');
     Route::post('/comprehensive/project-summary', [ProjectSummaryController::class, 'processForm'])->name('comprehensive.project-summary.process');
+
+
 });
 
 require __DIR__ . '/auth.php';

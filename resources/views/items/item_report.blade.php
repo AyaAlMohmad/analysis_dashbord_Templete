@@ -1,30 +1,36 @@
 @extends('layouts.app')
 
 @section('content')
-    <style>
-       .overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(5px);
-    z-index: 1000;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start; /* بدل center */
-    padding-top: 80px; /* إضافة مسافة من الأعلى */
-}
+<style>
+    .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+        z-index: 1000;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding-top: 80px;
+        overflow-y: auto;
+    }
 
-.modal-content {
-    background: #fff;
-    padding: 30px;
-    border-radius: 10px;
-    width: 500px;
-}
+    .modal-content {
+        background: #fff;
+        padding: 30px;
+        border-radius: 10px;
+        width: 500px;
+        max-height: 80vh;
+        /* ✅ هذا يحدد أقصى ارتفاع للمودال */
+        overflow-y: auto;
+        /* ✅ وهذا يتيح التمرير داخله */
+    }
+</style>
 
-    </style>
+
 
     <div class="container mt-4">
         <h4>{{__('reports.item_report')}}</h4>
@@ -45,15 +51,15 @@
                     @csrf
                     <input type="hidden" name="site" id="siteInput">
 
-                
+
 
                     <div class="form-group">
                         <label for="group">{{__('reports.select_group')}}:</label>
                         <select name="group" id="group" class="form-control"></select>
                     </div>
-                  
+
                         <button type="submit" class="btn btn-primary mt-3">{{ __('reports.generate') }}</button>
-                    
+
                 </form>
             </div>
         </div>
@@ -79,8 +85,8 @@
 
     const groupSelect = document.getElementById('group');
     groupSelect.innerHTML = '<option value="">-- {{__('reports.select_group')}}--</option>';
-    
-    
+
+
     data.data.groups.forEach(group => {
         const option = document.createElement('option');
         option.value = group.id;

@@ -3,7 +3,7 @@
 @section('content')
     <div class="py-12">
         <style>
-         
+
             .pagination {
                 display: flex;
                 justify-content: center;
@@ -134,10 +134,19 @@
 
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white shadow rounded-lg p-6">
-                <h1 class="text-2xl font-bold text-center text-gray-800 mb-8">{{ __('call_details.change_log') }} {{ $site }}</h1>
+                @if (session('success'))
+                <div style="background-color:#d1fae5; color:#166534; padding:4px; border-radius:4px;">
+                    {{ session('success') }}
+                </div>
+            @endif
 
-                <!-- زرار Update Data و View Analysis -->
-                <div class="flex flex-wrap justify-center mb-8">
+            @if (session('error'))
+                <div style="background-color:#fee2e2; color:#991b1b; padding:4px; border-radius:4px;">
+                    {{ session('error') }}
+                </div>
+            @endif
+                <h1 class="text-2xl font-bold text-center text-gray-800 mb-8">{{ __('call_details.change_log') }} {{ $site }}</h1>
+           <div class="flex flex-wrap justify-center mb-8">
                     <a href="{{ route('admin.call.logs', $site) }}" class="text-blue-500 hover:text-blue-600"
                         style="margin-right: 20px; color: blue">
                   {{ __('call_details.update_data') }}
@@ -191,7 +200,7 @@
                                                 'datestart' => __('call_details.datestart'),
                                                 'dateadded' => __('call_details.dateadded'),
                                                 'customer_type' => __('call_details.customer_type'),
-                                          
+
                                             ];
                                         @endphp
                                         @foreach ($fields as $field => $label)
@@ -221,7 +230,7 @@
                     @endforeach
                 </div>
 
-              
+
                 <div class="pagination">
                     {{ $logs->links() }}
                 </div>
@@ -233,8 +242,8 @@
         function toggleLog(index) {
             const logContent = document.getElementById(`log-${index}`);
             const arrow = document.getElementById(`arrow-${index}`);
-    
-       
+
+
             logContent.classList.toggle('show');
             arrow.classList.toggle('rotate-180');
         }

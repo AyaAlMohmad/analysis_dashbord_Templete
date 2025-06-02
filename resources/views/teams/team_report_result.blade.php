@@ -2,6 +2,57 @@
 
 @section('content')
 <style>
+     .report-container {
+        max-width: 100%;
+        margin: 0 auto;
+        padding: 0;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    /* العنوان */
+    .report-header {
+        width: 100%;
+        border-radius: 0;
+        padding: 0;
+    }
+
+    /* منطقة الجدول */
+    .report-table-container {
+        max-height: calc(100vh - 200px);
+        overflow-y: auto;
+        border: 1px solid #ddd;
+        border-top: none;
+    }
+
+    /* الجدول */
+    table {
+        width: 100%;
+        margin: 0;
+        border-collapse: collapse;
+    }
+
+    /* الصفوف */
+    tbody tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    tbody tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    /* الخلايا */
+    th, td {
+        padding: 12px 8px;
+        border: 1px solid #ddd;
+        text-align: center;
+    }
+
+    th {
+        background-color: #f8f9fa;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
     .logo {
         max-height: 100px;
     }
@@ -31,17 +82,17 @@
     $darkColor = $site === 'dhahran' ? '#00262f' : '#543829';
 @endphp
 
-<div class="container mt-4" id="reportContent">
-    <div class="text-center">
-        <img src="{{ $logo }}" class="logo" alt="Logo">
-    </div>
+<div class="container mt-4 report-container" id="reportContent">
+<div class="text-center py-2">
+            <img src="{{ $logo }}" class="logo" alt="Logo">
+        </div>
+<div class="report-header" style="background-color: {{ $darkColor }} ;">
 
-    <div class="section-title" style="background-color: {{ $darkColor }}">
-        {{ __('reports.team_report') }}<br>
-        <small>{{ __('reports.cumulative_report') }}</small>
+        <h2 class="text-center text-white py-2 m-0">{{ __('reports.team_report') }}</h2>
+        <p class="text-center text-white pb-2 m-0">{{ __('reports.cumulative_report') }}</p>
     </div>
-    
-    <table class="table table-bordered">
+    <div class="report-table-container">
+    <table class="table table-bordered m-0">
         <thead>
             <tr>
                 <th>{{ __('reports.staff_id') }}</th>
@@ -56,7 +107,7 @@
                 <th>{{ __('reports.hazb_leads') }}</th>
             </tr>
         </thead>
-    
+
         <tbody>
             @foreach($result['data'] ?? [] as $item)
                 <tr>
@@ -80,7 +131,7 @@
 
     </div>
     <div class="text-center my-4" id="pdf-export-button">
-    
+
         <a href="javascript:void(0);" onclick="exportPDF()" title="Export PDF"
            class="transition duration-300 transform hover:scale-110 hover:rotate-6 d-block mt-4">
             <div class="fonticon-container flex items-center justify-center custom-hover-red">
@@ -90,7 +141,7 @@
                 </div>
             </div>
         </a>
-    
+
     </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>

@@ -56,7 +56,13 @@
                 <span>{{ __('sidebar.call_logs') }}</span>
             </a>
         </li>
+        <li class="nav-item {{ Route::is('admin.campaign.form') ? 'active' : '' }}">
+            <a href="{{ route('admin.campaign.form') }}">
+                <i class="ft-target"></i>
 
+                <span>{{ __('sidebar.crm_advertising_campaign') }}</span>
+            </a>
+        </li>
         <li class="nav-item {{ Route::is('admin.users.index') ? 'active' : '' }}">
             <a href="{{ route('admin.users.index') }}">
                 <i class="ft-users"></i>
@@ -64,7 +70,7 @@
             </a>
         </li>
 
-        {{-- التقارير --}}
+
         <li class="nav-item has-sub {{ Route::is('admin.reports.*') ? 'open' : '' }}">
             <a href="#">
                 <i class="ft-pie-chart"></i>
@@ -72,7 +78,7 @@
             </a>
             <ul class="menu-content">
 
-                {{-- تقارير الوحدات --}}
+
                 <li class="has-sub {{ Route::is('admin.items.status')  ? 'open' : '' }}">
                     <a href="#"><i class="ft-layers"></i><span>{{ __('sidebar.unit_status_reports') }}</span></a>
                     <ul class="menu-content">
@@ -164,7 +170,7 @@
                         <span>{{ __('sidebar.report_form') }}</span>
                     </a>
                 </li>
-        
+
                 <li class="has-sub {{ Route::is('admin.comprehensive.*') ? 'open' : '' }}">
                     <a href="#">
                         <i class="ft-copy"></i>
@@ -239,9 +245,9 @@
                         </li>
                     </ul>
                 </li>
-                
+
             </ul>
         </li>
-        
+
     </ul>
 </div>

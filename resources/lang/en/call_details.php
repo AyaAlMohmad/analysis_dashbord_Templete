@@ -26,4 +26,7 @@ return [
     'chart_label'=>'Number of Logs',
     'pagination_prev'=>'Previous',
     'pagination_next'=>'Next',
+    'change_log'=>'Change Log - :site',
+    'update_data' => '🔄 Update Data',
+    'view_analysis' => 'View Analysis',
 ];

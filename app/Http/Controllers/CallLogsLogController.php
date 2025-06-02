@@ -6,6 +6,8 @@ use App\Models\CollLogsLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Log;
+
 class CallLogsLogController extends Controller
 {
     public function log(Request $request, $site)
@@ -23,10 +25,10 @@ class CallLogsLogController extends Controller
             $response = Http::timeout(30)
                 ->retry(3, 5000)
                 ->get($sites[$site]);
-                
+
             if ($response->successful()) {
                 $data = $response->json();
-                
+
                 if (!isset($data['logs']) || !is_array($data['logs'])) {
                     return redirect()->back()->with('error', 'Invalid data structure');
                 }
@@ -34,15 +36,15 @@ class CallLogsLogController extends Controller
                 foreach ($data['logs'] as $log) {
                     $this->processLog($log, $site);
                 }
-                
+
                 return redirect()->route('admin.call.logs', ['site' => $site])
                     ->with('success', 'Data updated successfully');
             }
-            
+
             return redirect()->back()->with('error', 'Failed to fetch data: '.$response->status());
-            
+
         } catch (\Exception $e) {
-            \Log::error('Error processing logs from '.$site.': '.$e->getMessage());
+            Log::error('Error processing logs from '.$site.': '.$e->getMessage());
             return redirect()->back()->with('error', 'An error occurred: '.$e->getMessage());
         }
     }
@@ -50,21 +52,33 @@ class CallLogsLogController extends Controller
     private function processLog($log, $site)
     {
         try {
+            $dataNew = null;
+            if (!empty($log['data_new'])) {
+
+                $dataNewStr = trim($log['data_new'], '"');
+                $dataNew = json_decode($dataNewStr, true);
+            }
+            $dataOld = null;
+            if (!empty($log['data_old'])) {
+
+                $dataOldStr = trim($log['data_old'], '"');
+                $dataOld = json_decode($dataOldStr, true);
+            }
             CollLogsLog::updateOrCreate(
                 ['log_id' => $log['id'], 'site' => $site],
                 [
                     'table_name' => $log['table_name'],
                     'record_id' => $log['record_id'],
                     'action' => $log['action'],
-                    'data_old' => $log['data_old'] ? json_decode($log['data_old'], true) : null,
-                    'data_new' => $log['data_new'] ? json_decode($log['data_new'], true) : null,
+                    'data_old' => $dataOld,
+                    'data_new' => $dataNew,
                     'user_id' => $log['user_id'],
                     'created_at' => $log['created_at'],
                     'changed_by' => auth()->user()->name,
                 ]
             );
         } catch (\Exception $e) {
-            \Log::error('Error saving log '.$log['id'].': '.$e->getMessage());
+            Log::error('Error saving log '.$log['id'].': '.$e->getMessage());
         }
     }
 
@@ -80,14 +94,14 @@ class CallLogsLogController extends Controller
     {
         $logs = CollLogsLog::where('site', $site)->get();
 
-        
+
         $modificationsPerDay = $logs->groupBy(function ($log) {
             return \Carbon\Carbon::parse($log->created_at)->format('Y-m-d');
         })->map(function ($group) {
             return $group->count();
         });
 
-    
+
         $fieldCounts = [];
 
         foreach ($logs as $log) {
@@ -107,6 +121,6 @@ class CallLogsLogController extends Controller
             'fieldCounts' => $fieldCounts,
             'site' => $site,
         ]);
-        
+
     }
 }

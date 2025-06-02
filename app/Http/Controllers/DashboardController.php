@@ -16,8 +16,8 @@ class DashboardController extends Controller
             'items'            => $this->compareItems1(),
             'leads_sources'    => $this->compareLeadsSources(),
         ];
+// dd($comparisonData);
 
-     
     return view('dashboard', compact('comparisonData'));
     }
     private function compareAppointments1()
@@ -25,13 +25,13 @@ class DashboardController extends Controller
         try {
             $dhahran = Http::get('https://crm.azyanaldhahran.com/api/appointments')->json();
             $bashaer = Http::get('https://crm.azyanalbashaer.com/api/appointments')->json();
-    
+
             $dates = array_unique(array_merge(
                 array_keys($dhahran['by_date'] ?? []),
                 array_keys($bashaer['by_date'] ?? [])
             ));
             sort($dates);
-    
+
             $timeline = [];
             foreach ($dates as $date) {
                 $timeline[] = [
@@ -40,7 +40,7 @@ class DashboardController extends Controller
                     'bashaer' => $bashaer['by_date'][$date] ?? 0,
                 ];
             }
-    
+
             return [
                 'total_dhahran' => $dhahran['total'] ?? 0,
                 'total_bashaer' => $bashaer['total'] ?? 0,
@@ -50,13 +50,13 @@ class DashboardController extends Controller
             return ['error' => 'Connection error in Appointments'];
         }
     }
-    
+
     private function compareItems1()
     {
         try {
             $dhahran = Http::get('https://crm.azyanaldhahran.com/api/items')->json();
             $bashaer = Http::get('https://crm.azyanalbashaer.com/api/items')->json();
-    
+
             return [
                 'available' => [
                     'dhahran' => $dhahran['available'] ?? 0,
@@ -85,14 +85,15 @@ class DashboardController extends Controller
             $dhahran = Http::get('https://crm.azyanaldhahran.com/api/leads')->json();
             $bashaer = Http::get('https://crm.azyanalbashaer.com/api/leads')->json();
             $result = [];
-    
+
             // Get all unique dates from both APIs
             $allDates = array_unique(array_merge(
-                array_keys($dhahran),
-                array_keys($bashaer)
+                array_keys($dhahran ?? []),
+                array_keys($bashaer ?? [])
             ));
+
             sort($allDates);
-    
+
             foreach ($allDates as $date) {
                 $result[$date] = [
                     'dhahran_added' => $dhahran[$date]['added'] ?? 0,
@@ -101,7 +102,7 @@ class DashboardController extends Controller
                     'bashaer_edited' => $bashaer[$date]['edited'] ?? 0,
                 ];
             }
-    
+
             return $result;
         } catch (\Exception $e) {
             return ['error' => 'Connection error in Leads Activity'];
