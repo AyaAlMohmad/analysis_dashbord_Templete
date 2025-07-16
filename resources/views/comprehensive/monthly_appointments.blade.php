@@ -15,7 +15,7 @@
 
     <!-- Main Content -->
     <div style="display: flex; flex-direction: row-reverse; justify-content: center; align-items: flex-start; margin-top: 40px; gap: 80px;">
-        
+
         <!-- Side Decoration -->
         <div style="flex: 0 0 auto; position: absolute; top: 120px; left: 0;">
             <img src="{{ asset('images/style2.png') }}" alt="Decoration" style="height: 500px;">
@@ -32,29 +32,29 @@
                 @endphp
 
                 <svg viewBox="0 0 36 36" style="width: 100%; height: auto;">
-                  
+
                     <path
                         style="fill: none; stroke: #e6e6e6; stroke-width: 3.8;"
                         d="M18 2.0845
                             a 15.9155 15.9155 0 0 1 0 31.831
                             a 15.9155 15.9155 0 0 1 0 -31.831"/>
-             
+
                     <path
                         style="fill: none; stroke: #a87b4e; stroke-width: 3.8; stroke-linecap: round;"
                         d="M18 2.0845
                             a 15.9155 15.9155 0 0 1 0 31.831
                             a 15.9155 15.9155 0 0 1 0 -31.831"
                         stroke-dasharray="{{ $dashArray }}" />
-                   
+
                     <text x="18" y="20.35" text-anchor="middle" fill="#2e4631" font-size="6" font-weight="bold">
                         {{ number_format($percentage, 1) }}%
                     </text>
                 </svg>
 
-              
+
             </div>
 
-        
+
             <div style="margin-top: 10px;">
                 <span style="display: inline-block; width: 12px; height: 12px; background-color: #a87b4e; margin-left: 5px;"></span> نسبة الإنجاز
                 <span style="margin: 0 10px;"></span>
@@ -91,12 +91,15 @@
 
     <!-- Logo Bottom -->
     <div style="position: absolute; right: 30px; bottom: 30px;">
-        @if(isset($project_name) && $project_name == 'أزيان الظهران')
+        @if (isset($project_name) && $project_name == 'أزيان الظهران')
             <img src="{{ asset('images/logo5.png') }}" alt="Azyan Logo Dhahran" style="height: 50px;">
         @elseif(isset($project_name) && $project_name == 'أزيان البشائر')
             <img src="{{ asset('images/logo6.png') }}" alt="Azyan Logo Albashaer" style="height: 50px;">
+            @elseif (!empty($logo) && file_exists(public_path('storage/' . $logo)))
+            <img src="{{ asset('storage/' . $logo) }}" alt="Site Logo" style="height: 50px;">
         @else
-            <img src="{{ asset('images/default-logo.png') }}" alt="Default Logo" style="height: 50px;">
+            <span style="font-size: 14px; color: #8b5a3b; font-weight: bold;">{{ $project_name }}</span>
         @endif
+
     </div>
 </div>

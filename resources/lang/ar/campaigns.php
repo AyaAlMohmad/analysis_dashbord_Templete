@@ -21,6 +21,7 @@ return [
     'total_amount' => 'المبلغ الإجمالي:',
     'total_leads' => 'إجمالي العملاء المحتملين',
     'reserved_leads' => 'العملاء المحجوزين',
+    'contracted_leads' => 'العملاء التعاقد',
     'contacted_leads' => 'العملاء المتواصل معهم',
     'visits' => 'الزيارات',
     'cpl' => 'تكلفة العميل (CPL)',
@@ -31,4 +32,10 @@ return [
     'new_campaign' => 'حملة جديدة',
     'select_campaign' => 'اختر الحملة',
     'search_campaign' => 'بحث عن الحملة',
+    'impression' => 'عدد مرات الظهور',
+'clicks' => 'عدد الإعجابات',
+'cpc' => 'تكلفة الإعجاب (CPC)',
+'ctr' => 'نسبة الإعجابات إلى الظهور (CTR)',
+'cpm' => 'تكلفة الألف ظهور (CPM)',
+
 ];

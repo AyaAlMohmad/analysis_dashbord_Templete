@@ -13,9 +13,10 @@ class UnitStatisticsController extends ReportBaseController
 
     public function index(Request $request)
     {
-        $albashaerUnitStatistics = $this->getAlbashaerUnitStatisticsByStage();
-        $dhahranUnitStatistics = $this->getDhahranUnitStatisticsByStage();
-        
+        // $albashaerUnitStatistics = $this->getAlbashaerUnitStatisticsByStage();
+        // $dhahranUnitStatistics = $this->getDhahranUnitStatisticsByStage();
+        $albashaerUnitStatistics = $this->getAlbashaerSourceStats();
+        $dhahranUnitStatistics = $this->getDhahranSourceStats();
         return view($this->reportView, [
             'from_date' => $request->input('from_date'),
             'to_date' => $request->input('to_date'),
@@ -23,6 +24,53 @@ class UnitStatisticsController extends ReportBaseController
             'dhahranUnitStatistics' => $dhahranUnitStatistics,
         ]);
     }
+     /**
+ * Get Dhahran Source Statistics
+ */
+private function getDhahranSourceStats()
+{
+    try {
+        $response = Http::get('https://crm.azyanaldhahran.com/api/lead_reports/source_stats_api');
+
+        if ($response->successful()) {
+            $data = $response->json();
+
+            if ($data['status'] ?? false) {
+                return $data['data'] ?? [];
+            }
+        }
+    } catch (\Exception $e) {
+        Log::error("Dhahran Source Stats API Error: " . $e->getMessage());
+    }
+
+    return [
+        'sources' => [],
+    ];
+}
+
+/**
+ * Get Albashaer Source Statistics
+ */
+private function getAlbashaerSourceStats()
+{
+    try {
+        $response = Http::get('https://crm.azyanalbashaer.com/api/lead_reports/source_stats_api');
+
+        if ($response->successful()) {
+            $data = $response->json();
+
+            if ($data['status'] ?? false) {
+                return $data['data'] ?? [];
+            }
+        }
+    } catch (\Exception $e) {
+        Log::error("Albashaer Source Stats API Error: " . $e->getMessage());
+    }
+
+    return [
+        'sources' => [],
+    ];
+}
       /**
      * Get Dhahran Unit Statistics by Stage
      */

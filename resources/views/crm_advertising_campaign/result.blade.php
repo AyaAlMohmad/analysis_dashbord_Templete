@@ -105,12 +105,20 @@
 
         <div class="d-flex">
             <div class="card text-center">
+                <div class="card-header">{{ __('campaigns.cpl') }}</div>
+                <div class="card-footer">{{ number_format($result->cpl, 2) }} </div>
+            </div>
+            <div class="card text-center">
                 <div class="card-header">{{ __('campaigns.total_leads') }}</div>
                 <div class="card-footer">{{ $result->leads_count }}</div>
             </div>
             <div class="card text-center">
                 <div class="card-header">{{ __('campaigns.reserved_leads') }}</div>
                 <div class="card-footer">{{ $result->leads_reserved }}</div>
+            </div>
+            <div class="card text-center">
+                <div class="card-header">{{ __('campaigns.contracted_leads') }}</div>
+                <div class="card-footer">{{ $result->leads_contracted }}</div>
             </div>
             <div class="card text-center">
                 <div class="card-header">{{ __('campaigns.contacted_leads') }}</div>
@@ -120,14 +128,29 @@
                 <div class="card-header">{{ __('campaigns.visits') }}</div>
                 <div class="card-footer">{{ $result->leads_visits }}</div>
             </div>
+
             <div class="card text-center">
-                <div class="card-header">{{ __('campaigns.cpl') }}</div>
-                <div class="card-footer">{{ number_format($result->cpl, 2) }} </div>
+                <div class="card-header">{{ __('campaigns.impression') }}</div>
+                <div class="card-footer">{{ $result->impression }}</div>
             </div>
             <div class="card text-center">
-                <div class="card-header">{{ __('campaigns.total_cost') }}</div>
-                <div class="card-footer">{{ number_format($result->total_cpl, 2) }}</div>
+                <div class="card-header">{{ __('campaigns.clicks') }}</div>
+                <div class="card-footer">{{ $result->clicks }}</div>
             </div>
+            <div class="card text-center">
+                <div class="card-header">{{ __('campaigns.cpc') }}</div>
+                <div class="card-footer">{{ number_format($result->cpc, 2) }}</div>
+            </div>
+            <div class="card text-center">
+                <div class="card-header">{{ __('campaigns.ctr') }}</div>
+                <div class="card-footer">{{ number_format($result->ctr, 2) }}%</div>
+            </div>
+            <div class="card text-center">
+                <div class="card-header">{{ __('campaigns.cpm') }}</div>
+                <div class="card-footer">{{ number_format($result->cpm, 2) }}</div>
+            </div>
+
+
         </div>
 
         <div class="footer">

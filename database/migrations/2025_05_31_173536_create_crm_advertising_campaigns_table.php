@@ -16,6 +16,7 @@ class CreateCrmAdvertisingCampaignsTable extends Migration
             $table->string('source');
             $table->integer('leads_count')->default(0);
             $table->integer('leads_reserved')->default(0);
+            $table->integer('leads_contracted')->default(0);
             $table->integer('leads_contacted')->default(0);
             $table->integer('leads_visits')->default(0);
             $table->decimal('cpl', 10, 2)->default(0);

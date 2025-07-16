@@ -55,22 +55,22 @@
                         <tr style="background-color: {{ $loop->odd ? '#f9f9f9' : '#ffffff' }};">
                             <td style="border: 1px solid #ccc;">{{ $group['group_id'] }}</td>
                             <td style="border: 1px solid #ccc;">{{ $group['total_items'] }}</td>
-            
+
                             <td style="border: 1px solid #ccc;">{{ $reserved['beneficiary'] ?? 0 }}</td>
                             <td style="border: 1px solid #ccc;">{{ $reserved['non_beneficiary'] ?? 0 }}</td>
-            
+
                             <td style="border: 1px solid #ccc;">{{ $contracted['beneficiary'] ?? 0 }}</td>
                             <td style="border: 1px solid #ccc;">{{ $contracted['non_beneficiary'] ?? 0 }}</td>
-            
+
                             <td style="border: 1px solid #ccc;">{{ $available['beneficiary'] ?? 0 }}</td>
                             <td style="border: 1px solid #ccc;">{{ $available['non_beneficiary'] ?? 0 }}</td>
-            
+
                             <td style="border: 1px solid #ccc;">{{ $hidden['beneficiary'] ?? 0 }}</td>
                             <td style="border: 1px solid #ccc;">{{ $hidden['non_beneficiary'] ?? 0 }}</td>
                         </tr>
                     @endforeach
                 </tbody>
-            
+
                 <tfoot>
                     @php
                         $totals = $statusData['data']['totals'];
@@ -79,20 +79,20 @@
                     <tr style="background-color: #ffe082; font-weight: bold;">
                         <td style="border: 1px solid #ccc;">{{ __('components.total') }}</td>
                         <td style="border: 1px solid #ccc;">{{ $totals['total_items'] }}</td>
-            
+
                         <td style="border: 1px solid #ccc;">{{ $statusTotals['reserved']['beneficiary'] ?? 0 }}</td>
                         <td style="border: 1px solid #ccc;">{{ $statusTotals['reserved']['non_beneficiary'] ?? 0 }}</td>
-            
+
                         <td style="border: 1px solid #ccc;">{{ $statusTotals['contracted']['beneficiary'] ?? 0 }}</td>
                         <td style="border: 1px solid #ccc;">{{ $statusTotals['contracted']['non_beneficiary'] ?? 0 }}</td>
-            
+
                         <td style="border: 1px solid #ccc;">{{ $statusTotals['available']['beneficiary'] ?? 0 }}</td>
                         <td style="border: 1px solid #ccc;">{{ $statusTotals['available']['non_beneficiary'] ?? 0 }}</td>
-            
+
                         <td style="border: 1px solid #ccc;">{{ $statusTotals['hidden']['beneficiary'] ?? 0 }}</td>
                         <td style="border: 1px solid #ccc;">{{ $statusTotals['hidden']['non_beneficiary'] ?? 0 }}</td>
                     </tr>
-            
+
                     <tr>
                         <td colspan="2" style="border: none;"></td>
                         <td colspan="2" style="padding: 8px; border: 1px solid #ccc; font-weight: bold;">
@@ -117,19 +117,22 @@
                     </tr>
                 </tfoot>
             </table>
-            
+
 
 
             </div>
         </div>
         <div style="position: absolute; right: 30px; bottom: 30px;">
-            @if(isset($project_name) && $project_name == 'أزيان الظهران')
+            @if (isset($project_name) && $project_name == 'أزيان الظهران')
                 <img src="{{ asset('images/logo5.png') }}" alt="Azyan Logo Dhahran" style="height: 50px;">
             @elseif(isset($project_name) && $project_name == 'أزيان البشائر')
                 <img src="{{ asset('images/logo6.png') }}" alt="Azyan Logo Albashaer" style="height: 50px;">
+                @elseif (!empty($logo) && file_exists(public_path('storage/' . $logo)))
+                <img src="{{ asset('storage/' . $logo) }}" alt="Site Logo" style="height: 50px;">
             @else
-                <img src="{{ asset('images/default-logo.png') }}" alt="Default Logo" style="height: 50px;">
+                <span style="font-size: 14px; color: #8b5a3b; font-weight: bold;">{{ $project_name }}</span>
             @endif
+
         </div>
 
     </div>

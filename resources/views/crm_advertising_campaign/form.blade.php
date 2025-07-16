@@ -109,6 +109,15 @@
                                 <label>{{ __('campaigns.total_amount') }}</label>
                                 <input type="number" name="total_amount" class="form-control" required>
                             </div>
+                            <div class="form-group">
+                                <label>{{ __('campaigns.impression') }}</label>
+                                <input type="number" name="impression" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>{{ __('campaigns.clicks') }}</label>
+                                <input type="number" name="clicks" class="form-control">
+                            </div>
+
                             <button type="submit" class="btn btn-primary mt-3">{{ __('campaigns.submit') }}</button>
                         </form>
                     </div>

@@ -9,6 +9,7 @@ use App\Http\Controllers\ComprehensiveReport\ComprehensiveReportController;
 use App\Http\Controllers\ComprehensiveReport\DisinterestReasonsController;
 use App\Http\Controllers\ComprehensiveReport\MapController;
 use App\Http\Controllers\ComprehensiveReport\ProjectSummaryController;
+use App\Http\Controllers\ComprehensiveReport\SiteController;
 use App\Http\Controllers\ComprehensiveReport\StatusController;
 use App\Http\Controllers\ComprehensiveReport\TargetedReportController;
 use App\Http\Controllers\ComprehensiveReport\UnitDetailsController;
@@ -192,7 +193,16 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->as('admin.')->group(funct
     Route::get('/comprehensive/project-summary', [ProjectSummaryController::class, 'showForm'])->name('comprehensive.project-summary.form');
     Route::post('/comprehensive/project-summary', [ProjectSummaryController::class, 'processForm'])->name('comprehensive.project-summary.process');
 
+    // Site
+    Route::put('/comprehensive/site/{site}', [SiteController::class, 'update'])->name('comprehensive.site.update');
+
+    Route::get('/comprehensive/site', [SiteController::class, 'index'])->name('comprehensive.site.index');
+    Route::post('/comprehensive/site', [SiteController::class, 'store'])->name('comprehensive.site.store');
+    Route::get('/comprehensive/site/{id}', [SiteController::class, 'show'])->name('comprehensive.site.show');
+    Route::post('/comprehensive/site/store-or-update', [SiteController::class, 'storeOrUpdate'])->name('comprehensive.site.storeOrUpdate');
+
+    Route::delete('/comprehensive/site/{site}', [SiteController::class, 'destroy'])->name('comprehensive.site.destroy');
 
 });
-
+Route::get('/api/sites/filter', [SiteController::class, 'filterByDate'])->name('api.sites.filter');
 require __DIR__ . '/auth.php';

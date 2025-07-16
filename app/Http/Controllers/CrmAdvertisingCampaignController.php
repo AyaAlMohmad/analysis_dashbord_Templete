@@ -55,6 +55,8 @@ $campaigns=CrmAdvertisingCampaign::all();
             'source' => 'required|numeric',
             'total_amount' => 'required|numeric',
             'source_name' => 'required|string',
+            'impression' => 'nullable|integer',
+            'clicks' => 'nullable|integer',
         ]);
 
         $siteMap = [
@@ -75,13 +77,18 @@ $campaigns=CrmAdvertisingCampaign::all();
                 'total_amount' => $request->total_amount,
             ]);
 
+
             $result = $response->successful() ? $response->json() : [];
             $campaignData = $result['campaign'] ?? [];
 
             $leadsCount = $campaignData['leads_count'] ?? 0;
             $totalAmount = $request->total_amount;
             $cpl = $leadsCount > 0 ? $totalAmount / $leadsCount : 0;
-
+            $impression = $request->impression ?? 0;
+            $clicks = $request->clicks ?? 0;
+            $cpc = $clicks > 0 ? $totalAmount / $clicks : 0;
+            $ctr = $impression > 0 ? ($clicks / $impression) * 100 : 0;
+            $cpm = $impression > 0 ? ($totalAmount / $impression) * 1000 : 0;
             $existing = CrmAdvertisingCampaign::where('name', $request->name)
                 ->where('from_date', $request->from_date)
                 ->where('total_cpl', $totalAmount)
@@ -99,6 +106,11 @@ $campaigns=CrmAdvertisingCampaign::all();
                     'leads_visits' => $campaignData['leads_visits'] ?? 0,
                     'cpl' => $cpl,
                     'total_cpl' => $totalAmount,
+                    'impression' => $impression,
+                    'clicks' => $clicks,
+                    'cpc' => $cpc,
+                    'ctr' => $ctr,
+                    'cpm' => $cpm,
                 ]);
                 $campaign = $existing;
             } else {
@@ -111,9 +123,15 @@ $campaigns=CrmAdvertisingCampaign::all();
                     'source' => $request->input('source_name'),
                     'leads_count' => $leadsCount,
                     'leads_reserved' => $campaignData['leads_reserved'] ?? 0,
+                    'leads_contracted' => $campaignData['leads_contracted'] ?? 0,
                     'leads_contacted' => $campaignData['leads_contacted'] ?? 0,
                     'leads_visits' => $campaignData['leads_visits'] ?? 0,
                     'cpl' => $cpl,
+                    'impression' => $impression,
+                    'clicks' => $clicks,
+                    'cpc' => $cpc,
+                    'ctr' => $ctr,
+                    'cpm' => $cpm,
                     'total_cpl' => $totalAmount,
                 ]);
             }

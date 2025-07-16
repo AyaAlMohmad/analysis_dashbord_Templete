@@ -20,6 +20,7 @@ return [
     'total_amount' => 'Total Amount:',
     'total_leads' => 'Total Leads',
     'reserved_leads' => 'Reserved Leads',
+    'contracted_leads' => 'Contracted Leads',
     'contacted_leads' => 'Contacted Leads',
     'visits' => 'Visits',
     'cpl' => 'Cost per Lead (CPL)',
@@ -30,4 +31,9 @@ return [
     'new_campaign' => 'New Campaign',
     'select_campaign' => 'Select Campaign',
     'search_campaign' => 'Search Campaign',
+    'impression' => 'Impression',
+    'clicks' => 'Clicks',
+    'cpc' => 'CPC',
+    'ctr' => 'CTR',
+    'cpm' => 'CPM',
 ];

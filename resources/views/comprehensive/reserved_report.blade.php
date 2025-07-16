@@ -30,7 +30,7 @@
 
 
         <div style="flex: 1; max-width: 40%;">
-            <table
+            {{-- <table
                 style="width: 100%; max-width: 500px; border-collapse: collapse; font-size: 12px; background-color: #fff; direction: rtl; text-align: center; font-family: 'Arial', sans-serif;">
                 <thead>
                     <tr style="background-color: #8b5a3b; color: #fff;">
@@ -43,7 +43,7 @@
                 <tbody>
 
 
-                
+
                     @php
                     $projectN = match($project_name) {
                         'أزيان الظهران' => 'azyan aldhahran',
@@ -51,36 +51,59 @@
                         default => '',
                     };
                 @endphp
-                
-                
+
+
                 @foreach ($projects as $index => $project)
-                    
+
                    <tr style="
                    background-color: {{ $project['name'] === $projectN ? '#d9f3e2' : ($loop->even ? '#f5f5f5' : '#ffffff') }};
                    border-bottom: 1px solid #ddd;
                ">
-               
+
                         <td style="padding: 6px 8px;">{{ $project['name'] }}</td>
                         <td style="padding: 6px 8px;">{{ $project['developer'] }}</td>
                         <td style="padding: 6px 8px; font-weight: bold;">{{ $project['units'] }}</td>
                         <td style="padding: 6px 8px; font-weight: bold;">{{ $project['reserved'] }}</td>
                     </tr>
                 @endforeach
-                
+
 
                 </tbody>
+            </table> --}}
+            <table style="width: 100%; max-width: 500px; border-collapse: collapse; font-size: 12px; background-color: #fff; direction: rtl; text-align: center; font-family: 'Arial', sans-serif;">
+                <thead>
+                    <tr style="background-color: #8b5a3b; color: #fff;">
+                        <th style="padding: 6px 8px; border: 1px solid #ddd;">{{ __('components.project_name') }}</th>
+                        <th style="padding: 6px 8px; border: 1px solid #ddd;">{{ __('components.developer') }}</th>
+                        <th style="padding: 6px 8px; border: 1px solid #ddd;">{{ __('components.units') }}</th>
+                        <th style="padding: 6px 8px; border: 1px solid #ddd;">{{ __('components.reserved') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($projects as $index => $project)
+                        <tr style="background-color: {{ $project['name'] === $project_name ? '#d9f3e2' : ($loop->even ? '#f5f5f5' : '#ffffff') }}; border-bottom: 1px solid #ddd;">
+                            <td style="padding: 6px 8px;">{{ $project['name'] }}</td>
+                            <td style="padding: 6px 8px;">{{ $project['developer'] }}</td>
+                            <td style="padding: 6px 8px; font-weight: bold;">{{ $project['units'] }}</td>
+                            <td style="padding: 6px 8px; font-weight: bold;">{{ $project['reserved'] }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
             </table>
-
 
             <div style="position: absolute; right: 30px; bottom: 30px;">
                 @if (isset($project_name) && $project_name == 'أزيان الظهران')
                     <img src="{{ asset('images/logo5.png') }}" alt="Azyan Logo Dhahran" style="height: 50px;">
                 @elseif(isset($project_name) && $project_name == 'أزيان البشائر')
                     <img src="{{ asset('images/logo6.png') }}" alt="Azyan Logo Albashaer" style="height: 50px;">
+                    @elseif (!empty($logo) && file_exists(public_path('storage/' . $logo)))
+                    <img src="{{ asset('storage/' . $logo) }}" alt="Site Logo" style="height: 50px;">
                 @else
-                    <img src="{{ asset('images/default-logo.png') }}" alt="Default Logo" style="height: 50px;">
+                    <span style="font-size: 14px; color: #8b5a3b; font-weight: bold;">{{ $project_name }}</span>
                 @endif
+
             </div>
+
 
         </div>
     </div>
@@ -94,10 +117,12 @@
     new Chart(ctx_{{ Str::slug($project_name, '_') }}, {
         type: 'bar',
         data: {
-            labels: {!! json_encode($chart['labels']) !!},
+
+           labels: {!! json_encode($chart['labels'] ?? []) !!},
+
             datasets: [{
                 label: 'Reserved',
-                data: {!! json_encode($chart['data']) !!},
+                data: {!! json_encode($chart['data'] ?? []) !!},
                 backgroundColor: ['#5e3e2f', '#7a4e36', '#a96845', ...Array(14).fill('#C57B57')]
             }]
         },

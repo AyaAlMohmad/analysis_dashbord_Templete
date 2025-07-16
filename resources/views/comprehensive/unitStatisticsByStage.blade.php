@@ -25,7 +25,7 @@
                 style="flex: 1 0 auto; display: grid; margin-right: 120px; margin-left: 120px; grid-template-columns: repeat(2, 1fr); gap: 12px; font-family: 'Arial', sans-serif; font-size: 9px;">
                 @foreach ($unitStats as $stage)
                     @if ($loop->index < 4)
-                    
+
                         <table
                             style="border-collapse: collapse; background-color: white; table-layout: fixed; font-size: 8px; width: 100%; max-width: 400px;">
                             <caption style="font-weight: bold; margin-bottom: 3px;">
@@ -81,7 +81,7 @@
                                         @if (isset($stage['totals']['min_rate']) && isset($stage['totals']['max_rate']))
                                             {{ number_format($stage['totals']['min_rate'], 0, '.', ',') }} -
                                             {{ number_format($stage['totals']['max_rate'], 0, '.', ',') }}
-                                       
+
 
                                         @else
                                             ---
@@ -202,9 +202,12 @@
                 <img src="{{ asset('images/logo5.png') }}" alt="Azyan Logo Dhahran" style="height: 50px;">
             @elseif(isset($project_name) && $project_name == 'أزيان البشائر')
                 <img src="{{ asset('images/logo6.png') }}" alt="Azyan Logo Albashaer" style="height: 50px;">
+                @elseif (!empty($logo) && file_exists(public_path('storage/' . $logo)))
+                <img src="{{ asset('storage/' . $logo) }}" alt="Site Logo" style="height: 50px;">
             @else
-                <img src="{{ asset('images/default-logo.png') }}" alt="Default Logo" style="height: 50px;">
+                <span style="font-size: 14px; color: #8b5a3b; font-weight: bold;">{{ $project_name }}</span>
             @endif
+
         </div>
     </div>
 @endif

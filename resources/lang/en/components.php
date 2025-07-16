@@ -15,9 +15,9 @@ return [
     'filter_by_date' => 'Filter by Date',
     'from_data' => 'From Date',
     'to_data' => 'To Date',
-    'select_sites' => 'Select Sites',
-    'dhahran' => 'Dhahran',
-    'albashaer' => 'Albashaer',
+
+
+
     'select_sections' => 'Select Sections',
     'status' => 'Status',
     'total' => 'Total',
@@ -26,7 +26,18 @@ return [
     'percentage' => 'Percentage',
     'data' => 'Data',
     'thanks' => 'Thanks',
-
+    'select_sites'     => 'Select Sites',
+    'fixed_sites'      => 'Fixed Sites',
+    'custom_sites'     => 'Custom Sites',
+    'add_site'         => 'Add Site',
+    'add_new_site'     => 'Add New Site',
+    'site_name'        => 'Site Name',
+    'regular_logo'     => 'Regular Logo',
+    'white_logo'       => 'White Logo',
+    'cancel'           => 'Cancel',
+    'save'             => 'Save',
+    'dhahran'          => 'Dhahran',
+    'albashaer'        => 'Al-Bashaer',
     'unit_status_report' => 'Unit Status Report',
     'select_site' => '-- Select Site --',
     'dhahran' => 'Dhahran',
@@ -153,4 +164,109 @@ return [
         'إلغاء' => 'Canceled',
         'عقد' => 'Contract',
     ],
+    'close' => 'Close',
+    'save_site' => 'Save Site',
+
+    // Tab Titles
+    'basic_info' => 'Basic Information',
+    'map_image' => 'Map & Image',
+    'reserved' => 'Reserved',
+    'contracted_progress' => 'Contracted Progress',
+    'unit_cases' => 'Unit Cases',
+    'project_summary' => 'Project Summary',
+    'unit_statistics' => 'Unit Statistics',
+    'visits_payments' => 'Visits & Payments',
+    'disinterest_reasons' => 'Disinterest Reasons',
+    'total_sales' => 'Total Sales',
+    'source_stats' => 'Source Statistics',
+    'monthly_appointments' => 'Monthly Appointments',
+    'target' => 'Target',
+    'unit_stages' => 'Unit Stages',
+
+    // Basic Info
+    'site_name' => 'Site Name',
+    'white_logo' => 'White Logo',
+    'regular_logo' => 'Regular Logo',
+
+    // Reserved & Contracted Tables
+    'decoration' => 'Decoration',
+    'project_name' => 'Project Name',
+    'developer' => 'Developer',
+    'units' => 'Units',
+    'reserved' => 'Reserved',
+    'contracted_units' => 'Contracted Units',
+    'add_project' => 'Add Project',
+
+    // Unit Cases
+    'units_per_stage' => 'Units per Stage',
+    'beneficiary' => 'Beneficiary',
+    'non_beneficiary' => 'Non-Beneficiary',
+    'available' => 'Available',
+    'hidden' => 'Hidden',
+
+    // Project Summary
+    'total_units' => 'Total Units',
+    'total_reservations' => 'Total Reservations',
+
+    // Unit Statistics
+    'model' => 'Model',
+    'sold_available' => 'Sold/Available',
+    'from' => 'From',
+    'to' => 'To',
+
+    // Visits & Payments
+    'current_month' => 'Current Month',
+    'last_month' => 'Last Month',
+    'two_months_ago' => 'Two Months Ago',
+    'week' => 'Week',
+    'visits' => 'Visits',
+    'payments' => 'Payments',
+
+    // Disinterest Reasons
+    'disinterest_reasons' => 'Disinterest Reasons',
+    'number_of_clients' => 'Number of Clients',
+    'percentage_of_total' => 'Percentage of Total',
+
+    // Total Sales
+    'build_area' => 'Build Area',
+    'price' => 'Price',
+    'contracted' => 'Contracted',
+
+    // Source Statistics
+    'source' => 'Source',
+    'number_of_customers' => 'Number of Customers',
+    'visit_rate' => 'Visit Rate',
+    'registrations' => 'Registrations',
+    'registration_rate' => 'Registration Rate',
+    'contract_rate' => 'Contract Rate',
+
+    // Monthly Appointments
+    'appointments' => 'Appointments',
+    'visited' => 'Visited',
+    'success_rate' => 'Success Rate',
+
+    // Target
+    'status' => 'Status',
+    'target' => 'Target',
+    'achieved' => 'Achieved',
+    'percentage' => 'Percentage',
+
+    // Unit Stages
+    'prices' => 'Prices',
+    'models' => 'Models',
+    'villas_count' => 'Villas Count',
+    'blocked' => 'Blocked',
+    'total' => 'Total',
+    'add_phase' => 'Add Phase',
+    'add_row' => 'Add Row',
+    'remove_row' => 'Remove Row',
+    'actions' => 'Actions',
+    'add_reason' => 'Add Reason',
+    'remove_reason' => 'Remove Reason',
+    'total' => 'Total',
+    'add_source' => 'Add Source',
+'remove_source' => 'Remove Source',
+'add_target' => 'Add Target',
+'remove_target' => 'Remove Target',
+'saving_data' => 'Saving data, please wait...',
 ];
