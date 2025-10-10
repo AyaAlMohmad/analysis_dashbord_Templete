@@ -63,12 +63,23 @@
                 <span>{{ __('sidebar.crm_advertising_campaign') }}</span>
             </a>
         </li>
-        <li class="nav-item {{ Route::is('admin.users.index') ? 'active' : '' }}">
-            <a href="{{ route('admin.users.index') }}">
-                <i class="ft-users"></i>
-                <span>{{ __('sidebar.user_management') }}</span>
+        @if (auth()->user()->is_manger)
+            <li class="nav-item {{ Route::is('admin.users.index') ? 'active' : '' }}">
+                <a href="{{ route('admin.users.index') }}">
+                    <i class="ft-users"></i>
+                    <span>{{ __('sidebar.user_management') }}</span>
+                </a>
+            </li>
+        @endif
+        @if (auth()->user()->is_progresses)
+        <li class="nav-item {{ Route::is('admin.project-progress.index') ? 'active' : '' }}">
+            <a href="{{ route('admin.project-progress.index') }}">
+                <i class="ft-trending-up"></i>
+                <span>{{ __('sidebar.project_progress') }}</span>
             </a>
         </li>
+    @endif
+
 
 
         <li class="nav-item has-sub {{ Route::is('admin.reports.*') ? 'open' : '' }}">
@@ -79,7 +90,7 @@
             <ul class="menu-content">
 
 
-                <li class="has-sub {{ Route::is('admin.items.status')  ? 'open' : '' }}">
+                <li class="has-sub {{ Route::is('admin.items.status') ? 'open' : '' }}">
                     <a href="#"><i class="ft-layers"></i><span>{{ __('sidebar.unit_status_reports') }}</span></a>
                     <ul class="menu-content">
                         <li class="{{ Route::is('admin.items.status') ? 'active' : '' }}">
@@ -102,8 +113,10 @@
                         </li>
                     </ul>
                 </li>
-     <li class="has-sub {{ Route::is('admin.reports.teamCategory') || Route::is('admin.reports.sales') ? 'open' : '' }}">
-                    <a href="#"><i class="ft-plus-circle"></i><span>{{ __('sidebar.additional_reports') }}</span></a>
+                <li
+                    class="has-sub {{ Route::is('admin.reports.teamCategory') || Route::is('admin.reports.sales') ? 'open' : '' }}">
+                    <a href="#"><i
+                            class="ft-plus-circle"></i><span>{{ __('sidebar.additional_reports') }}</span></a>
                     <ul class="menu-content">
                         <li class="{{ Route::is('admin.reports.teamCategory') ? 'active' : '' }}">
                             <a class="menu-item" href="{{ route('admin.reports.teamCategory') }}">

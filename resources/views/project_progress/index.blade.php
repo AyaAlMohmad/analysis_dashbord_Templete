@@ -1,0 +1,72 @@
+@extends('layouts.app')
+@section('content')
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<div style="padding: 3rem 0;">
+  <div style="max-width: 1200px; margin: 0 auto; padding: 0 1rem;">
+    <div style="background: white; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+
+      <!-- Page Header -->
+      <div style="padding: 1.5rem; text-align: center;">
+        <h1 style="font-size: 1.875rem; font-weight: 700; color: #1f2937;">{{ __('project_progress.title') }}</h1>
+      </div>
+
+      <div style="padding: 1.5rem;">
+        @if (session('success'))
+          <div style="background-color: #d1fae5; color: #065f46; padding: 1rem 1.25rem; border-radius: 0.375rem; margin-bottom: 1.5rem;">
+            <i class="fas fa-check-circle" style="margin-right: 0.5rem;"></i>
+            {{ __('project_progress.success') }}
+          </div>
+        @endif
+
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 1.5rem;">
+          <a href="{{ route('admin.project-progress.create') }}" style="background: #2563eb; color: white; padding: 0.5rem 1rem; border-radius: 0.375rem; text-decoration: none;">
+            + {{ __('project_progress.create') }}
+          </a>
+        </div>
+
+        <!-- project_progress Table -->
+        <div style="overflow-x: auto; background: white; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+          <table style="width: 100%; border-collapse: collapse;">
+            <thead style="background: #f3f4f6;">
+              <tr>
+                <th style="padding: 0.75rem; text-align: center; font-weight: 600; color: #374151;">{{ __('project_progress.site') }}</th>
+                <th style="padding: 0.75rem; text-align: center; font-weight: 600; color: #374151;">{{ __('project_progress.progress_percentage') }}</th>
+                <th style="padding: 0.75rem; text-align: center; font-weight: 600; color: #374151;">{{ __('project_progress.by') }}</th>
+                <th style="padding: 0.75rem; text-align: center; font-weight: 600; color: #374151;">{{ __('project_progress.date') }}</th>
+                <th style="padding: 0.75rem; text-align: center; font-weight: 600; color: #374151;">{{ __('project_progress.action') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @foreach ($progresses as $progress)
+              <tr style="border-top: 1px solid #e5e7eb;">
+                <td style="padding: 1rem; text-align: center; color: #1f2937;">{{ $progress->site }}</td>
+                <td style="padding: 1rem; text-align: center; color: #4b5563;">{{ $progress->progress_percentage }}</td>
+                <td style="padding: 1rem; text-align: center;">
+                {{ $progress->user->name }}
+                </td>
+                <td style="padding: 1rem; text-align: center;">
+                {{ $progress->created_at->format('Y-m-d') }}
+                </td>
+                <td style="padding: 1rem; text-align: center;">
+                  <a href="{{ route('admin.project-progress.edit', $progress->id) }}" style="color: #3b82f6; text-decoration: none; margin: 0 0.5rem;">
+                    <i class="fas fa-edit"></i>
+                  </a>
+
+                  <form action="{{ route('admin.project-progress.destroy', $progress->id) }}" method="POST" style="display: inline-block;" onsubmit="return confirm('{{ __('project-progress.are_you_sure') }}');">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" style="background: none; border: none; color: #dc2626; cursor: pointer; margin: 0 0.5rem;">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </form>
+                </td>
+              </tr>
+              @endforeach
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+@endsection

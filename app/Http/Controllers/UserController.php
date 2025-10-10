@@ -31,7 +31,9 @@ class UserController extends Controller
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
             'is_admin' => $request->has('is_admin') ? 1 : 0,
+            'is_progresses' => $request->has('is_progresses') ? 1 : 0,
         ]);
+
 
         return redirect()->route('admin.users.index')
             ->with('success', 'User created successfully');
@@ -53,7 +55,10 @@ class UserController extends Controller
             'name' => $data['name'] ?? $user->name,
             'email' => $data['email'] ?? $user->email,
             'is_admin' => $request->has('is_admin') ? 1 : 0,
+            'is_progresses' => $request->has('is_progresses') ? 1 : 0,
+            'is_manger' => $request->has('is_manger') ? 1 : 0,
         ]);
+
 
         return redirect()->route('admin.users.index')
             ->with('success', 'User updated successfully');

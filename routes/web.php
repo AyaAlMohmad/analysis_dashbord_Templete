@@ -31,6 +31,7 @@ use App\Http\Controllers\LeadsStatusReportController;
 use App\Http\Controllers\UserController;
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProjectProgressController;
 use App\Http\Controllers\SalesController;
 use App\Http\Controllers\TeamController;
 use Illuminate\Support\Facades\Route;
@@ -68,7 +69,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->as('admin.')->group(funct
     })->name('lang.switch')->middleware('web');
     Route::get('/', [DashboardController::class, 'index'])->name('index');
     Route::get('/Analysis', [DashboardController::class, 'Analysis'])->name('Analysis');
-
+    Route::put('/project-progress/update', [DashboardController::class, 'updateProjectProgress'])
+    ->name('project-progress.update');
     Route::get('/appointment', [AppointmentReportController::class, 'index'])->name(('appointment'));
     Route::post('/appointment/export', [AppointmentReportController::class, 'export'])->name('appointments.export');
     Route::get('/appointment-log/{site}', [AppointmentLogController::class, 'log'])->name('appointments.log');
@@ -118,6 +120,13 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->as('admin.')->group(funct
     Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
     Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+
+    Route::get('/project-progress', [ProjectProgressController::class, 'index'])->name('project-progress.index');
+    Route::get('/project-progress/create', [ProjectProgressController::class, 'create'])->name('project-progress.create');
+    Route::post('/project-progress', [ProjectProgressController::class, 'store'])->name('project-progress.store');
+    Route::get('/project-progress/{id}/edit', [ProjectProgressController::class, 'edit'])->name('project-progress.edit');
+    Route::put('/project-progress/{id}', [ProjectProgressController::class, 'update'])->name('project-progress.update');
+    Route::delete('/project-progress/{project-progress}', [ProjectProgressController::class, 'destroy'])->name('project-progress.destroy');
 
     Route::get('/reports/itemReport', [ItemReportController::class, 'itemReport'])->name('reports.item');
     Route::post('/reports/itemReport/result', [ItemReportController::class, 'itemReportResult'])->name('reports.itemReport.result');

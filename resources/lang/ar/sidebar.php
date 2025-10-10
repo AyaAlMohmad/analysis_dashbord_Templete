@@ -10,6 +10,7 @@ return [
     'appointment' => 'المواعيد',
     'call_logs' => 'سجل المكالمات',
     'user_management' => 'إدارة المستخدمين',
+    'project_progress' => ' نسبة تقدم المشروع',
     'reports' => 'التقارير',
     'unit_status_reports' => 'تقارير حالة الوحدات',
     'unit_status_report' => 'تقرير حالة الوحدات',

@@ -22,4 +22,5 @@ return [
     'page_of' => 'الصفحة :current من :total',
     'chart_label' => 'عدد المواعيد',
     'chart_title' => 'مخطط حركة المواعيد اليومية',
+    
 ];

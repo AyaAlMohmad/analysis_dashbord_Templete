@@ -55,7 +55,7 @@
 
                     <div class="form-group">
                         <label for="group">{{__('reports.select_group')}}:</label>
-                        <select name="group" id="group" class="form-control"></select>
+                        <select name="group" id="group" class="form-control" required></select>
                     </div>
 
                         <button type="submit" class="btn btn-primary mt-3">{{ __('reports.generate') }}</button>

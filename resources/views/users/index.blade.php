@@ -4,7 +4,7 @@
 <div style="padding: 3rem 0;">
   <div style="max-width: 1200px; margin: 0 auto; padding: 0 1rem;">
     <div style="background: white; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-      
+
       <!-- Page Header -->
       <div style="padding: 1.5rem; text-align: center;">
         <h1 style="font-size: 1.875rem; font-weight: 700; color: #1f2937;">{{ __('users.title') }}</h1>
@@ -32,6 +32,8 @@
                 <th style="padding: 0.75rem; text-align: center; font-weight: 600; color: #374151;">{{ __('users.name') }}</th>
                 <th style="padding: 0.75rem; text-align: center; font-weight: 600; color: #374151;">{{ __('users.email') }}</th>
                 <th style="padding: 0.75rem; text-align: center; font-weight: 600; color: #374151;">{{ __('users.role') }}</th>
+                <th style="padding: 0.75rem; text-align: center; font-weight: 600; color: #374151;">{{ __('users.can_manage_progress') }}</th>
+                <th style="padding: 0.75rem; text-align: center; font-weight: 600; color: #374151;">{{ __('users.can_manage_manger') }}</th>
                 <th style="padding: 0.75rem; text-align: center; font-weight: 600; color: #374151;">{{ __('users.actions') }}</th>
               </tr>
             </thead>
@@ -47,11 +49,25 @@
                     <span style="display: inline-block; padding: 0.25rem 0.5rem; background: #f3f4f6; color: #374151; border-radius: 9999px; font-size: 0.875rem;">{{ __('users.user') }}</span>
                   @endif
                 </td>
+                <td style="text-align: center;">
+                    @if($user->is_progresses)
+                        <span style="display: inline-block; padding: 0.25rem 0.5rem; background: #dcfce7; color: #166534; border-radius: 9999px; font-size: 0.875rem;">{{ __('users.can_manage_progress') }}</span>
+                        @else
+                        <span style="display: inline-block; padding: 0.25rem 0.5rem; background: #f3f4f6; color: #374151; border-radius: 9999px; font-size: 0.875rem;">{{ __('users.can_not_manage_progress') }}</span>
+                    @endif
+                </td>
+                <td style="text-align: center;">
+                    @if($user->is_manger)
+                        <span style="display: inline-block; padding: 0.25rem 0.5rem; background: #dcfce7; color: #166534; border-radius: 9999px; font-size: 0.875rem;">{{ __('users.can_manage_manger') }}</span>
+                        @else
+                        <span style="display: inline-block; padding: 0.25rem 0.5rem; background: #f3f4f6; color: #374151; border-radius: 9999px; font-size: 0.875rem;">{{ __('users.can_not_manage_manger') }}</span>
+                    @endif
+                </td>
                 <td style="padding: 1rem; text-align: center;">
                   <a href="{{ route('admin.users.edit', $user) }}" style="color: #3b82f6; text-decoration: none; margin: 0 0.5rem;">
                     <i class="fas fa-edit"></i>
                   </a>
-                  
+
                   <form action="{{ route('admin.users.destroy', $user) }}" method="POST" style="display: inline-block;" onsubmit="return confirm('{{ __('users.are_you_sure') }}');">
                     @csrf
                     @method('DELETE')

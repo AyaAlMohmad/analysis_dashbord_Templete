@@ -18,4 +18,7 @@ return [
     'are_you_sure' => 'هل أنت متأكد؟',
     'success' => 'تمت العملية بنجاح.',
     'password' => 'كلمة المرور',
+    'can_manage_progress' => 'يمكنه إدارة التقدم',
+    'is_admin' => 'هل هو مشرف',
+    'is_progresses' => 'هل هو مشرف على التقدم',
 ];

@@ -55,7 +55,7 @@
             <option value="dhahran">{{ __('components.dhahran') }}</option>
             <option value="bashaer">{{ __('components.bashaer') }}</option>
         </select>
-        
+
         <img id="logo" src="" alt="Logo" style="max-height: 70px; display: none;">
     </div>
 
@@ -171,9 +171,10 @@
         .then(response => {
             if (!response.status) return;
 
-            const data = response.data.data;
-            const groups = data.groups;
-            const totals = data.totals.status_totals;
+            const data = response.data;
+
+    const groups = data.groups ?? [];
+    const totals = data.totals?.status_totals ?? {};
 
             const tbody = document.getElementById('unitTableBody');
             tbody.innerHTML = '';

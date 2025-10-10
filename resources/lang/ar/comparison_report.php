@@ -30,7 +30,7 @@ return [
     'bashaer_edited' => 'البشائر - معدّلة',
 
 
- 
+
         // Section Titles
         'dashboard_comparison' => 'مقارنة لوحة تحكم الـ CRM',
         'leads_timeline' => 'الجدول الزمني للعملاء',
@@ -38,7 +38,7 @@ return [
         'appointments_total' => 'إجمالي المواعيد',
         'call_logs_summary' => 'ملخص المكالمات',
         'items_status' => 'حالة العناصر',
-    
+
         // Chart Labels
         'dhahran' => 'الظهران',
         'bashaer' => 'البشائر',
@@ -62,5 +62,22 @@ return [
         'export_zip' => 'تصدير ZIP',
         'exported_by' => 'تم التصدير بواسطة',
         'export_date' => 'تاريخ التصدير',
-        
+
+        'total_units'=>'إجمالي الوحدات',
+        'overall_value'=>'إجمالي القيمة',
+        'overall_progress_percentage'=>'إجمالي نسبة التقدم',
+        'overall_progress_percentage'=>'إجمالي نسبة التقدم',
+        'overall_reserved_contracted'=>'إجمالي المحجوز والمتعاقد عليه',
+        'total_appointments'=>'إجمالي المواعيد',
+        'total_calls'=>'إجمالي المكالمات',
+        'total_calls_dhahran'=>'إجمالي المكالمات (الظهران)',
+        'total_calls_bashaer'=>'إجمالي المكالمات (البشائر)',
+        'all'=>'الكل',
+        'progress'=>'التقدم',
+        'project_progress'=>'نسبة التقدم المشروع',
+        'edit_progress_title'=>'تعديل نسبة التقدم للموقع',
+        'percentage_label'=>'النسبة المئوية',
+        'cancel_button'=>'إلغاء',
+        'save_button'=>'حفظ',
+
 ];

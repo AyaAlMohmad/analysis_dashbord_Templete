@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ProjectProgress;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
 class DashboardController extends Controller
@@ -9,6 +11,7 @@ class DashboardController extends Controller
     public function index()
     {
         $comparisonData = [
+            'villa_summary'    => $this->compareVillaSummary(),
             'leads_timeline'   => $this->compareLeadsActivity(),
             'leads_status'     => $this->compareLeadsStatus(),
             'appointments'     => $this->compareAppointments1(),
@@ -17,9 +20,85 @@ class DashboardController extends Controller
             'leads_sources'    => $this->compareLeadsSources(),
         ];
 // dd($comparisonData);
+$progressData = $this->getProjectProgress();
 
-    return view('dashboard', compact('comparisonData'));
+return view('dashboard', compact('comparisonData', 'progressData'));
     }
+    private function getProjectProgress()
+    {
+        $dhahran = ProjectProgress::where('site', 'dhahran')->latest()->value('progress_percentage') ?? 0;
+        $bashaer = ProjectProgress::where('site', 'bashaer')->latest()->value('progress_percentage') ?? 0;
+
+        return [
+            'dhahran' => $dhahran,
+            'bashaer' => $bashaer,
+            'all' => $dhahran + $bashaer,
+        ];
+    }
+public function updateProjectProgress(Request  $request)
+{
+    $data = $request->validate([
+        'site' => 'required|in:dhahran,bashaer',
+        'progress_percentage' => 'required|numeric|min:0|max:100',
+    ]);
+$data['user_id']=auth()->user()->id;
+    ProjectProgress::where('site', $data['site'])->update($data);
+    return redirect()->back()->with('success', 'Project progress updated successfully');
+}
+
+    private function compareVillaSummary()
+    {
+        try {
+            $dhahranResponse = Http::get('https://crm.azyanaldhahran.com/api/Item_reports/villaSummary')->json();
+            $bashaerResponse = Http::get('https://crm.azyanalbashaer.com/api/Item_reports/villaSummary')->json();
+
+            $parse = function ($response) {
+                $data = $response['data'] ?? [];
+
+                return [
+                    'total_units' => $data['total_units'] ?? 0,
+                    'total_price' => $data['total_price'] ?? 0,
+
+                    'available' => [
+                        'count' => $data['available']['count'] ?? 0,
+                        'percentage' => $data['available']['percentage'] ?? 0,
+                        'total_value' => $data['available']['total_value'] ?? 0,
+                    ],
+
+                    'blocked' => [
+                        'count' => $data['blocked']['count'] ?? 0,
+                        'percentage' => $data['blocked']['percentage'] ?? 0,
+                        'total_value' => $data['blocked']['total_value'] ?? 0,
+                    ],
+
+                    'reserved' => [
+                        'count' => $data['reserved']['count'] ?? 0,
+                        'percentage' => $data['reserved']['percentage'] ?? 0,
+                        'total_value' => $data['reserved']['total_value'] ?? 0,
+                    ],
+
+                    'contracted' => [
+                        'count' => $data['contracted']['count'] ?? 0,
+                        'percentage' => $data['contracted']['percentage'] ?? 0,
+                        'total_value' => $data['contracted']['total_value'] ?? 0,
+                    ],
+
+                    'overall_value' => $data['overall_value'] ?? 0,
+                    'overall_progress_percentage' => $data['overall_progress_percentage'] ?? 0,
+                ];
+            };
+
+            return [
+                'dhahran' => $parse($dhahranResponse),
+                'bashaer' => $parse($bashaerResponse),
+            ];
+
+        } catch (\Exception $e) {
+            return ['error' => 'Connection error in Villa Summary'];
+        }
+    }
+
+
     private function compareAppointments1()
     {
         try {

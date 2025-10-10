@@ -10,6 +10,7 @@ return [
     'appointment' => 'Appointment',
     'call_logs' => 'Call Logs',
     'user_management' => 'User Management',
+    'project_progress' => 'Project Progress',
     'reports' => 'Reports',
     'unit_status_reports' => 'Unit Status Reports',
     'unit_status_report' => 'Unit Status Report',
