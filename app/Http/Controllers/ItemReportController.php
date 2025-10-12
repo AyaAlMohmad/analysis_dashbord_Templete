@@ -173,56 +173,56 @@ class ItemReportController extends Controller
 
         return response()->stream($callback, 200, $headers);
     }
-    public function itemReport(Request $request)
-    {
-        $site = $request->get('site', 'dhahran');
+  public function itemReport(Request $request)
+{
+    $site = $request->get('site', 'dhahran');
 
-        $apiUrls = [
-            'dhahran' => 'https://crm.azyanaldhahran.com/api/custom-reports/api_item_report_data',
-            'bashaer' => 'https://crm.azyanalbashaer.com/api/custom-reports/api_item_report_data',
-        ];
+    $apiUrls = [
+        'dhahran' => 'https://crm.azyanaldhahran.com/api/custom-reports/api_item_report_data',
+        'bashaer' => 'https://crm.azyanalbashaer.com/api/custom-reports/api_item_report_data',
+        'jeddah' => 'https://crm.azyanjeddah.com/api/custom-reports/api_item_report_data',
+    ];
 
-        if (!in_array($site, ['dhahran', 'bashaer'])) {
-            return response()->json(['error' => 'Invalid site selected.'], 400);
-        }
+    if (!in_array($site, ['dhahran', 'bashaer', 'jeddah'])) {
+        return response()->json(['error' => 'Invalid site selected.'], 400);
+    }
 
-        try {
-            $response = Http::timeout(30)->get($apiUrls[$site]);
+    try {
+        $response = Http::timeout(30)->get($apiUrls[$site]);
 
-            if (!$response->successful()) {
-                $errorMessage = 'Failed to fetch data from ' . $site;
-                if ($request->ajax()) {
-                    return response()->json(['error' => $errorMessage], 500);
-                } else {
-                    return view('items.item_report', [
-                        'site' => $site,
-                        'data' => [],
-                        'error' => $errorMessage
-                    ]);
-                }
-            }
-
-            $data = $response->json();
-
-
-            if ($request->ajax()) {
-                return response()->json($data);
-            }
-
-            return view('items.item_report', compact('site', 'data'));
-        } catch (\Exception $e) {
-            $errorMessage = 'An error occurred while connecting to the site: ' . $site;
+        if (!$response->successful()) {
+            $errorMessage = 'Failed to fetch data from ' . $site;
             if ($request->ajax()) {
                 return response()->json(['error' => $errorMessage], 500);
+            } else {
+                return view('items.item_report', [
+                    'site' => $site,
+                    'data' => [],
+                    'error' => $errorMessage
+                ]);
             }
-
-            return view('items.item_report', [
-                'site' => $site,
-                'data' => [],
-                'error' => $errorMessage
-            ]);
         }
+
+        $data = $response->json();
+
+        if ($request->ajax()) {
+            return response()->json($data);
+        }
+
+        return view('items.item_report', compact('site', 'data'));
+    } catch (\Exception $e) {
+        $errorMessage = 'An error occurred while connecting to the site: ' . $site;
+        if ($request->ajax()) {
+            return response()->json(['error' => $errorMessage], 500);
+        }
+
+        return view('items.item_report', [
+            'site' => $site,
+            'data' => [],
+            'error' => $errorMessage
+        ]);
     }
+}
     public function contractsReport()
     {
         return view('items.contracts_report');
@@ -265,118 +265,134 @@ class ItemReportController extends Controller
             return back()->with('error', 'Error contacting API: ' . $e->getMessage());
         }
     }
-    public function itemReportResult(Request $request)
-    {
-        $validated = $request->validate([
-            'site' => 'required|in:dhahran,bashaer',
-            'group' => 'required',
+   public function itemReportResult(Request $request)
+{
+    $validated = $request->validate([
+        'site' => 'required|in:dhahran,bashaer,jeddah',
+        'group' => 'required',
+    ]);
 
-        ]);
+    $apiUrls = [
+        'dhahran' => 'https://crm.azyanaldhahran.com/api/custom-reports/api_item_report',
+        'bashaer' => 'https://crm.azyanalbashaer.com/api/custom-reports/api_item_report',
+        'jeddah' => 'https://crm.azyanjeddah.com/api/custom-reports/api_item_report',
+    ];
+
+    try {
+        $response = Http::timeout(30)
+            ->asForm() // important for multipart/form-data
+            ->post($apiUrls[$validated['site']], [
+                'group' => $validated['group'],
+            ]);
+
+        if ($response->successful()) {
+            $result = $response->json();
+            // dd($result);
+            return view('items.item_report_result', [
+                'result' => $result,
+                'site' => $validated['site']
+            ]);
+        }
+
+        return back()->with('error', 'Failed to fetch report data.');
+    } catch (\Exception $e) {
+        return back()->with('error', 'Error contacting API: ' . $e->getMessage());
+    }
+}
+
+ public function itemStatus(Request $request)
+{
+    $result = null;
+
+    // If the form has been submitted (POST request)
+    if ($request->ajax()) {
+        $site = $request->get('site');
 
         $apiUrls = [
-            'dhahran' => 'https://crm.azyanaldhahran.com/api/custom-reports/api_item_report',
-            'bashaer' => 'https://crm.azyanalbashaer.com/api/custom-reports/api_item_report',
+            'dhahran' => 'https://crm.azyanaldhahran.com/api/Item_reports_api/api_status_item',
+            'bashaer' => 'https://crm.azyanalbashaer.com/api/Item_reports_api/api_status_item',
+            'jeddah' => 'https://crm.azyanjeddah.com/api/Item_reports_api/api_status_item',
         ];
 
-        try {
-            $response = Http::timeout(30)
-                ->asForm() // important for multipart/form-data
-                ->post($apiUrls[$validated['site']], [
+        if (!array_key_exists($site, $apiUrls)) {
+            return response()->json(['status' => false, 'message' => 'Invalid site'], 400);
+        }
 
-                    'group' => $validated['group'],
-                ]);
+        try {
+            $response = Http::timeout(30)->asForm()->get($apiUrls[$site]);
 
             if ($response->successful()) {
-
-                $result = $response->json();
-                // dd($result);
-                return view('items.item_report_result', [
-                    'result' => $result,
-                    'site' => $validated['site']
-                ]);
+                // dd($response->json());
+                return response()->json($response->json());
+            } else {
+                return response()->json(['status' => false, 'message' => 'API request failed'], 500);
             }
-
-            return back()->with('error', 'Failed to fetch report data.');
         } catch (\Exception $e) {
-            return back()->with('error', 'Error contacting API: ' . $e->getMessage());
+            return response()->json(['status' => false, 'message' => $e->getMessage()], 500);
         }
     }
 
-    public function itemStatus(Request $request)
-    {
-        $result = null;
+    // On initial GET request (no form submission)
+    return view('items.item_status_report', [
+        'result' => $result,
+        'site' => null
+    ]);
+}
+public function unitStages(Request $request)
+{
+    $result = null;
+    $site = $request->get('site', 'dhahran'); // قيمة افتراضية
 
-        // If the form has been submitted (POST request)
-        if ($request->ajax()) {
-            $site = $request->get('site');
+    // If the form has been submitted (POST request)
+    if ($request->ajax()) {
+        $site = $request->get('site');
 
-            $apiUrls = [
-                'dhahran' => 'https://crm.azyanaldhahran.com/api/Item_reports_api/api_status_item',
-                'bashaer' => 'https://crm.azyanalbashaer.com/api/Item_reports_api/api_status_item',
-            ];
+        $apiUrls = [
+            'dhahran' => 'https://crm.azyanaldhahran.com/api/Item_reports/unitStages',
+            'bashaer' => 'https://crm.azyanalbashaer.com/api/Item_reports/unitStages',
+            'jeddah' => 'https://crm.azyanjeddah.com/api/Item_reports/unitStages',
+        ];
 
-            if (!array_key_exists($site, $apiUrls)) {
-                return response()->json(['status' => false, 'message' => 'Invalid site'], 400);
-            }
-
-            try {
-                $response = Http::timeout(30)->asForm()->get($apiUrls[$site]);
-
-                if ($response->successful()) {
-                    // dd($response->json());
-                    return response()->json($response->json());
-                } else {
-                    return response()->json(['status' => false, 'message' => 'API request failed'], 500);
-                }
-            } catch (\Exception $e) {
-                return response()->json(['status' => false, 'message' => $e->getMessage()], 500);
-            }
+        if (!array_key_exists($site, $apiUrls)) {
+            return response()->json(['status' => false, 'message' => 'Invalid site'], 400);
         }
 
+        try {
+            $response = Http::timeout(30)->asForm()->get($apiUrls[$site]);
 
-        // On initial GET request (no form submission)
-        return view('items.item_status_report', [
-            'result' => $result,
-            'site' => null
-        ]);
-    }
-    public function unitStages(Request $request)
-    {
-        $result = null;
-
-        // If the form has been submitted (POST request)
-        if ($request->ajax()) {
-            $site = $request->get('site');
-
-            $apiUrls = [
-                'dhahran' => 'https://crm.azyanaldhahran.com/api/Item_reports/unitStages',
-                'bashaer' => 'https://crm.azyanalbashaer.com/api/Item_reports/unitStages',
-            ];
-
-            if (!array_key_exists($site, $apiUrls)) {
-                return response()->json(['status' => false, 'message' => 'Invalid site'], 400);
+            if ($response->successful()) {
+                return response()->json($response->json());
+            } else {
+                return response()->json(['status' => false, 'message' => 'API request failed'], 500);
             }
+        } catch (Exception $e) {
+            return response()->json(['status' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
 
-            try {
-                $response = Http::timeout(30)->asForm()->get($apiUrls[$site]);
+    // On initial GET request (no form submission) - تحميل البيانات مسبقًا
+    try {
+        $apiUrls = [
+            'dhahran' => 'https://crm.azyanaldhahran.com/api/Item_reports/unitStages',
+            'bashaer' => 'https://crm.azyanalbashaer.com/api/Item_reports/unitStages',
+            'jeddah' => 'https://crm.azyanjeddah.com/api/Item_reports/unitStages',
+        ];
 
-                if ($response->successful()) {
-                    return response()->json($response->json());
-                } else {
-                    return response()->json(['status' => false, 'message' => 'API request failed'], 500);
-                }
-            } catch (Exception $e) {
-                return response()->json(['status' => false, 'message' => $e->getMessage()], 500);
+        if (array_key_exists($site, $apiUrls)) {
+            $response = Http::timeout(30)->asForm()->get($apiUrls[$site]);
+            if ($response->successful()) {
+                $result = $response->json();
             }
         }
-
-
-        // On initial GET request (no form submission)
-        return view('items.unitStages', [
-            'result' => $result,
-            'site' => null
-        ]);
+    } catch (Exception $e) {
+        // يمكنك تسجيل الخطأ هنا إذا أردت
     }
+
+    return view('items.unitStages', [
+        'result' => $result,
+        'site' => $site
+    ]);
+}
     // public function unitStages(Request $request)
     // {
     //     $site = $request->get('site');
@@ -430,43 +446,42 @@ class ItemReportController extends Controller
     //         ], 500);
     //     }
     // }
-    public function unitStatisticsByStage(Request $request)
-    {
-        $result = null;
+ public function unitStatisticsByStage(Request $request)
+{
+    $result = null;
 
+    if ($request->ajax()) {
+        $site = $request->get('site');
 
-        if ($request->ajax()) {
-            $site = $request->get('site');
+        $apiUrls = [
+            'dhahran' => 'https://crm.azyanaldhahran.com/api/Item_reports/unitStatisticsByStage',
+            'bashaer' => 'https://crm.azyanalbashaer.com/api/Item_reports/unitStatisticsByStage',
+            'jeddah' => 'https://crm.azyanjeddah.com/api/Item_reports/unitStatisticsByStage', // إضافة جدة
+        ];
 
-            $apiUrls = [
-                'dhahran' => 'https://crm.azyanaldhahran.com/api/Item_reports/unitStatisticsByStage',
-                'bashaer' => 'https://crm.azyanalbashaer.com/api/Item_reports/unitStatisticsByStage',
-            ];
-
-            if (!array_key_exists($site, $apiUrls)) {
-                return response()->json(['status' => false, 'message' => 'Invalid site'], 400);
-            }
-
-            try {
-                $response = Http::timeout(30)->asForm()->get($apiUrls[$site]);
-
-                if ($response->successful()) {
-                    return response()->json($response->json());
-                } else {
-                    return response()->json(['status' => false, 'message' => 'API request failed'], 500);
-                }
-            } catch (\Exception $e) {
-                return response()->json(['status' => false, 'message' => $e->getMessage()], 500);
-            }
+        if (!array_key_exists($site, $apiUrls)) {
+            return response()->json(['status' => false, 'message' => 'Invalid site'], 400);
         }
 
+        try {
+            $response = Http::timeout(30)->asForm()->get($apiUrls[$site]);
 
-        // On initial GET request (no form submission)
-        return view('items.unitStatisticsByStage', [
-            'result' => $result,
-            'site' => null
-        ]);
+            if ($response->successful()) {
+                return response()->json($response->json());
+            } else {
+                return response()->json(['status' => false, 'message' => 'API request failed'], 500);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['status' => false, 'message' => $e->getMessage()], 500);
+        }
     }
+
+    // On initial GET request (no form submission)
+    return view('items.unitStatisticsByStage', [
+        'result' => $result,
+        'site' => null
+    ]);
+}
     public function itemGroupData(Request $request)
     {
         $site = $request->get('site', 'dhahran');

@@ -39,20 +39,45 @@
                 </thead>
                 <tbody>
                     @php
-                        $statusOrder = ['مهتم', 'موعد', 'زيارة', 'حجز', 'إلغاء', 'عقد'];
+                        // الحالات المطلوبة مع معالجة البيانات وتحصيل النسبة المئوية
+                        $processedData = [];
+                        $statusOrder = ['مهتم', 'موعد', 'حجز', 'زيارة', 'تم التعاقد', 'إلغاء'];
+
+                        foreach ($statusOrder as $status) {
+                            if (isset($data['data'][$status])) {
+                                $count = intval($data['data'][$status]['count'] ?? 0);
+                                $target = intval($data['data'][$status]['target'] ?? 0);
+
+                                // حساب النسبة المئوية بناءً على المستهدف
+                                if ($target > 0) {
+                                    $percentage = ($count / $target) * 100;
+                                } else {
+                                    $percentage = 0;
+                                }
+
+                                $processedData[$status] = [
+                                    'count' => $count,
+                                    'target' => $target,
+                                    'calculated_percentage' => $percentage
+                                ];
+                            }
+                        }
                     @endphp
 
                     @foreach ($statusOrder as $status)
-                        @if (isset($data['data'][$status]))
+                        @if (isset($processedData[$status]))
+                            @php
+                                $item = $processedData[$status];
+                            @endphp
                             <tr>
                                 <td style="border: 1px solid #ccc;">{{ __('components.statuses.' . $status) }}</td>
-                                <td style="border: 1px solid #ccc;">{{ $data['data'][$status]['target'] }}</td>
-                                <td style="border: 1px solid #ccc;">{{ $data['data'][$status]['count'] }}</td>
+                                <td style="border: 1px solid #ccc;">{{ $item['target'] }}</td>
+                                <td style="border: 1px solid #ccc;">{{ $item['count'] }}</td>
                                 <td style="border: 1px solid #ccc;">
-                                    @if ($status !== 'إلغاء')
-                                        {{ number_format($data['data'][$status]['percentage'] * 100, 2) }}%
+                                    @if ($item['target'] > 0)
+                                        {{ number_format($item['calculated_percentage'], 2) }}%
                                     @else
-                                        —
+                                        0%
                                     @endif
                                 </td>
                             </tr>
@@ -73,10 +98,14 @@
                 const percentageData = [];
 
                 @foreach ($statusOrder as $status)
-                    @if (isset($data['data'][$status]))
-                        targetData.push({{ $data['data'][$status]['target'] }});
-                        achievedData.push({{ $data['data'][$status]['count'] }});
-                        percentageData.push({{ $data['data'][$status]['percentage'] * 100 }});
+                    @if (isset($processedData[$status]))
+                        @php
+                            $item = $processedData[$status];
+                        $percentage = $item['target'] > 0 ? $item['calculated_percentage'] : 0;
+                        @endphp
+                        targetData.push({{ $item['target'] }});
+                        achievedData.push({{ $item['count'] }});
+                        percentageData.push({{ $percentage }});
                     @else
                         targetData.push(0);
                         achievedData.push(0);
@@ -91,15 +120,20 @@
                         datasets: [{
                             label: '{{ __('components.target') }}',
                             data: targetData,
-                            backgroundColor: '#3a3a3a'
+                            backgroundColor: '#3a3a3a',
+                            barPercentage: 0.6
                         }, {
                             label: '{{ __('components.achieved') }}',
                             data: achievedData,
-                            backgroundColor: '#c87c2a'
+                            backgroundColor: '#c87c2a',
+                            barPercentage: 0.6
                         }, {
                             label: '{{ __('components.percentage') }}',
                             data: percentageData,
-                            backgroundColor: '#0f683f'
+                            backgroundColor: '#0f683f',
+                            type: 'line',
+                            fill: false,
+                            yAxisID: 'y1'
                         }]
                     },
                     options: {
@@ -127,8 +161,31 @@
                         scales: {
                             x: {
                                 beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'العدد'
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'الحالات'
+                                }
+                            },
+                            y1: {
+                                type: 'linear',
+                                display: true,
+                                position: 'right',
+                                title: {
+                                    display: true,
+                                    text: 'النسبة %'
+                                },
+                                min: 0,
+                                max: 100,
                                 ticks: {
-                                    stepSize: 1000
+                                    callback: function(value) {
+                                        return value + '%';
+                                    }
                                 }
                             }
                         }
@@ -143,12 +200,13 @@
                 <img src="{{ asset('images/logo5.png') }}" alt="Azyan Logo Dhahran" style="height: 50px;">
             @elseif(isset($project_name) && $project_name == 'أزيان البشائر')
                 <img src="{{ asset('images/logo6.png') }}" alt="Azyan Logo Albashaer" style="height: 50px;">
+            @elseif(isset($project_name) && $project_name == 'أزيان جدة')
+                <img src="{{ asset('images/jadah.png') }}" alt="Azyan Logo Jadah" style="height: 50px;">
                 @elseif (!empty($logo) && file_exists(public_path('storage/' . $logo)))
                 <img src="{{ asset('storage/' . $logo) }}" alt="Site Logo" style="height: 50px;">
             @else
                 <span style="font-size: 14px; color: #8b5a3b; font-weight: bold;">{{ $project_name }}</span>
             @endif
-
         </div>
     </div>
 </div>

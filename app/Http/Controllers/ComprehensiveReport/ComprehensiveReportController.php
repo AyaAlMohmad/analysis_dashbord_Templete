@@ -42,30 +42,42 @@ class ComprehensiveReportController extends Controller
         $to_date = $request->input('to_date');
         $manualProjects = $request->input('projects', []);
         $albashaerData = $this->getAlbashaerReserved($from_date, $to_date);
+        $jeddahData = $this->getJeddahReserved($from_date, $to_date);
         $dhahranData = $this->getDhahranReserced($from_date, $to_date);
         $dhahranColoredMap = $this->getDhahranColoredMap($from_date, $to_date);
+        $jeddahColoredMap = $this->getJeddahColoredMap($from_date, $to_date);
         $albashaerColoredMap = $this->getAlbashaerColoredMap($from_date, $to_date);
         $dhahranStatusData = $this->getDhahranStatus();
+        $jeddahStatusData = $this->getJeddahStatus();
         $bashaerStatusData = $this->getbashaerStatus();
         $dhahranUnitStages = $this->getDhahranUnitStages();
+        $jeddahUnitStages = $this->getJeddahUnitStages();
         $albashaerUnitStages = $this->getAlbashaerUnitStages();
         $unitDetailsByStageResultDhahran = $this->unitDetailsByStageResultDhahran();
+        $unitDetailsByStageResultJeddah = $this->unitDetailsByStageResultJeddah();
         $unitDetailsByStageResultAlbashaer = $this->unitDetailsByStageResultAlbashaer();
         $albashaerVPCData = $this->getAlbashaerVisitsPaymentsContracts();
+        $jeddahVPCData = $this->getJeddahVisitsPaymentsContracts();
         $dhahranVPCData = $this->getDhahranVisitsPaymentsContracts();
         $albashaerDisinterestReasons = $this->getAlbashaerDisinterestReasons();
         $dhahranDisinterestReasons = $this->getDhahranDisinterestReasons();
         // $albashaerUnitStatisticsByStage = $this->getAlbashaerUnitStatisticsByStage();
         // $dhahranUnitStatisticsByStage = $this->getDhahranUnitStatisticsByStage();
         $albashaerUnitStatisticsByStage = $this->getAlbashaerSourceStats();
+        $jeddahUnitStatisticsByStage = $this->getJeddahSourceStats();
         $dhahranUnitStatisticsByStage = $this->getDhahranSourceStats();
+        $jeddahMonthlyAppointments = $this->getJeddahMonthlyAppointments();
         $dhahranMonthlyAppointments = $this->getDhahranMonthlyAppointments();
         $albashaerMonthlyAppointments = $this->getAlbashaerMonthlyAppointments();
+
         $albashaerTargetedReport = $this->getAlbashaerTargetedReport($from_date, $to_date);
+        $jeddahTargetedReport = $this->getJeddahTargetedReport($from_date, $to_date);
         $dhahranTargetedReport = $this->getDhahranTargetedReport($from_date, $to_date);
         $albashaerUnitSales = $this->getAlbashaerUnitSales($from_date, $to_date);
+        $jeddahUnitSales = $this->getJeddahUnitSales($from_date, $to_date);
         $dhahranUnitSales = $this->getDhahranUnitSales($from_date, $to_date);
         $albashaerProjectSummary = $this->getAlbashaerProjectSummaryReport($from_date, $to_date);
+        $jeddahProjectSummary = $this->getJeddahProjectSummaryReport($from_date, $to_date);
         $dhahranProjectSummary = $this->getDhahranProjectSummaryReport($from_date, $to_date);
         $selectedSites = $request->input('sites', []);
         $localSites = Site::whereIn('id', $selectedSites)->get();
@@ -90,6 +102,17 @@ class ComprehensiveReportController extends Controller
                 ]);
             }
         }
+        if ($jeddahData['projects'] ?? false) {
+            foreach ($jeddahData['projects'] as $project) {
+                $mergedProjects->push([
+                    'name' => $project['project_name'] ?? '',
+                    'developer' => $project['developer_name'] ?? '-',
+                    'units' => $project['total_units'] ?? 0,
+                    'reserved' => $project['reserved_units'] ?? 0,
+                ]);
+            }
+        }
+
 
 
         if (!empty($dhahranData['projects'])) {
@@ -133,6 +156,7 @@ class ComprehensiveReportController extends Controller
 
         $albashaerDataContract = $this->getAlbashaerContract($from_date, $to_date);
         $dhahranDataContract = $this->getDhahranContract($from_date, $to_date);
+        $jeddahDataContract = $this->getJeddahContract($from_date, $to_date);
 
 
         $mergedProjectsContract = collect();
@@ -144,7 +168,7 @@ class ComprehensiveReportController extends Controller
                     'name' => $project['project_name'] ?? '',
                     'developer' => $project['developer_name'] ?? '-',
                     'units' => $project['total_units'] ?? 0,
-                    'Contracts' => $project['contracts_units'] ?? 0,
+                    'Contracts' => $project['reserved_units'] ?? 0,
                 ]);
             }
         }
@@ -156,7 +180,17 @@ class ComprehensiveReportController extends Controller
                     'name' => $project['project_name'] ?? '',
                     'developer' => $project['developer_name'] ?? '-',
                     'units' => $project['total_units'] ?? 0,
-                    'Contracts' => $project['contracts_units'] ?? 0,
+                    'Contracts' => $project['reserved_units'] ?? 0,
+                ]);
+            }
+        }
+        if ($jeddahDataContract['projects'] ?? false) {
+            foreach ($jeddahDataContract['projects'] as $project) {
+                $mergedProjectsContract->push([
+                    'name' => $project['project_name'] ?? '',
+                    'developer' => $project['developer_name'] ?? '-',
+                    'units' => $project['total_units'] ?? 0,
+                    'Contracts' => $project['reserved_units'] ?? 0,
                 ]);
             }
         }
@@ -183,36 +217,50 @@ class ComprehensiveReportController extends Controller
         // dd($albashaerUnitSales );
         // dd($albashaerUnitStatisticsByStage );
         // dd($localSectionResults[2]['sections']['reserved_report']);
-        // dd($localSectionResults);
+        // dd($jeddahProjectSummary);
         return view('comprehensive.index', [
             'from_date' => $from_date,
             'to_date' => $to_date,
             'dhahranData' => $dhahranData,
             'albashaerData' => $albashaerData,
+            'jeddahData' => $jeddahData,
             'dhahranDataContract' => $dhahranDataContract,
+            'jeddahDataContract' => $jeddahDataContract,
             'albashaerDataContract' => $albashaerDataContract,
             'dhahranStatusData' => $dhahranStatusData,
+            'jeddahStatusData' => $jeddahStatusData,
             'bashaerStatusData' => $bashaerStatusData,
             'dhahranUnitStages' => $dhahranUnitStages,
+            'jeddahUnitStages' => $jeddahUnitStages,
             'albashaerUnitStages' => $albashaerUnitStages,
             'unitDetailsByStageResultDhahran' => $unitDetailsByStageResultDhahran,
+            'unitDetailsByStageResultJeddah' => $unitDetailsByStageResultJeddah,
             'unitDetailsByStageResultAlbashaer' => $unitDetailsByStageResultAlbashaer,
+            'unitDetailsByStageResultJeddah' => $unitDetailsByStageResultJeddah,
             'albashaerUnitStatisticsByStage' => $albashaerUnitStatisticsByStage,
+            'jeddahUnitStatisticsByStage' => $jeddahUnitStatisticsByStage,
             'dhahranUnitStatisticsByStage' => $dhahranUnitStatisticsByStage,
             'projects' => $mergedProjects,
+
             'albashaerVPCData' => $albashaerVPCData,
+            'jeddahVPCData' => $jeddahVPCData,
             'dhahranVPCData' => $dhahranVPCData,
             'albashaerDisinterestReasons' => $albashaerDisinterestReasons,
             'dhahranDisinterestReasons' => $dhahranDisinterestReasons,
             'dhahranMonthlyAppointments' => $dhahranMonthlyAppointments,
+            'jeddahMonthlyAppointments' => $jeddahMonthlyAppointments,
             'albashaerMonthlyAppointments' => $albashaerMonthlyAppointments,
             'albashaerTargetedReport' => $albashaerTargetedReport,
+            'jeddahTargetedReport' => $jeddahTargetedReport,
             'dhahranTargetedReport' => $dhahranTargetedReport,
             'albashaerUnitSales' => $albashaerUnitSales,
+            'jeddahUnitSales' => $jeddahUnitSales,
             'dhahranUnitSales' => $dhahranUnitSales,
             'albashaerProjectSummary' => $albashaerProjectSummary,
+            'jeddahProjectSummary' => $jeddahProjectSummary,
             'dhahranProjectSummary' => $dhahranProjectSummary,
             'dhahranColoredMap' => $dhahranColoredMap,
+            'jeddahColoredMap' => $jeddahColoredMap,
             'albashaerColoredMap' => $albashaerColoredMap,
             'localSectionResults' => $localSectionResults,
             'localSites' => $localSites,
@@ -262,14 +310,10 @@ class ComprehensiveReportController extends Controller
             'chart_data' => []
         ];
     }
-
-    /**
-     * getDhahranResercedAPI
-     */
-    private function getDhahranReserced($from_date, $to_date)
+    public function getJeddahReserved($from_date, $to_date)
     {
         try {
-            $response = Http::post('https://crm.azyanaldhahran.com/api/Item_reports/api_reserved_report', [
+            $response = Http::post('https://crm.azyanjeddah.com/api/Item_reports/api_reserved_report', [
                 'from_date' => $from_date,
                 'to_date' => $to_date,
             ]);
@@ -282,17 +326,50 @@ class ComprehensiveReportController extends Controller
                 }
             }
         } catch (\Exception $e) {
-            Log::error("Dhahran API Error: " . $e->getMessage());
+            Log::error("Jeddah API Error: " . $e->getMessage());
         }
 
         return [
             'status' => false,
-            'message' => 'Failed to fetch data from Dhahran API',
+            'message' => 'Failed to fetch data from Jeddah API',
             'projects' => [],
             'chart_labels' => [],
             'chart_data' => []
         ];
     }
+
+    /**
+     * getDhahranResercedAPI
+     */
+    private function getDhahranReserced($from_date, $to_date)
+    {
+        try {
+            $response = Http::post('https://crm.azyanaldhahran.com/api/Item_reports/api_reserved_report', [
+                'from_date' => $from_date,
+                'to_date' => $to_date,
+            ]);
+
+
+            if ($response->successful()) {
+                $data = $response->json();
+
+                if ($data['status'] ?? false) {
+                    return $data;
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error("Albashaer API Error: " . $e->getMessage());
+        }
+
+        return [
+            'status' => false,
+            'message' => 'Failed to fetch data from Albashaer API',
+            'projects' => [],
+            'chart_labels' => [],
+            'chart_data' => []
+        ];
+    }
+
     /**
      *  getAlbashaerContract API
      */
@@ -323,6 +400,38 @@ class ComprehensiveReportController extends Controller
             'chart_data' => []
         ];
     }
+
+    /**
+     * getJeddahContractAPI
+     */
+    private function getJeddahContract($from_date, $to_date)
+    {
+        try {
+            $response = Http::post('https://crm.azyanjeddah.com/api/Item_reports/api_contracts_report', [
+                'from_date' => $from_date,
+                'to_date' => $to_date,
+            ]);
+
+            if ($response->successful()) {
+                $data = $response->json();
+
+                if ($data['status'] ?? false) {
+                    return $data;
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error("Jeddah API Error: " . $e->getMessage());
+        }
+
+        return [
+            'status' => false,
+            'message' => 'Failed to fetch data from Jeddah API',
+            'projects' => [],
+            'chart_labels' => [],
+            'chart_data' => []
+        ];
+    }
+
 
     /**
      * getDhahranContractAPI
@@ -366,7 +475,7 @@ class ComprehensiveReportController extends Controller
                 $data = $response->json();
 
                 if ($data['status'] ?? false) {
-                    return $data ?? [];
+                    return $data['data'] ?? [];
                 }
             }
         } catch (\Exception $e) {
@@ -374,17 +483,16 @@ class ComprehensiveReportController extends Controller
         }
 
         return [
-            'data' => [
-                'groups' => [],
-                'statuses' => [],
-                'totals' => [],
-            ]
+            'groups' => [],
+            'statuses' => [],
+            'totals' => [],
         ];
     }
+
     /**
-     * getbashaerStatus API
+     * getBashaerStatus API
      */
-    private function getbashaerStatus()
+    private function getBashaerStatus()
     {
         try {
             $response = Http::get('https://crm.azyanalbashaer.com/api/Item_reports_api/api_status_item');
@@ -393,38 +501,70 @@ class ComprehensiveReportController extends Controller
                 $data = $response->json();
 
                 if ($data['status'] ?? false) {
-                    return $data ?? [];
+                    return $data['data'] ?? [];
                 }
             }
         } catch (\Exception $e) {
-            Log::error("Dhahran Status API Error: " . $e->getMessage());
+            Log::error("Bashaer Status API Error: " . $e->getMessage());
         }
 
         return [
-            'data' => [
-                'groups' => [],
-                'statuses' => [],
-                'totals' => [],
-            ]
+            'groups' => [],
+            'statuses' => [],
+            'totals' => [],
         ];
     }
-    private function getDhahranUnitStages()
+
+    /**
+     * getJeddahStatus API
+     */
+    private function getJeddahStatus()
     {
         try {
-            $response = Http::get('https://crm.azyanaldhahran.com/api/Item_reports/unitStages');
+            $response = Http::get('https://crm.azyanjeddah.com/api/Item_reports_api/api_status_item');
 
             if ($response->successful()) {
                 $data = $response->json();
 
-                if ($data['status'] ?? false && isset($data['data']['groups'])) {
-                    $result = [];
+                if ($data['status'] ?? false) {
+                    return $data['data'] ?? [];
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error("Jeddah Status API Error: " . $e->getMessage());
+        }
 
-                    foreach ($data['data']['groups'] as $key => $group) {
-                        $result[$key] = $group;
-                    }
-                    $result['totals'] = $data['data']['totals'] ?? [];
+        return [
+            'groups' => [],
+            'statuses' => [],
+            'totals' => [],
+        ];
+    }
+    private function getDhahranUnitStages($from_date = null, $to_date = null)
+    {
+        try {
+            $formData = [];
 
-                    return $result;
+            if ($from_date) {
+                $formData['from_date'] = $from_date;
+            }
+
+            if ($to_date) {
+                $formData['to_date'] = $to_date;
+            }
+
+            // استخدام POST إذا كانت التواريخ موجودة، وإلا استخدام GET
+            if (!empty($formData)) {
+                $response = Http::asForm()->post('https://crm.azyanaldhahran.com/api/Item_reports/unitStages', $formData);
+            } else {
+                $response = Http::get('https://crm.azyanaldhahran.com/api/Item_reports/unitStages');
+            }
+
+            if ($response->successful()) {
+                $data = $response->json();
+
+                if ($data['status'] ?? false) {
+                    return $data['data'] ?? [];
                 }
             }
         } catch (\Exception $e) {
@@ -432,31 +572,36 @@ class ComprehensiveReportController extends Controller
         }
 
         return [
+            'stages' => [],
             'totals' => [],
         ];
     }
 
-    /**
-     * Get Albashaer Unit Stages Data
-     */
-    private function getAlbashaerUnitStages()
+    private function getAlbashaerUnitStages($from_date = null, $to_date = null)
     {
         try {
-            $response = Http::get('https://crm.azyanalbashaer.com/api/Item_reports/unitStages');
+            $formData = [];
 
+            if ($from_date) {
+                $formData['from_date'] = $from_date;
+            }
+
+            if ($to_date) {
+                $formData['to_date'] = $to_date;
+            }
+
+            // استخدام POST إذا كانت التواريخ موجودة، وإلا استخدام GET
+            if (!empty($formData)) {
+                $response = Http::asForm()->post('https://crm.azyanalbashaer.com/api/Item_reports/unitStages', $formData);
+            } else {
+                $response = Http::get('https://crm.azyanalbashaer.com/api/Item_reports/unitStages');
+            }
 
             if ($response->successful()) {
                 $data = $response->json();
 
-                if ($data['status'] ?? false && isset($data['data']['groups'])) {
-                    $result = [];
-
-                    foreach ($data['data']['groups'] as $key => $group) {
-                        $result[$key] = $group;
-                    }
-                    $result['totals'] = $data['data']['totals'] ?? [];
-
-                    return $result;
+                if ($data['status'] ?? false) {
+                    return $data['data'] ?? [];
                 }
             }
         } catch (\Exception $e) {
@@ -464,9 +609,48 @@ class ComprehensiveReportController extends Controller
         }
 
         return [
+            'stages' => [],
             'totals' => [],
         ];
     }
+
+    private function getJeddahUnitStages($from_date = null, $to_date = null)
+    {
+        try {
+            $formData = [];
+
+            if ($from_date) {
+                $formData['from_date'] = $from_date;
+            }
+
+            if ($to_date) {
+                $formData['to_date'] = $to_date;
+            }
+
+            // استخدام POST إذا كانت التواريخ موجودة، وإلا استخدام GET
+            if (!empty($formData)) {
+                $response = Http::asForm()->post('https://crm.azyanjeddah.com/api/Item_reports/unitStages', $formData);
+            } else {
+                $response = Http::get('https://crm.azyanjeddah.com/api/Item_reports/unitStages');
+            }
+
+            if ($response->successful()) {
+                $data = $response->json();
+
+                if ($data['status'] ?? false) {
+                    return $data['data'] ?? [];
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error("Jeddah Unit Stages API Error: " . $e->getMessage());
+        }
+
+        return [
+            'stages' => [],
+            'totals' => [],
+        ];
+    }
+
     /**
      * Get Dhahran Unit Statistics by Stage
      */
@@ -479,17 +663,15 @@ class ComprehensiveReportController extends Controller
                 $data = $response->json();
 
                 if ($data['status'] ?? false) {
-                    return $data['data'] ?? [];
+                    // إرجاع البيانات مباشرة بدون 'reports'
+                    return $data['data']['reports'] ?? [];
                 }
             }
         } catch (\Exception $e) {
             Log::error("Dhahran Unit Statistics by Stage API Error: " . $e->getMessage());
         }
 
-        return [
-            'statistics' => [],
-            'totals' => [],
-        ];
+        return [];
     }
 
     /**
@@ -504,17 +686,38 @@ class ComprehensiveReportController extends Controller
                 $data = $response->json();
 
                 if ($data['status'] ?? false) {
-                    return $data['data'] ?? [];
+                    // إرجاع البيانات مباشرة بدون 'reports'
+                    return $data['data']['reports'] ?? [];
                 }
             }
         } catch (\Exception $e) {
             Log::error("Albashaer Unit Statistics by Stage API Error: " . $e->getMessage());
         }
 
-        return [
-            'statistics' => [],
-            'totals' => [],
-        ];
+        return [];
+    }
+
+    /**
+     * Get Jeddah Unit Statistics by Stage
+     */
+    private function unitDetailsByStageResultJeddah()
+    {
+        try {
+            $response = Http::post('https://crm.azyanjeddah.com/api/Item_reports/unit_details_by_stage_result');
+
+            if ($response->successful()) {
+                $data = $response->json();
+
+                if ($data['status'] ?? false) {
+                    // إرجاع البيانات مباشرة بدون 'reports'
+                    return $data['data']['reports'] ?? [];
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error("Jeddah Unit Statistics by Stage API Error: " . $e->getMessage());
+        }
+
+        return [];
     }
     /**
      * Get Albashaer Visits, Payments and Contracts Data
@@ -539,9 +742,9 @@ class ComprehensiveReportController extends Controller
             'status' => false,
             'message' => 'Failed to fetch data from Albashaer Visits Payments Contracts API',
             'data' => [
-                'current_month' => [],
-                'last_month' => [],
-                'two_months_ago' => [],
+                'contracts' => 0,
+                'payments' => 0,
+                'visits' => 0
             ],
             'date_from' => null,
             'date_to' => null
@@ -571,9 +774,41 @@ class ComprehensiveReportController extends Controller
             'status' => false,
             'message' => 'Failed to fetch data from Dhahran Visits Payments Contracts API',
             'data' => [
-                'current_month' => [],
-                'last_month' => [],
-                'two_months_ago' => [],
+                'contracts' => 0,
+                'payments' => 0,
+                'visits' => 0
+            ],
+            'date_from' => null,
+            'date_to' => null
+        ];
+    }
+
+    /**
+     * Get Jeddah Visits, Payments and Contracts Data
+     */
+    private function getJeddahVisitsPaymentsContracts()
+    {
+        try {
+            $response = Http::get('https://crm.azyanjeddah.com/api/Item_reports/visits_payments_contracts_api');
+
+            if ($response->successful()) {
+                $data = $response->json();
+
+                if ($data['status'] ?? false) {
+                    return $data;
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error("Jeddah Visits Payments Contracts API Error: " . $e->getMessage());
+        }
+
+        return [
+            'status' => false,
+            'message' => 'Failed to fetch data from Jeddah Visits Payments Contracts API',
+            'data' => [
+                'contracts' => 0,
+                'payments' => 0,
+                'visits' => 0
             ],
             'date_from' => null,
             'date_to' => null
@@ -734,12 +969,47 @@ class ComprehensiveReportController extends Controller
     }
 
     /**
-     * Get Dhahran Monthly Appointments Data
+     * Get Jeddah Source Statistics - الدالة المضافة
      */
-    private function getDhahranMonthlyAppointments()
+    private function getJeddahSourceStats()
     {
         try {
-            $response = Http::post('https://crm.azyanaldhahran.com/api/lead_reports/monthly_appointments_api');
+            $response = Http::get('https://crm.azyanjeddah.com/api/lead_reports/source_stats_api');
+
+            if ($response->successful()) {
+                $data = $response->json();
+
+                if ($data['status'] ?? false) {
+                    return $data['data'] ?? [];
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error("Jeddah Source Stats API Error: " . $e->getMessage());
+        }
+
+        return [
+            'sources' => [],
+        ];
+    }
+
+
+    /**
+     * Get Dhahran Monthly Appointments Data
+     */
+    private function getDhahranMonthlyAppointments($fromDate = null, $toDate = null)
+    {
+        try {
+            $formData = [];
+
+            if ($fromDate) {
+                $formData['from_date'] = $fromDate;
+            }
+
+            if ($toDate) {
+                $formData['to_date'] = $toDate;
+            }
+
+            $response = Http::asForm()->post('https://crm.azyanaldhahran.com/api/lead_reports/monthly_appointments_api', $formData);
 
             if ($response->successful()) {
                 $data = $response->json();
@@ -761,10 +1031,20 @@ class ComprehensiveReportController extends Controller
     /**
      * Get Albashaer Monthly Appointments Data
      */
-    private function getAlbashaerMonthlyAppointments()
+    private function getAlbashaerMonthlyAppointments($fromDate = null, $toDate = null)
     {
         try {
-            $response = Http::post('https://crm.azyanalbashaer.com/api/lead_reports/monthly_appointments_api');
+            $formData = [];
+
+            if ($fromDate) {
+                $formData['from_date'] = $fromDate;
+            }
+
+            if ($toDate) {
+                $formData['to_date'] = $toDate;
+            }
+
+            $response = Http::asForm()->post('https://crm.azyanalbashaer.com/api/lead_reports/monthly_appointments_api', $formData);
 
             if ($response->successful()) {
                 $data = $response->json();
@@ -775,6 +1055,41 @@ class ComprehensiveReportController extends Controller
             }
         } catch (\Exception $e) {
             Log::error("Albashaer Monthly Appointments API Error: " . $e->getMessage());
+        }
+
+        return [
+            'appointments' => [],
+            'totals' => [],
+        ];
+    }
+
+    /**
+     * Get Jeddah Monthly Appointments Data
+     */
+    private function getJeddahMonthlyAppointments($fromDate = null, $toDate = null)
+    {
+        try {
+            $formData = [];
+
+            if ($fromDate) {
+                $formData['from_date'] = $fromDate;
+            }
+
+            if ($toDate) {
+                $formData['to_date'] = $toDate;
+            }
+
+            $response = Http::asForm()->post('https://crm.azyanjeddah.com/api/lead_reports/monthly_appointments_api', $formData);
+
+            if ($response->successful()) {
+                $data = $response->json();
+
+                if ($data['status'] ?? false) {
+                    return $data['data'] ?? [];
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error("Jeddah Monthly Appointments API Error: " . $e->getMessage());
         }
 
         return [
@@ -807,6 +1122,7 @@ class ComprehensiveReportController extends Controller
             'data' => [],
         ];
     }
+
     private function getDhahranTargetedReport($from_date, $to_date)
     {
         try {
@@ -832,6 +1148,32 @@ class ComprehensiveReportController extends Controller
             'data' => [],
         ];
     }
+
+    private function getJeddahTargetedReport($from_date, $to_date)
+    {
+        try {
+            $response = Http::post('https://crm.azyanjeddah.com/api/lead_reports/targeted_report_api', [
+                'from_date' => $from_date,
+                'to_date' => $to_date,
+            ]);
+
+            if ($response->successful()) {
+                $data = $response->json();
+
+                if ($data['status'] ?? false) {
+                    return $data;
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error("Jeddah Targeted Report API Error: " . $e->getMessage());
+        }
+
+        return [
+            'status' => false,
+            'message' => 'Failed to fetch data from Jeddah Targeted Report API',
+            'data' => [],
+        ];
+    }
     /**
      * Get Albashaer Unit Sales Data
      */
@@ -843,7 +1185,7 @@ class ComprehensiveReportController extends Controller
             if ($response->successful()) {
                 $data = $response->json();
                 if ($data['status'] ?? false) {
-                    return $data; // تحتوي عادةً على ['status', 'message', 'data' => [...]]
+                    return $data;
                 }
             }
         } catch (\Exception $e) {
@@ -881,10 +1223,49 @@ class ComprehensiveReportController extends Controller
             'data'    => [],
         ];
     }
-    private function getAlbashaerProjectSummaryReport($from_date, $to_date)
+
+    /**
+     * Get Jeddah Unit Sales Data
+     */
+    private function getJeddahUnitSales($from_date, $to_date)
     {
         try {
-            $response = Http::get('https://crm.azyanalbashaer.com/api/Item_reports/api_project_summary_report');
+            $response = Http::get('https://crm.azyanjeddah.com/api/Item_reports/unit_sales_api');
+
+            if ($response->successful()) {
+                $data = $response->json();
+                if ($data['status'] ?? false) {
+                    return $data;
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error("Jeddah Unit Sales API Error: " . $e->getMessage());
+        }
+
+        return [
+            'status'  => false,
+            'message' => 'Failed to fetch data from Jeddah Unit Sales API',
+            'data'    => [],
+        ];
+    }
+
+     private function getAlbashaerProjectSummaryReport($from_date = null, $to_date = null)
+    {
+        try {
+            $formData = [];
+
+            if ($from_date) {
+                $formData['from_date'] = $from_date;
+            }
+
+            if ($to_date) {
+                $formData['to_date'] = $to_date;
+            }
+
+            // استخدام POST إذا كانت التواريخ موجودة، وإلا استخدام GET
+
+                $response = Http::get('https://crm.azyanalbashaer.com/api/Item_reports/api_project_summary_report');
+
 
             if ($response->successful()) {
                 $data = $response->json();
@@ -903,10 +1284,24 @@ class ComprehensiveReportController extends Controller
             'data' => [],
         ];
     }
-    private function getDhahranProjectSummaryReport($from_date, $to_date)
+
+    private function getDhahranProjectSummaryReport($from_date = null, $to_date = null)
     {
         try {
-            $response = Http::get('https://crm.azyanaldhahran.com/api/Item_reports/api_project_summary_report');
+            $formData = [];
+
+            if ($from_date) {
+                $formData['from_date'] = $from_date;
+            }
+
+            if ($to_date) {
+                $formData['to_date'] = $to_date;
+            }
+
+            // استخدام POST إذا كانت التواريخ موجودة، وإلا استخدام GET
+
+                $response = Http::get('https://crm.azyanaldhahran.com/api/Item_reports/api_project_summary_report');
+
 
             if ($response->successful()) {
                 $data = $response->json();
@@ -925,6 +1320,44 @@ class ComprehensiveReportController extends Controller
             'data' => [],
         ];
     }
+
+    private function getJeddahProjectSummaryReport($from_date = null, $to_date = null)
+    {
+        try {
+            $formData = [];
+
+            if ($from_date) {
+                $formData['from_date'] = $from_date;
+            }
+
+            if ($to_date) {
+                $formData['to_date'] = $to_date;
+            }
+
+            // استخدام POST إذا كانت التواريخ موجودة، وإلا استخدام GET
+
+                $response = Http::get('https://crm.azyanjeddah.com/api/Item_reports/api_project_summary_report');
+
+
+            if ($response->successful()) {
+                $data = $response->json();
+
+                if ($data['status'] ?? false) {
+                    return $data;
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error("Jeddah Project Summary API Error: " . $e->getMessage());
+        }
+
+        return [
+            'status' => false,
+            'message' => 'Failed to fetch project summary report from Jeddah API',
+            'data' => [],
+        ];
+    }
+
+
     private function getDhahranColoredMap($from_date, $to_date)
     {
         try {
@@ -944,6 +1377,28 @@ class ComprehensiveReportController extends Controller
         return [
             'status' => false,
             'message' => 'Failed to fetch project summary report from Dhahran API',
+            'data' => [],
+        ];
+    }
+    private function getJeddahColoredMap($from_date, $to_date)
+    {
+        try {
+            $response = Http::post('https://crm.azyanjeddah.com/api/Item_reports/colored_map_api');
+
+            if ($response->successful()) {
+                $data = $response->json();
+
+                if ($data['status'] ?? false) {
+                    return $data;
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error("Jeddah Project Summary API Error: " . $e->getMessage());
+        }
+
+        return [
+            'status' => false,
+            'message' => 'Failed to fetch project summary report from Jeddah API',
             'data' => [],
         ];
     }
@@ -1005,7 +1460,7 @@ class ComprehensiveReportController extends Controller
     private function getAllSectionsPerSite(array $sections, string $from, string $to, array $siteIds): array
     {
 
-        $excluded = ['dhahran', 'albashaer'];
+        $excluded = ['dhahran', 'albashaer', 'jeddah'];
         $filteredSiteIds = array_filter($siteIds, fn($id) => !in_array(strtolower($id), $excluded));
 
         $results = [];
@@ -1140,93 +1595,93 @@ class ComprehensiveReportController extends Controller
     }
 
     public function getStatusData($from, $to, $siteId)
-{
-    $sectionId = $this->getSectionId('status_item');
+    {
+        $sectionId = $this->getSectionId('status_item');
 
-    $data = ReportData::where('section_id', $sectionId)
-        ->where('site_id', $siteId)
-        ->get();
+        $data = ReportData::where('section_id', $sectionId)
+            ->where('site_id', $siteId)
+            ->get();
 
-    $statusGroups = [];
-    $allStatuses = [];
-    $statusTotals = [];
-    $totalItems = 0;
+        $statusGroups = [];
+        $allStatuses = [];
+        $statusTotals = [];
+        $totalItems = 0;
 
-    foreach ($data as $item) {
-        $dataItem = is_string($item->data) ? json_decode($item->data, true) : $item->data;
+        foreach ($data as $item) {
+            $dataItem = is_string($item->data) ? json_decode($item->data, true) : $item->data;
 
-        if (!isset($dataItem['groups'])) {
-            continue;
-        }
-
-        foreach ($dataItem['groups'] as $group) {
-            $groupId = (string) ($group['group_id'] ?? 0);
-            $statuses = $group['statuses'] ?? [];
-
-            if (!isset($statusGroups[$groupId])) {
-                $statusGroups[$groupId] = [
-                    'group_id' => $groupId,
-                    'total_items' => 0,
-                    'statuses' => [],
-                ];
+            if (!isset($dataItem['groups'])) {
+                continue;
             }
 
-            foreach ($statuses as $status) {
-                $name = $status['status_name'] ?? 'unknown';
-                $total = $status['total'] ?? 0;
-                $beneficiary = $status['beneficiary'] ?? 0;
-                $nonBeneficiary = $status['non_beneficiary'] ?? 0;
+            foreach ($dataItem['groups'] as $group) {
+                $groupId = (string) ($group['group_id'] ?? 0);
+                $statuses = $group['statuses'] ?? [];
 
-                if (!isset($statusGroups[$groupId]['statuses'][$name])) {
-                    $statusGroups[$groupId]['statuses'][$name] = [
-                        'status_name' => $name,
-                        'total' => 0,
-                        'beneficiary' => 0,
-                        'non_beneficiary' => 0,
+                if (!isset($statusGroups[$groupId])) {
+                    $statusGroups[$groupId] = [
+                        'group_id' => $groupId,
+                        'total_items' => 0,
+                        'statuses' => [],
                     ];
                 }
 
-                $statusGroups[$groupId]['statuses'][$name]['total'] += $total;
-                $statusGroups[$groupId]['statuses'][$name]['beneficiary'] += $beneficiary;
-                $statusGroups[$groupId]['statuses'][$name]['non_beneficiary'] += $nonBeneficiary;
+                foreach ($statuses as $status) {
+                    $name = $status['status_name'] ?? 'unknown';
+                    $total = $status['total'] ?? 0;
+                    $beneficiary = $status['beneficiary'] ?? 0;
+                    $nonBeneficiary = $status['non_beneficiary'] ?? 0;
 
-                if (!isset($statusTotals[$name])) {
-                    $statusTotals[$name] = [
-                        'beneficiary' => 0,
-                        'non_beneficiary' => 0,
-                    ];
+                    if (!isset($statusGroups[$groupId]['statuses'][$name])) {
+                        $statusGroups[$groupId]['statuses'][$name] = [
+                            'status_name' => $name,
+                            'total' => 0,
+                            'beneficiary' => 0,
+                            'non_beneficiary' => 0,
+                        ];
+                    }
+
+                    $statusGroups[$groupId]['statuses'][$name]['total'] += $total;
+                    $statusGroups[$groupId]['statuses'][$name]['beneficiary'] += $beneficiary;
+                    $statusGroups[$groupId]['statuses'][$name]['non_beneficiary'] += $nonBeneficiary;
+
+                    if (!isset($statusTotals[$name])) {
+                        $statusTotals[$name] = [
+                            'beneficiary' => 0,
+                            'non_beneficiary' => 0,
+                        ];
+                    }
+
+                    $statusTotals[$name]['beneficiary'] += $beneficiary;
+                    $statusTotals[$name]['non_beneficiary'] += $nonBeneficiary;
+
+                    $totalItems += $total;
+                    $statusGroups[$groupId]['total_items'] += $total;
+
+                    $allStatuses[$name] = ['unit_status' => $name];
                 }
-
-                $statusTotals[$name]['beneficiary'] += $beneficiary;
-                $statusTotals[$name]['non_beneficiary'] += $nonBeneficiary;
-
-                $totalItems += $total;
-                $statusGroups[$groupId]['total_items'] += $total;
-
-                $allStatuses[$name] = ['unit_status' => $name];
             }
         }
-    }
 
 
 
-    $groups = array_map(function ($group) {
-        $group['statuses'] = array_values($group['statuses']);
-        return $group;
-    }, array_values($statusGroups));
+        $groups = array_map(function ($group) {
+            $group['statuses'] = array_values($group['statuses']);
+            return $group;
+        }, array_values($statusGroups));
 
-    return [
-        'status' => true,
-        'data' => [
-            'groups' => $groups,
-            'statuses' => array_values($allStatuses),
-            'totals' => [
-                'total_items' => $totalItems,
-                'status_totals' => $statusTotals,
+        return [
+            'status' => true,
+            'data' => [
+                'groups' => $groups,
+                'statuses' => array_values($allStatuses),
+                'totals' => [
+                    'total_items' => $totalItems,
+                    'status_totals' => $statusTotals,
+                ],
             ],
-        ],
-    ];
-}
+        ];
+    }
 
 
 
@@ -1698,40 +2153,38 @@ class ComprehensiveReportController extends Controller
     }
 
     public function getTargetedReportData($from, $to, $siteId)
-{
-    $sectionId = $this->getSectionId('targeted_report');
+    {
+        $sectionId = $this->getSectionId('targeted_report');
 
-    $record = ReportData::where('section_id', $sectionId)
-        ->where('site_id', $siteId)
-        ->first();
+        $record = ReportData::where('section_id', $sectionId)
+            ->where('site_id', $siteId)
+            ->first();
 
-    $item = $record?->data['data'] ?? [];
+        $item = $record?->data['data'] ?? [];
 
-    $statuses = ['مهتم', 'موعد', 'زيارة', 'حجز', 'إلغاء', 'عقد'];
-    $result = [];
+        $statuses = ['مهتم', 'موعد', 'زيارة', 'حجز', 'إلغاء', 'عقد'];
+        $result = [];
 
-    foreach ($statuses as $status) {
-        $count = (int)($item[$status]['count'] ?? 0);
-        $target = (int)($item[$status]['target'] ?? 0);
-        $percentage = $target > 0 ? round($count / $target, 4) : 0;
+        foreach ($statuses as $status) {
+            $count = (int)($item[$status]['count'] ?? 0);
+            $target = (int)($item[$status]['target'] ?? 0);
+            $percentage = $target > 0 ? round($count / $target, 4) : 0;
 
-        $result[$status] = [
-            'count' => $count,
-            'target' => $target,
-            'percentage' => $percentage,
+            $result[$status] = [
+                'count' => $count,
+                'target' => $target,
+                'percentage' => $percentage,
+            ];
+        }
+
+        $result['total'] = (int)($item['total'] ?? array_sum(array_column($result, 'count')));
+
+        return [
+            'status' => true,
+            'message' => 'Targeted lead status report retrieved successfully.',
+            'data' => $result,
+            'from_date' => $from,
+            'to_date' => $to,
         ];
     }
-
-    $result['total'] = (int)($item['total'] ?? array_sum(array_column($result, 'count')));
-
-    return [
-        'status' => true,
-        'message' => 'Targeted lead status report retrieved successfully.',
-        'data' => $result,
-        'from_date' => $from,
-        'to_date' => $to,
-    ];
-}
-
-
 }

@@ -41,6 +41,7 @@
             <option value="">{{__('reports.select_site')}}</option>
             <option value="dhahran">{{__('reports.dhahran')}}</option>
             <option value="bashaer">{{__('reports.bashaer')}}</option>
+            <option value="jeddah">{{__('components.jeddah')}}</option>
         </select>
 
         <div id="overlay" class="overlay d-none">

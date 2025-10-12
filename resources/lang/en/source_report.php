@@ -14,4 +14,6 @@ return [
     'total_leads' => 'Total Leads',
     'generated_at' => 'Report generated at:',
     'export_pdf' => 'Export PDF',
+    'jeddah' => 'Jeddah',
+    'grand_total' => 'Grand Total',
 ];

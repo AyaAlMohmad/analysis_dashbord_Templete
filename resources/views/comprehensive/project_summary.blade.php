@@ -24,55 +24,119 @@
         <div style="max-width: 95%; margin: 40px auto; font-family: 'Arial', sans-serif; font-size: 13px; text-align: center;">
 
             @php
-            $options = $data['data']['items']['options'] ?? [];
-            $totalItems = $data['data']['items']['total_items'] ?? [];
-            $reservedItems = $data['data']['items']['reserved_items'] ?? [];
-            $percentages = $data['data']['percentages'] ?? [];
+                // تحديد هيكل البيانات بناءً على البيانات الفعلية
+                $options = $data['data']['options'] ?? [];
+                $totalItems = $data['data']['total_items'] ?? [];
+                $reservedItems = $data['data']['reserved_items'] ?? [];
+                $contractedItems = $data['data']['contracted_items'] ?? [];
+                $percentages = $data['data']['percentages'] ?? [];
+                $contractedPercentages = $data['data']['contracted_percentages'] ?? [];
 
-            $sumTotal = array_sum(array_map('intval', $totalItems));
-            $sumReserved = array_sum(array_map('intval', $reservedItems));
-            $avgPercent = $sumTotal > 0 ? round(($sumReserved / $sumTotal) * 100, 2) : 0;
-        @endphp
+                // تحديد أسماء النماذج بناءً على المشروع ونوع المفاتيح
+                $modelNames = [];
+                if (isset($project_name)) {
+                    if ($project_name == 'أزيان الظهران') {
+                        $modelNames = [
+                            1 => 'روفان',
+                            2 => 'إيوان',
+                            3 => 'مجدان',
+                            4 => 'رونق',
+                            5 => 'مقام'
+                        ];
+                    } elseif ($project_name == 'أزيان جدة') {
+                        $modelNames = [
+                            'A' => 'مرجانة',
+                            'B' => 'أجوان',
+                            'C' => 'رونق',
+                            'D' => 'مقام'
+                        ];
+                    } elseif ($project_name == 'أزيان البشائر') {
+                        $modelNames = [
+                            'A' => 'A',
+                            'B' => 'B',
+                            'C' => 'C',
+                            'D' => 'D',
+                            'E' => 'E',
+                            'F' => 'F'
+                        ];
+                    }
+                }
 
-        <table style="width: 100%; border-collapse: collapse; margin-top: 20px; background-color: white; font-size: 15px;">
-            <thead>
-                <tr style="background-color: #ffe082; font-weight: bold;">
-                    <th colspan="{{ count($options) + 2 }}" style="padding: 14px; border: 1px solid #ccc;">  {{__('components.project_summary')}} </th>
-                </tr>
-                <tr style="background-color: #8b5a3b; color: white;">
-                    <th style="border: 1px solid #ccc; padding: 10px;">{{__('components.data')}}</th>
-                    @foreach ($options as $label)
-                        <th style="border: 1px solid #ccc; padding: 10px;">{{ $label }}</th>
-                    @endforeach
-                    <th style="border: 1px solid #ccc; padding: 10px;">{{__('components.total')}}</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr style="background-color: #f4f4f4;">
-                    <td style="border: 1px solid #ccc; padding: 10px;">  {{__('components.total_units')}} </td>
-                    @foreach ($options as $key => $label)
-                        <td style="border: 1px solid #ccc; padding: 10px;">{{ $totalItems[$key] ?? 0 }}</td>
-                    @endforeach
-                    <td style="border: 1px solid #4CAF50; font-weight: bold; color: green; padding: 10px;">{{ $sumTotal }}</td>
-                </tr>
-                <tr style="background-color: #f9f9f9;">
-                    <td style="border: 1px solid #ccc; padding: 10px;">{{__('components.total_reservations')}} </td>
-                    @foreach ($options as $key => $label)
-                        <td style="border: 1px solid #ccc; padding: 10px;">{{ $reservedItems[$key] ?? 0 }}</td>
-                    @endforeach
-                    <td style="border: 1px solid #4CAF50; font-weight: bold; padding: 10px;">{{ $sumReserved }}</td>
-                </tr>
-                <tr style="background-color: #eee;">
-                    <td style="border: 1px solid #ccc; padding: 10px;">{{__('components.percentage')}} </td>
-                    @foreach ($options as $key => $label)
-                        <td style="border: 1px solid #ccc; padding: 10px;">{{ ($percentages[$key] ?? 0) . '%' }}</td>
-                    @endforeach
-                    <td style="border: 1px solid #4CAF50; font-weight: bold; padding: 10px;">{{ $avgPercent }}%</td>
-                </tr>
-            </tbody>
-        </table>
+                // إذا لم نحدد أسماء، نستخدم الخيارات الأصلية
+                if (empty($modelNames)) {
+                    foreach ($options as $key => $value) {
+                        $modelNames[$key] = $value;
+                    }
+                }
 
+                $sumTotal = array_sum(array_map('intval', $totalItems));
+                $sumReserved = array_sum(array_map('intval', $reservedItems));
+                $sumContracted = array_sum(array_map('intval', $contractedItems));
+                $avgPercent = $sumTotal > 0 ? round(($sumReserved / $sumTotal) * 100, 2) : 0;
+                $avgContractedPercent = $sumTotal > 0 ? round(($sumContracted / $sumTotal) * 100, 2) : 0;
+            @endphp
 
+            <table style="width: 100%; border-collapse: collapse; margin-top: 20px; background-color: white; font-size: 15px;">
+                <thead>
+                    <tr style="background-color: #ffe082; font-weight: bold;">
+                        <th colspan="{{ count($modelNames) + 2 }}" style="padding: 14px; border: 1px solid #ccc;">  {{__('components.project_summary')}} </th>
+                    </tr>
+                    <tr style="background-color: #8b5a3b; color: white;">
+                        <th style="border: 1px solid #ccc; padding: 10px;">{{__('components.data')}}</th>
+                        @foreach ($modelNames as $key => $name)
+                            <th style="border: 1px solid #ccc; padding: 10px;">{{ $name }}</th>
+                        @endforeach
+                        <th style="border: 1px solid #ccc; padding: 10px;">{{__('components.total')}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="background-color: #f4f4f4;">
+                        <td style="border: 1px solid #ccc; padding: 10px;">  {{__('components.total_units')}} </td>
+                        @foreach ($modelNames as $key => $name)
+                            <td style="border: 1px solid #ccc; padding: 10px;">{{ $totalItems[$key] ?? 0 }}</td>
+                        @endforeach
+                        <td style="border: 1px solid #4CAF50; font-weight: bold; color: green; padding: 10px;">{{ $sumTotal }}</td>
+                    </tr>
+                    <tr style="background-color: #f9f9f9;">
+                        <td style="border: 1px solid #ccc; padding: 10px;">{{__('components.total_reservations')}} </td>
+                        @foreach ($modelNames as $key => $name)
+                            <td style="border: 1px solid #ccc; padding: 10px;">{{ $reservedItems[$key] ?? 0 }}</td>
+                        @endforeach
+                        <td style="border: 1px solid #4CAF50; font-weight: bold; padding: 10px;">{{ $sumReserved }}</td>
+                    </tr>
+                    <tr style="background-color: #e8f5e8;">
+                        <td style="border: 1px solid #ccc; padding: 10px;">{{__('components.contracted_units')}} </td>
+                        @foreach ($modelNames as $key => $name)
+                            <td style="border: 1px solid #ccc; padding: 10px;">{{ $contractedItems[$key] ?? 0 }}</td>
+                        @endforeach
+                        <td style="border: 1px solid #4CAF50; font-weight: bold; padding: 10px;">{{ $sumContracted }}</td>
+                    </tr>
+                    <tr style="background-color: #eee;">
+                        <td style="border: 1px solid #ccc; padding: 10px;">{{__('components.reservation_percentage')}} </td>
+                        @foreach ($modelNames as $key => $name)
+                            @php
+                                $percentage = $percentages[$key] ?? 0;
+                                // إذا كانت النسبة أقل من 1، نضرب في 100 (مثل 0.42 تصبح 42%)
+                                $displayPercentage = $percentage < 1 ? round($percentage * 100, 2) : $percentage;
+                            @endphp
+                            <td style="border: 1px solid #ccc; padding: 10px;">{{ $displayPercentage }}%</td>
+                        @endforeach
+                        <td style="border: 1px solid #4CAF50; font-weight: bold; padding: 10px;">{{ $avgPercent }}%</td>
+                    </tr>
+                    <tr style="background-color: #e8f5e8;">
+                        <td style="border: 1px solid #ccc; padding: 10px;">{{__('components.contracted_percentage')}} </td>
+                        @foreach ($modelNames as $key => $name)
+                            @php
+                                $percentage = $contractedPercentages[$key] ?? 0;
+                                // إذا كانت النسبة أقل من 1، نضرب في 100 (مثل 0.42 تصبح 42%)
+                                $displayPercentage = $percentage < 1 ? round($percentage * 100, 2) : $percentage;
+                            @endphp
+                            <td style="border: 1px solid #ccc; padding: 10px;">{{ $displayPercentage }}%</td>
+                        @endforeach
+                        <td style="border: 1px solid #4CAF50; font-weight: bold; padding: 10px;">{{ $avgContractedPercent }}%</td>
+                    </tr>
+                </tbody>
+            </table>
 
         </div>
     </div>
@@ -83,11 +147,12 @@
             <img src="{{ asset('images/logo5.png') }}" alt="Azyan Logo Dhahran" style="height: 50px;">
         @elseif(isset($project_name) && $project_name == 'أزيان البشائر')
             <img src="{{ asset('images/logo6.png') }}" alt="Azyan Logo Albashaer" style="height: 50px;">
-            @elseif (!empty($logo) && file_exists(public_path('storage/' . $logo)))
+        @elseif(isset($project_name) && $project_name == 'أزيان جدة')
+            <img src="{{ asset('images/jadah.png') }}" alt="Azyan Logo Jeddah" style="height: 50px;">
+        @elseif (!empty($logo) && file_exists(public_path('storage/' . $logo)))
             <img src="{{ asset('storage/' . $logo) }}" alt="Site Logo" style="height: 50px;">
         @else
             <span style="font-size: 14px; color: #8b5a3b; font-weight: bold;">{{ $project_name }}</span>
         @endif
-
     </div>
 </div>

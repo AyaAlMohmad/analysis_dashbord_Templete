@@ -118,7 +118,7 @@
                     <a href="#"><i
                             class="ft-plus-circle"></i><span>{{ __('sidebar.additional_reports') }}</span></a>
                     <ul class="menu-content">
-                        <li class="{{ Route::is('admin.reports.teamCategory') ? 'active' : '' }}">
+                        {{-- <li class="{{ Route::is('admin.reports.teamCategory') ? 'active' : '' }}">
                             <a class="menu-item" href="{{ route('admin.reports.teamCategory') }}">
                                 <i class="ft-user-check"></i>
                                 <span>{{ __('sidebar.customer_social_outreach') }}</span>
@@ -129,8 +129,8 @@
                                 <i class="ft-users"></i>
                                 <span>{{ __('sidebar.team_report') }}</span>
                             </a>
-                        </li>
-                        <li class="{{ Route::is('admin.sales.report') ? 'active' : '' }}">
+                        </li> --}}
+                        {{-- <li class="{{ Route::is('admin.sales.report') ? 'active' : '' }}">
                             <a class="menu-item" href="{{ route('admin.sales.report') }}">
                                 <i class="ft-shopping-cart"></i>
                                 <span>{{ __('sidebar.sales_report') }}</span>
@@ -141,7 +141,7 @@
                                 <i class="ft-user"></i>
                                 <span>{{ __('sidebar.customer_report') }}</span>
                             </a>
-                        </li>
+                        </li> --}}
                         <li class="{{ Route::is('admin.reports.item') ? 'active' : '' }}">
                             <a class="menu-item" href="{{ route('admin.reports.item') }}">
                                 <i class="ft-box"></i>
@@ -208,8 +208,8 @@
                                 <span>{{ __('sidebar.summary_report') }}</span>
                             </a>
                         </li>
-                        <li class="{{ Route::is('admin.comprehensive.unit-stages.form') ? 'active' : '' }}">
-                            <a class="menu-item" href="{{ route('admin.comprehensive.unit-stages.form') }}">
+                        <li class="{{ Route::is('admin.comprehensive.unit-stages.process') ? 'active' : '' }}">
+                            <a class="menu-item" href="{{ route('admin.comprehensive.unit-stages.process') }}">
                                 <i class="ft-layers"></i>
                                 <span>{{ __('sidebar.unit_satage_report') }}</span>
                             </a>
@@ -232,12 +232,12 @@
                                 <span>{{ __('sidebar.vpc_report') }}</span>
                             </a>
                         </li>
-                        <li class="{{ Route::is('admin.comprehensive.disinterest.form') ? 'active' : '' }}">
+                        {{-- <li class="{{ Route::is('admin.comprehensive.disinterest.form') ? 'active' : '' }}">
                             <a class="menu-item" href="{{ route('admin.comprehensive.disinterest.form') }}">
                                 <i class="ft-slash"></i>
                                 <span>{{ __('sidebar.disinterest_report') }}</span>
                             </a>
-                        </li>
+                        </li> --}}
                         <li class="{{ Route::is('admin.comprehensive.unit-statistics.form') ? 'active' : '' }}">
                             <a class="menu-item" href="{{ route('admin.comprehensive.unit-statistics.form') }}">
                                 <i class="ft-bar-chart"></i>

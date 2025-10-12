@@ -13,23 +13,39 @@ class AppointmentsController extends ReportBaseController
 
     public function index(Request $request)
     {
-        $dhahranMonthlyAppointments = $this->getDhahranMonthlyAppointments();
-        $albashaerMonthlyAppointments = $this->getAlbashaerMonthlyAppointments();
-        
+        $fromDate = $request->input('from_date');
+        $toDate = $request->input('to_date');
+
+        $dhahranMonthlyAppointments = $this->getDhahranMonthlyAppointments($fromDate, $toDate);
+        $albashaerMonthlyAppointments = $this->getAlbashaerMonthlyAppointments($fromDate, $toDate);
+        $jeddahMonthlyAppointments = $this->getJeddahMonthlyAppointments($fromDate, $toDate);
+
         return view($this->reportView, [
-            'from_date' => $request->input('from_date'),
-            'to_date' => $request->input('to_date'),
+            'from_date' => $fromDate,
+            'to_date' => $toDate,
             'dhahranMonthlyAppointments' => $dhahranMonthlyAppointments,
             'albashaerMonthlyAppointments' => $albashaerMonthlyAppointments,
+            'jeddahMonthlyAppointments' => $jeddahMonthlyAppointments,
         ]);
     }
-        /**
+
+    /**
      * Get Dhahran Monthly Appointments Data
      */
-    private function getDhahranMonthlyAppointments()
+    private function getDhahranMonthlyAppointments($fromDate = null, $toDate = null)
     {
         try {
-            $response = Http::post('https://crm.azyanaldhahran.com/api/lead_reports/monthly_appointments_api');
+            $formData = [];
+
+            if ($fromDate) {
+                $formData['from_date'] = $fromDate;
+            }
+
+            if ($toDate) {
+                $formData['to_date'] = $toDate;
+            }
+
+            $response = Http::asForm()->post('https://crm.azyanaldhahran.com/api/lead_reports/monthly_appointments_api', $formData);
 
             if ($response->successful()) {
                 $data = $response->json();
@@ -51,10 +67,20 @@ class AppointmentsController extends ReportBaseController
     /**
      * Get Albashaer Monthly Appointments Data
      */
-    private function getAlbashaerMonthlyAppointments()
+    private function getAlbashaerMonthlyAppointments($fromDate = null, $toDate = null)
     {
         try {
-            $response = Http::post('https://crm.azyanalbashaer.com/api/lead_reports/monthly_appointments_api');
+            $formData = [];
+
+            if ($fromDate) {
+                $formData['from_date'] = $fromDate;
+            }
+
+            if ($toDate) {
+                $formData['to_date'] = $toDate;
+            }
+
+            $response = Http::asForm()->post('https://crm.azyanalbashaer.com/api/lead_reports/monthly_appointments_api', $formData);
 
             if ($response->successful()) {
                 $data = $response->json();
@@ -65,6 +91,41 @@ class AppointmentsController extends ReportBaseController
             }
         } catch (\Exception $e) {
             Log::error("Albashaer Monthly Appointments API Error: " . $e->getMessage());
+        }
+
+        return [
+            'appointments' => [],
+            'totals' => [],
+        ];
+    }
+
+    /**
+     * Get Jeddah Monthly Appointments Data
+     */
+    private function getJeddahMonthlyAppointments($fromDate = null, $toDate = null)
+    {
+        try {
+            $formData = [];
+
+            if ($fromDate) {
+                $formData['from_date'] = $fromDate;
+            }
+
+            if ($toDate) {
+                $formData['to_date'] = $toDate;
+            }
+
+            $response = Http::asForm()->post('https://crm.azyanjeddah.com/api/lead_reports/monthly_appointments_api', $formData);
+
+            if ($response->successful()) {
+                $data = $response->json();
+
+                if ($data['status'] ?? false) {
+                    return $data['data'] ?? [];
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error("Jeddah Monthly Appointments API Error: " . $e->getMessage());
         }
 
         return [

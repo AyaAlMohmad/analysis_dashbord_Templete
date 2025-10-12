@@ -269,4 +269,10 @@ return [
 'add_target' => 'Add Target',
 'remove_target' => 'Remove Target',
 'saving_data' => 'Saving data, please wait...',
+'external_visit_leads_count' => 'External Visit Leads Count',
+'external_visit_leads' => 'External Visit Leads',
+'percentage_external_visit_leads' => 'Percentage External Visit Leads',
+'reservation_percentage'=>'Reservation Percentage',
+'contracted_percentage'=>'Contracted Percentage',
+'jeddah'=>'Jeddah',
 ];

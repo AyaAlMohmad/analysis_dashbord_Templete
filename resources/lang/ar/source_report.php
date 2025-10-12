@@ -14,5 +14,7 @@ return [
     'export_pdf' => 'تصدير PDF',
     'cumulative' => 'تقرير تراكمي',
     'from_to' => 'من :from إلى :to',
+    'jeddah' => 'جدة',
+    'grand_total' => 'إجمالي',
 
 ];

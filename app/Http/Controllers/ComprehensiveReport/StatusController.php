@@ -14,16 +14,19 @@ class StatusController extends ReportBaseController
     public function index(Request $request)
     {
         $dhahranStatusData = $this->getDhahranStatus();
-        $bashaerStatusData = $this->getbashaerStatus();
-        
+        $bashaerStatusData = $this->getBashaerStatus();
+        $jeddahStatusData = $this->getJeddahStatus();
+
         return view($this->reportView, [
             'from_date' => $request->input('from_date'),
             'to_date' => $request->input('to_date'),
             'dhahranStatusData' => $dhahranStatusData,
             'bashaerStatusData' => $bashaerStatusData,
+            'jeddahStatusData' => $jeddahStatusData,
         ]);
     }
-       /**
+
+    /**
      * getDhahranStatus API
      */
     private function getDhahranStatus()
@@ -48,10 +51,11 @@ class StatusController extends ReportBaseController
             'totals' => [],
         ];
     }
+
     /**
-     * getbashaerStatus API
+     * getBashaerStatus API
      */
-    private function getbashaerStatus()
+    private function getBashaerStatus()
     {
         try {
             $response = Http::get('https://crm.azyanalbashaer.com/api/Item_reports_api/api_status_item');
@@ -64,7 +68,33 @@ class StatusController extends ReportBaseController
                 }
             }
         } catch (\Exception $e) {
-            Log::error("Dhahran Status API Error: " . $e->getMessage());
+            Log::error("Bashaer Status API Error: " . $e->getMessage());
+        }
+
+        return [
+            'groups' => [],
+            'statuses' => [],
+            'totals' => [],
+        ];
+    }
+
+    /**
+     * getJeddahStatus API
+     */
+    private function getJeddahStatus()
+    {
+        try {
+            $response = Http::get('https://crm.azyanjeddah.com/api/Item_reports_api/api_status_item');
+
+            if ($response->successful()) {
+                $data = $response->json();
+
+                if ($data['status'] ?? false) {
+                    return $data['data'] ?? [];
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error("Jeddah Status API Error: " . $e->getMessage());
         }
 
         return [

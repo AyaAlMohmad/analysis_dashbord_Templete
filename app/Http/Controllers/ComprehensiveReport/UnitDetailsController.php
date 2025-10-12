@@ -15,15 +15,18 @@ class UnitDetailsController extends ReportBaseController
     {
         $unitDetailsByStageResultDhahran = $this->unitDetailsByStageResultDhahran();
         $unitDetailsByStageResultAlbashaer = $this->unitDetailsByStageResultAlbashaer();
-        
+        $unitDetailsByStageResultJeddah = $this->unitDetailsByStageResultJeddah();
+// dd($unitDetailsByStageResultJeddah);
         return view($this->reportView, [
             'from_date' => $request->input('from_date'),
             'to_date' => $request->input('to_date'),
             'unitDetailsByStageResultDhahran' => $unitDetailsByStageResultDhahran,
             'unitDetailsByStageResultAlbashaer' => $unitDetailsByStageResultAlbashaer,
+            'unitDetailsByStageResultJeddah' => $unitDetailsByStageResultJeddah,
         ]);
     }
-       /**
+
+    /**
      * Get Dhahran Unit Statistics by Stage
      */
     private function unitDetailsByStageResultDhahran()
@@ -35,17 +38,15 @@ class UnitDetailsController extends ReportBaseController
                 $data = $response->json();
 
                 if ($data['status'] ?? false) {
-                    return $data['data'] ?? [];
+                    // إرجاع البيانات مباشرة بدون 'reports'
+                    return $data['data']['reports'] ?? [];
                 }
             }
         } catch (\Exception $e) {
             Log::error("Dhahran Unit Statistics by Stage API Error: " . $e->getMessage());
         }
 
-        return [
-            'statistics' => [],
-            'totals' => [],
-        ];
+        return [];
     }
 
     /**
@@ -60,16 +61,37 @@ class UnitDetailsController extends ReportBaseController
                 $data = $response->json();
 
                 if ($data['status'] ?? false) {
-                    return $data['data'] ?? [];
+                    // إرجاع البيانات مباشرة بدون 'reports'
+                    return $data['data']['reports'] ?? [];
                 }
             }
         } catch (\Exception $e) {
             Log::error("Albashaer Unit Statistics by Stage API Error: " . $e->getMessage());
         }
 
-        return [
-            'statistics' => [],
-            'totals' => [],
-        ];
+        return [];
+    }
+
+    /**
+     * Get Jeddah Unit Statistics by Stage
+     */
+    private function unitDetailsByStageResultJeddah()
+    {
+        try {
+            $response = Http::post('https://crm.azyanjeddah.com/api/Item_reports/unit_details_by_stage_result');
+
+            if ($response->successful()) {
+                $data = $response->json();
+
+                if ($data['status'] ?? false) {
+                    // إرجاع البيانات مباشرة بدون 'reports'
+                    return $data['data']['reports'] ?? [];
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error("Jeddah Unit Statistics by Stage API Error: " . $e->getMessage());
+        }
+
+        return [];
     }
 }

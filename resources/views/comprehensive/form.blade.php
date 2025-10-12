@@ -21,7 +21,7 @@
 
     @php
         $sections = [
-            'colored_map' => __('components.colored_map'),
+            // 'colored_map' => __('components.colored_map'),
             'reserved_report' => __('components.reserved_report'),
             'contracts_report' => __('components.contracts_report'),
             'status_item' => __('components.status_item'),
@@ -29,7 +29,7 @@
             'unitStages' => __('components.unit_stages'),
             'unitStatisticsByStage' => __('components.unit_statistics_by_stage'),
             'visits_payments_contracts' => __('components.visits_payments_contracts'),
-            'disinterest_reasons' => __('components.disinterest_reasons'),
+            // 'disinterest_reasons' => __('components.disinterest_reasons'),
             'unit_sales' => __('components.unit_sale'),
             'source_stats' => __('components.source_stats'),
             'monthly_appointments' => __('components.monthly_appointments'),
@@ -74,6 +74,11 @@
                         <input class="form-check-input" type="checkbox" name="sites[]" value="albashaer" id="siteAlbashaer"
                             checked>
                         <label class="form-check-label" for="siteAlbashaer">{{ __('components.albashaer') }}</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="sites[]" value="jeddah" id="siteJeddah"
+                            checked>
+                        <label class="form-check-label" for="siteJeddah">{{ __('components.jeddah') }}</label>
                     </div>
                     <div id="filteredSitesContainer" class="mt-3"></div>
 

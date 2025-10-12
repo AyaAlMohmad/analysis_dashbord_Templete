@@ -4,6 +4,7 @@
 @php
     $logoDhahran = asset('images/logo1.png');
     $logoBashaer = asset('images/logo2.png');
+    $logoJeddah = asset('images/jadah.png');
 @endphp
 
 <style>
@@ -54,6 +55,7 @@
             <option value="">-- {{ __('unit_stages.select_site') }} --</option>
             <option value="dhahran">{{ __('unit_stages.dhahran') }}</option>
             <option value="bashaer">{{ __('unit_stages.bashaer') }}</option>
+            <option value="jeddah">{{ __('components.jeddah') }}</option>
         </select>
         <img id="logo" src="" alt="Logo" style="max-height: 70px; display: none;" class="mt-2">
     </div>
@@ -65,9 +67,9 @@
             <tr>
                 <th>{{ __('unit_stages.phase') }}</th>
                 <th>{{ __('unit_stages.total_units') }}</th>
+                <th>{{ __('unit_stages.available') }}</th>
                 <th>{{ __('unit_stages.reserved') }}</th>
                 <th>{{ __('unit_stages.contacted') }}</th>
-                <th>{{ __('unit_stages.available') }}</th>
                 <th>{{ __('unit_stages.blocked') }}</th>
             </tr>
         </thead>
@@ -76,9 +78,9 @@
             <tr class="summary-row">
                 <td>{{ __('unit_stages.total') }}</td>
                 <td id="grandTotal">0</td>
+                <td id="totalAvailable">0</td>
                 <td id="totalReserved">0</td>
                 <td id="totalContacted">0</td>
-                <td id="totalAvailable">0</td>
                 <td id="totalBlocked">0</td>
             </tr>
         </tfoot>
@@ -87,20 +89,16 @@
     <div class="text-muted text-center mt-3" id="generatedAt"></div>
 
     <div class="text-center my-4" id="pdf-export-button" style="display: none;">
-        <div class="text-center my-4" id="pdf-export-button">
-
-            <a href="javascript:void(0);" onclick="exportPDF()" title="Export PDF"
-                class="transition duration-300 transform hover:scale-110 hover:rotate-6 d-block mt-4">
-                <div class="fonticon-container flex items-center justify-center custom-hover-red">
-                    <div class="fonticon-wrap"
-                        style="float: left; width: 1104px; height: 60px;line-height: 4.8rem; text-align: center; border-radius: 0.1875rem;margin-right: 1rem;
-                         margin-bottom: 1.5rem;">
-                        <i class="fa fa-file-pdf-o text-red-500 hover:text-red-700 text-5xl"></i>
-                    </div>
+        <a href="javascript:void(0);" onclick="exportPDF()" title="Export PDF"
+            class="transition duration-300 transform hover:scale-110 hover:rotate-6 d-block mt-4">
+            <div class="fonticon-container flex items-center justify-center custom-hover-red">
+                <div class="fonticon-wrap"
+                    style="float: left; width: 1104px; height: 60px;line-height: 4.8rem; text-align: center; border-radius: 0.1875rem;margin-right: 1rem;
+                     margin-bottom: 1.5rem;">
+                    <i class="fa fa-file-pdf-o text-red-500 hover:text-red-700 text-5xl"></i>
                 </div>
-            </a>
-
-        </div>
+            </div>
+        </a>
     </div>
 </div>
 
@@ -135,8 +133,24 @@
         const site = this.value;
         if (!site) return;
 
-        const logo = site === 'dhahran' ? '{{ $logoDhahran }}' : '{{ $logoBashaer }}';
-        const color = site === 'dhahran' ? '#00262f' : '#543829';
+        let logo, color;
+        switch(site) {
+            case 'dhahran':
+                logo = '{{ $logoDhahran }}';
+                color = '#00262f';
+                break;
+            case 'bashaer':
+                logo = '{{ $logoBashaer }}';
+                color = '#543829';
+                break;
+            case 'jeddah':
+                logo = '{{ $logoJeddah }}';
+                color = '#1a472a';
+                break;
+            default:
+                logo = '';
+                color = '#000000';
+        }
 
         document.getElementById('logo').src = logo;
         document.getElementById('logo').style.display = 'block';
@@ -158,55 +172,40 @@
         })
         .then(res => res.json())
         .then(response => {
-    if (!response.status) return;
+            if (!response.status) return;
 
-    const groupData = response.data;
+            const data = response.data;
+            const groups = data.groups;
+            const totals = data.totals;
+            const grandTotal = data.grand_total;
 
-    const tbody = document.getElementById('unitTableBody');
-    tbody.innerHTML = '';
+            const tbody = document.getElementById('unitTableBody');
+            tbody.innerHTML = '';
 
-    let totalCount = 0;
-    let totalAvailable = 0;
-    let totalReserved = 0;
-    let totalContacted = 0;
-    let totalBlocked = 0;
+            // عرض بيانات كل مجموعة
+            Object.entries(groups).forEach(([phase, values]) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${phase}</td>
+                    <td>${values.total}</td>
+                    <td>${values.available}</td>
+                    <td>${values.reserved}</td>
+                    <td>${values.contracted}</td>
+                    <td>${values.blocked}</td>
+                `;
+                tbody.appendChild(row);
+            });
 
-    Object.entries(groupData).forEach(([phase, values]) => {
-        const count = parseInt(values.count) || 0;
-        const available = parseInt(values.status_counts.available) || 0;
-        const reserved = parseInt(values.status_counts.reserved) || 0;
-        const contacted = parseInt(values.status_counts.contracted || 0); // if contracted = contacted
-        const blocked = parseInt(values.status_counts.blocked) || 0;
+            // تحديث الإجماليات
+            document.getElementById('grandTotal').textContent = grandTotal;
+            document.getElementById('totalAvailable').textContent = totals.available;
+            document.getElementById('totalReserved').textContent = totals.reserved;
+            document.getElementById('totalContacted').textContent = totals.contracted;
+            document.getElementById('totalBlocked').textContent = totals.blocked;
 
-        totalCount += count;
-        totalAvailable += available;
-        totalReserved += reserved;
-        totalContacted += contacted;
-        totalBlocked += blocked;
-
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${phase}</td>
-            <td>${count}</td>
-            <td>${reserved}</td>
-            <td>${contacted}</td>
-            <td>${available}</td>
-            <td>${blocked}</td>
-        `;
-        tbody.appendChild(row);
-    });
-
-    document.getElementById('unitTable').classList.remove('d-none');
-    document.getElementById('grandTotal').textContent = totalCount;
-    document.getElementById('totalAvailable').textContent = totalAvailable;
-    document.getElementById('totalReserved').textContent = totalReserved;
-    document.getElementById('totalContacted').textContent = totalContacted;
-    document.getElementById('totalBlocked').textContent = totalBlocked;
-
-    document.getElementById('generatedAt').textContent = "Report generated at: " + new Date().toLocaleString();
-    document.getElementById('pdf-export-button').style.display = 'block';
-})
-
+            document.getElementById('generatedAt').textContent = "Report generated at: " + new Date().toLocaleString();
+            document.getElementById('pdf-export-button').style.display = 'block';
+        })
         .catch(err => {
             console.error(err);
             document.getElementById('unitTableBody').innerHTML = `<tr><td colspan="6">Error loading data</td></tr>`;

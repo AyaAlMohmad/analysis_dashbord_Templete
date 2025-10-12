@@ -15,18 +15,21 @@ class UnitSalesController extends ReportBaseController
     {
         $from_date = $request->input('from_date');
         $to_date = $request->input('to_date');
-        
+
         $albashaerUnitSales = $this->getAlbashaerUnitSales($from_date, $to_date);
         $dhahranUnitSales = $this->getDhahranUnitSales($from_date, $to_date);
-        
+        $jeddahUnitSales = $this->getJeddahUnitSales($from_date, $to_date);
+// var_dump($dhahranUnitSales);
         return view($this->reportView, [
             'from_date' => $from_date,
             'to_date' => $to_date,
             'albashaerUnitSales' => $albashaerUnitSales,
             'dhahranUnitSales' => $dhahranUnitSales,
+            'jeddahUnitSales' => $jeddahUnitSales,
         ]);
     }
-       /**
+
+    /**
      * Get Albashaer Unit Sales Data
      */
     private function getAlbashaerUnitSales($from_date, $to_date)
@@ -37,7 +40,7 @@ class UnitSalesController extends ReportBaseController
             if ($response->successful()) {
                 $data = $response->json();
                 if ($data['status'] ?? false) {
-                    return $data; // تحتوي عادةً على ['status', 'message', 'data' => [...]]
+                    return $data;
                 }
             }
         } catch (\Exception $e) {
@@ -72,6 +75,31 @@ class UnitSalesController extends ReportBaseController
         return [
             'status'  => false,
             'message' => 'Failed to fetch data from Dhahran Unit Sales API',
+            'data'    => [],
+        ];
+    }
+
+    /**
+     * Get Jeddah Unit Sales Data
+     */
+    private function getJeddahUnitSales($from_date, $to_date)
+    {
+        try {
+            $response = Http::get('https://crm.azyanjeddah.com/api/Item_reports/unit_sales_api');
+
+            if ($response->successful()) {
+                $data = $response->json();
+                if ($data['status'] ?? false) {
+                    return $data;
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error("Jeddah Unit Sales API Error: " . $e->getMessage());
+        }
+
+        return [
+            'status'  => false,
+            'message' => 'Failed to fetch data from Jeddah Unit Sales API',
             'data'    => [],
         ];
     }

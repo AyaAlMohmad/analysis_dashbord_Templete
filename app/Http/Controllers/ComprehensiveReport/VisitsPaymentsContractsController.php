@@ -15,15 +15,18 @@ class VisitsPaymentsContractsController extends ReportBaseController
     {
         $albashaerVPCData = $this->getAlbashaerVisitsPaymentsContracts();
         $dhahranVPCData = $this->getDhahranVisitsPaymentsContracts();
-        
+        $jeddahVPCData = $this->getJeddahVisitsPaymentsContracts();
+// var_dump($albashaerVPCData);
         return view($this->reportView, [
             'from_date' => $request->input('from_date'),
             'to_date' => $request->input('to_date'),
             'albashaerVPCData' => $albashaerVPCData,
             'dhahranVPCData' => $dhahranVPCData,
+            'jeddahVPCData' => $jeddahVPCData,
         ]);
     }
-      /**
+
+    /**
      * Get Albashaer Visits, Payments and Contracts Data
      */
     private function getAlbashaerVisitsPaymentsContracts()
@@ -46,9 +49,9 @@ class VisitsPaymentsContractsController extends ReportBaseController
             'status' => false,
             'message' => 'Failed to fetch data from Albashaer Visits Payments Contracts API',
             'data' => [
-                'current_month' => [],
-                'last_month' => [],
-                'two_months_ago' => [],
+                'contracts' => 0,
+                'payments' => 0,
+                'visits' => 0
             ],
             'date_from' => null,
             'date_to' => null
@@ -78,13 +81,76 @@ class VisitsPaymentsContractsController extends ReportBaseController
             'status' => false,
             'message' => 'Failed to fetch data from Dhahran Visits Payments Contracts API',
             'data' => [
-                'current_month' => [],
-                'last_month' => [],
-                'two_months_ago' => [],
+                'contracts' => 0,
+                'payments' => 0,
+                'visits' => 0
             ],
             'date_from' => null,
             'date_to' => null
         ];
     }
- 
+
+    /**
+     * Get Jeddah Visits, Payments and Contracts Data
+     */
+    private function getJeddahVisitsPaymentsContracts()
+    {
+        try {
+            $response = Http::get('https://crm.azyanjeddah.com/api/Item_reports/visits_payments_contracts_api');
+
+            if ($response->successful()) {
+                $data = $response->json();
+
+                if ($data['status'] ?? false) {
+                    return $data;
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error("Jeddah Visits Payments Contracts API Error: " . $e->getMessage());
+        }
+
+        return [
+            'status' => false,
+            'message' => 'Failed to fetch data from Jeddah Visits Payments Contracts API',
+            'data' => [
+                'contracts' => 0,
+                'payments' => 0,
+                'visits' => 0
+            ],
+            'date_from' => null,
+            'date_to' => null
+        ];
+    }
+
+    /**
+     * Unified method to process all APIs with same structure
+     */
+    private function getUnifiedVisitsPaymentsContracts($apiUrl, $apiName)
+    {
+        try {
+            $response = Http::get($apiUrl);
+
+            if ($response->successful()) {
+                $data = $response->json();
+
+                if ($data['status'] ?? false) {
+                    return $data;
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error("{$apiName} Visits Payments Contracts API Error: " . $e->getMessage());
+        }
+
+        return [
+            'status' => false,
+            'message' => "Failed to fetch data from {$apiName} Visits Payments Contracts API",
+            'data' => [
+                'contracts' => 0,
+                'payments' => 0,
+                'visits' => 0
+            ],
+            'date_from' => null,
+            'date_to' => null
+        ];
+    }
 }

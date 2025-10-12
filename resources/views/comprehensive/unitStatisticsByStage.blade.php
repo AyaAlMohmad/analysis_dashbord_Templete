@@ -37,6 +37,8 @@
                                     </th>
                                     <th style="border: 1px solid #ccc; padding: 2px;">@lang('components.units')</th>
                                     <th style="border: 1px solid #ccc; padding: 2px;">@lang('components.sold_available')</th>
+                                    <th style="border: 1px solid #ccc; padding: 2px;">@lang('components.contracted')</th>
+                                    <th style="border: 1px solid #ccc; padding: 2px;">@lang('components.reserved')</th>
                                     <th style="border: 1px solid #ccc; padding: 2px;">@lang('components.from')</th>
                                     <th style="border: 1px solid #ccc; padding: 2px;">@lang('components.to')</th>
                                 </tr>
@@ -63,6 +65,12 @@
                                             {{ $modelData['available_blocked'] ?? 0 }}
                                         </td>
                                         <td style="border: 1px solid #ccc; padding: 2px;">
+                                            {{ $modelData['contracted'] ?? 0 }}
+                                        </td>
+                                        <td style="border: 1px solid #ccc; padding: 2px;">
+                                            {{ $modelData['reserved'] ?? 0 }}
+                                        </td>
+                                        <td style="border: 1px solid #ccc; padding: 2px;">
                                             {{ isset($modelData['min_rate']) ? number_format($modelData['min_rate'], 0, '.', ',') : '--' }}
                                         </td>
                                         <td style="border: 1px solid #ccc; padding: 2px;">
@@ -77,12 +85,16 @@
                                     <td style="border: 1px solid #ccc; padding: 2px;">
                                         {{ $stage['totals']['available_blocked'] ?? 0 }}
                                     </td>
+                                    <td style="border: 1px solid #ccc; padding: 2px;">
+                                        {{ $stage['totals']['contracted'] ?? 0 }}
+                                    </td>
+                                    <td style="border: 1px solid #ccc; padding: 2px;">
+                                        {{ $stage['totals']['reserved'] ?? 0 }}
+                                    </td>
                                     <td style="border: 1px solid #ccc; padding: 2px;" colspan="2">
                                         @if (isset($stage['totals']['min_rate']) && isset($stage['totals']['max_rate']))
                                             {{ number_format($stage['totals']['min_rate'], 0, '.', ',') }} -
                                             {{ number_format($stage['totals']['max_rate'], 0, '.', ',') }}
-
-
                                         @else
                                             ---
                                         @endif
@@ -106,6 +118,8 @@
             <img src="{{ asset('images/logo5.png') }}" alt="Azyan Logo Dhahran" style="height: 50px;">
         @elseif(isset($project_name) && $project_name == 'أزيان البشائر')
             <img src="{{ asset('images/logo6.png') }}" alt="Azyan Logo Albashaer" style="height: 50px;">
+        @elseif(isset($project_name) && $project_name == 'أزيان جدة')
+            <img src="{{ asset('images/jadah.png') }}" alt="Azyan Logo Jeddah" style="height: 50px;">
         @else
             <img src="{{ asset('images/default-logo.png') }}" alt="Default Logo" style="height: 50px;">
         @endif
@@ -149,6 +163,8 @@
                         <th style="border: 1px solid #ccc; padding: 2px; font-size: 8px;">@lang('components.model')</th>
                         <th style="border: 1px solid #ccc; padding: 2px;">@lang('components.units')</th>
                         <th style="border: 1px solid #ccc; padding: 2px;">@lang('components.sold_available')</th>
+                        <th style="border: 1px solid #ccc; padding: 2px;">@lang('components.contracted')</th>
+                        <th style="border: 1px solid #ccc; padding: 2px;">@lang('components.reserved')</th>
                         <th style="border: 1px solid #ccc; padding: 2px;">@lang('components.from')</th>
                         <th style="border: 1px solid #ccc; padding: 2px;">@lang('components.to')</th>
                     </tr>
@@ -169,6 +185,8 @@
                             <td style="border: 1px solid #ccc; padding: 2px;">{{ $modelName }}</td>
                             <td style="border: 1px solid #ccc; padding: 2px;">{{ $modelData['count'] ?? 0 }}</td>
                             <td style="border: 1px solid #ccc; padding: 2px;">{{ $modelData['available_blocked'] ?? 0 }}</td>
+                            <td style="border: 1px solid #ccc; padding: 2px;">{{ $modelData['contracted'] ?? 0 }}</td>
+                            <td style="border: 1px solid #ccc; padding: 2px;">{{ $modelData['reserved'] ?? 0 }}</td>
                             <td style="border: 1px solid #ccc; padding: 2px;">
                                 {{ isset($modelData['min_rate']) ? number_format($modelData['min_rate'], 0, '.', ',') : '--' }}
                             </td>
@@ -181,6 +199,8 @@
                         <td style="border: 1px solid #ccc; padding: 2px;">@lang('components.stage_total')</td>
                         <td style="border: 1px solid #ccc; padding: 2px;">{{ $stage['totals']['total_items'] ?? 0 }}</td>
                         <td style="border: 1px solid #ccc; padding: 2px;">{{ $stage['totals']['available_blocked'] ?? 0 }}</td>
+                        <td style="border: 1px solid #ccc; padding: 2px;">{{ $stage['totals']['contracted'] ?? 0 }}</td>
+                        <td style="border: 1px solid #ccc; padding: 2px;">{{ $stage['totals']['reserved'] ?? 0 }}</td>
                         <td style="border: 1px solid #ccc; padding: 2px;" colspan="2">
                             @if(isset($stage['totals']['min_rate']) && isset($stage['totals']['max_rate']))
                                 {{ number_format($stage['totals']['min_rate'], 0, '.', ',') }} - {{ number_format($stage['totals']['max_rate'], 0, '.', ',') }}
@@ -202,12 +222,11 @@
                 <img src="{{ asset('images/logo5.png') }}" alt="Azyan Logo Dhahran" style="height: 50px;">
             @elseif(isset($project_name) && $project_name == 'أزيان البشائر')
                 <img src="{{ asset('images/logo6.png') }}" alt="Azyan Logo Albashaer" style="height: 50px;">
-                @elseif (!empty($logo) && file_exists(public_path('storage/' . $logo)))
-                <img src="{{ asset('storage/' . $logo) }}" alt="Site Logo" style="height: 50px;">
+            @elseif(isset($project_name) && $project_name == 'أزيان جدة')
+                <img src="{{ asset('images/jadah.png') }}" alt="Azyan Logo Jeddah" style="height: 50px;">
             @else
                 <span style="font-size: 14px; color: #8b5a3b; font-weight: bold;">{{ $project_name }}</span>
             @endif
-
         </div>
     </div>
 @endif

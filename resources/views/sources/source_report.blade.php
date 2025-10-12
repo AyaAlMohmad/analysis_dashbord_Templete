@@ -13,6 +13,7 @@
                         <option value="">{{ __('source_report.select_site') }}</option>
                         <option value="dhahran">{{ __('source_report.dhahran') }}</option>
                         <option value="bashaer">{{ __('source_report.bashaer') }}</option>
+                        <option value="jeddah">{{ __('components.jeddah') }}</option>
                     </select>
                 </div>
 

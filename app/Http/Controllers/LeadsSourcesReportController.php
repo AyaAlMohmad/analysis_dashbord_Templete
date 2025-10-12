@@ -56,43 +56,40 @@ class LeadsSourcesReportController extends Controller
     {
         return view('sources.source_report');
     }
-    public function sourceReportResult(Request $request)
-    {
-        $validated = $request->validate([
-            'site' => 'required|in:dhahran,bashaer',
-            'from_date' => 'nullable|date',
-            'to_date' => 'nullable|date|after_or_equal:from_date',
-        ]);
+   public function sourceReportResult(Request $request)
+{
+    $validated = $request->validate([
+        'site' => 'required|in:dhahran,bashaer,jeddah', // إضافة جدة
+        'from_date' => 'nullable|date',
+        'to_date' => 'nullable|date|after_or_equal:from_date',
+    ]);
 
-        $apiUrls = [
-            'dhahran' => 'https://crm.azyanaldhahran.com/api/custom-reports/api_generate_source_report',
-            'bashaer' => 'https://crm.azyanalbashaer.com/api/custom-reports/api_generate_source_report',
-        ];
+    $apiUrls = [
+        'dhahran' => 'https://crm.azyanaldhahran.com/api/custom-reports/api_generate_source_report',
+        'bashaer' => 'https://crm.azyanalbashaer.com/api/custom-reports/api_generate_source_report',
+        'jeddah' => 'https://crm.azyanjeddah.com/api/custom-reports/api_generate_source_report', // إضافة جدة
+    ];
 
-        try {
-            $response = Http::timeout(30)
-                ->asForm() // important for multipart/form-data
-                ->post($apiUrls[$validated['site']], [
+    try {
+        $response = Http::timeout(30)
+            ->asForm() // important for multipart/form-data
+            ->post($apiUrls[$validated['site']], [
+                'from_date' => $validated['from_date'],
+                'to_date' => $validated['to_date'],
+            ]);
 
-
-                    'from_date' => $validated['from_date'],
-                    'to_date' => $validated['to_date'],
-                ]);
-
-            if ($response->successful()) {
-
-                $result = $response->json();
-                // dd($result);
-                return view('sources.source_report_result', [
-                    'result' => $result,
-                    'site' => $validated['site']
-                ]);
-            }
-
-            return back()->with('error', 'Failed to fetch report data.');
-        } catch (\Exception $e) {
-            return back()->with('error', 'Error contacting API: ' . $e->getMessage());
+        if ($response->successful()) {
+            $result = $response->json();
+            return view('sources.source_report_result', [
+                'result' => $result,
+                'site' => $validated['site']
+            ]);
         }
+
+        return back()->with('error', 'Failed to fetch report data.');
+    } catch (\Exception $e) {
+        return back()->with('error', 'Error contacting API: ' . $e->getMessage());
     }
-   
+}
+
 }

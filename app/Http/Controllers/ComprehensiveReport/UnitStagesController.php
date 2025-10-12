@@ -13,21 +13,42 @@ class UnitStagesController extends ReportBaseController
 
     public function index(Request $request)
     {
-        $dhahranUnitStages = $this->getDhahranUnitStages();
-        $albashaerUnitStages = $this->getAlbashaerUnitStages();
-        
+        $from_date = $request->input('from_date');
+        $to_date = $request->input('to_date');
+
+        $dhahranUnitStages = $this->getDhahranUnitStages($from_date, $to_date);
+        $albashaerUnitStages = $this->getAlbashaerUnitStages($from_date, $to_date);
+        $jeddahUnitStages = $this->getJeddahUnitStages($from_date, $to_date);
+// dd($dhahranUnitStages,$albashaerUnitStages,$jeddahUnitStages);
         return view($this->reportView, [
-            'from_date' => $request->input('from_date'),
-            'to_date' => $request->input('to_date'),
+            'from_date' => $from_date,
+            'to_date' => $to_date,
             'dhahranUnitStages' => $dhahranUnitStages,
             'albashaerUnitStages' => $albashaerUnitStages,
+            'jeddahUnitStages' => $jeddahUnitStages,
         ]);
+
     }
-    
-    private function getDhahranUnitStages()
+
+    private function getDhahranUnitStages($from_date = null, $to_date = null)
     {
         try {
-            $response = Http::get('https://crm.azyanaldhahran.com/api/Item_reports/unitStages');
+            $formData = [];
+
+            if ($from_date) {
+                $formData['from_date'] = $from_date;
+            }
+
+            if ($to_date) {
+                $formData['to_date'] = $to_date;
+            }
+
+            // استخدام POST إذا كانت التواريخ موجودة، وإلا استخدام GET
+            if (!empty($formData)) {
+                $response = Http::asForm()->post('https://crm.azyanaldhahran.com/api/Item_reports/unitStages', $formData);
+            } else {
+                $response = Http::get('https://crm.azyanaldhahran.com/api/Item_reports/unitStages');
+            }
 
             if ($response->successful()) {
                 $data = $response->json();
@@ -46,13 +67,25 @@ class UnitStagesController extends ReportBaseController
         ];
     }
 
-    /**
-     * Get Albashaer Unit Stages Data
-     */
-    private function getAlbashaerUnitStages()
+    private function getAlbashaerUnitStages($from_date = null, $to_date = null)
     {
         try {
-            $response = Http::get('https://crm.azyanalbashaer.com/api/Item_reports/unitStages');
+            $formData = [];
+
+            if ($from_date) {
+                $formData['from_date'] = $from_date;
+            }
+
+            if ($to_date) {
+                $formData['to_date'] = $to_date;
+            }
+
+            // استخدام POST إذا كانت التواريخ موجودة، وإلا استخدام GET
+            if (!empty($formData)) {
+                $response = Http::asForm()->post('https://crm.azyanalbashaer.com/api/Item_reports/unitStages', $formData);
+            } else {
+                $response = Http::get('https://crm.azyanalbashaer.com/api/Item_reports/unitStages');
+            }
 
             if ($response->successful()) {
                 $data = $response->json();
@@ -63,6 +96,43 @@ class UnitStagesController extends ReportBaseController
             }
         } catch (\Exception $e) {
             Log::error("Albashaer Unit Stages API Error: " . $e->getMessage());
+        }
+
+        return [
+            'stages' => [],
+            'totals' => [],
+        ];
+    }
+
+    private function getJeddahUnitStages($from_date = null, $to_date = null)
+    {
+        try {
+            $formData = [];
+
+            if ($from_date) {
+                $formData['from_date'] = $from_date;
+            }
+
+            if ($to_date) {
+                $formData['to_date'] = $to_date;
+            }
+
+            // استخدام POST إذا كانت التواريخ موجودة، وإلا استخدام GET
+            if (!empty($formData)) {
+                $response = Http::asForm()->post('https://crm.azyanjeddah.com/api/Item_reports/unitStages', $formData);
+            } else {
+                $response = Http::get('https://crm.azyanjeddah.com/api/Item_reports/unitStages');
+            }
+
+            if ($response->successful()) {
+                $data = $response->json();
+
+                if ($data['status'] ?? false) {
+                    return $data['data'] ?? [];
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error("Jeddah Unit Stages API Error: " . $e->getMessage());
         }
 
         return [

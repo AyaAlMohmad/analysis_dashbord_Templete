@@ -13,18 +13,14 @@
     </div>
 
     <!-- Content Row -->
-    <div style="display: flex; flex-direction: row-reverse; align-items: flex-start;">
-        <!-- Side Decoration -->
-        <div style="flex: 0 0 auto; min-width: 100px; position: absolute; top: 100px;">
-            <img src="{{ asset('images/style2.png') }}" alt="Decoration" style="height: 500px;">
-        </div>
+    <div style="display: flex; flex-direction: row-reverse; align-items: flex-start; position: relative;">
+        <!-- Side Decoration - Moved to left side -->
+        <div style="position: absolute; top: 0; left: 0; bottom: 0; width: 100px; background-image: url('{{ asset('images/style2.png') }}'); background-repeat: repeat-y; background-size: 100px auto; z-index: 1;"></div>
 
         <!-- Main Tables Container -->
-        <div style="max-width: 95%; margin: 40px auto; font-family: 'Arial', sans-serif; font-size: 13px; text-align: center;">
+        <div style="max-width: 95%; margin: 40px auto; font-family: 'Arial', sans-serif; font-size: 13px; text-align: center; position: relative; z-index: 2; margin-left: 120px;">
 
-
-
-             <table style="width: 100%; border-collapse: collapse; margin-top: 20px; background-color: white;">
+            <table style="width: 100%; border-collapse: collapse; margin-top: 20px; background-color: white;">
                 <thead style="background-color: #ffe082; font-weight: bold;">
                     <tr>
                         <th style="border: 1px solid #ccc;">{{ __('components.source') }}</th>
@@ -71,11 +67,12 @@
             <img src="{{ asset('images/logo5.png') }}" alt="Azyan Logo Dhahran" style="height: 50px;">
         @elseif(isset($project_name) && $project_name == 'أزيان البشائر')
             <img src="{{ asset('images/logo6.png') }}" alt="Azyan Logo Albashaer" style="height: 50px;">
+        @elseif(isset($project_name) && $project_name == 'أزيان جدة')
+            <img src="{{ asset('images/jadah.png') }}" alt="Azyan Logo Jeddah" style="height: 50px;">
             @elseif (!empty($logo) && file_exists(public_path('storage/' . $logo)))
             <img src="{{ asset('storage/' . $logo) }}" alt="Site Logo" style="height: 50px;">
         @else
             <span style="font-size: 14px; color: #8b5a3b; font-weight: bold;">{{ $project_name }}</span>
         @endif
-
     </div>
 </div>

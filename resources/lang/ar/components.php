@@ -270,5 +270,13 @@ return [
     'add_target' => 'إضافة هدف',
     'remove_target' => 'إزالة الهدف',
     'saving_data' => 'جارٍ حفظ البيانات، يرجى الانتظار...',
+    'external_visit_leads_count' => 'عدد زيارات العملاء الخارجية',
+    'external_visit_leads' => 'زيارات العملاء الخارجية',
+    'percentage_external_visit_leads' => 'نسبة زيارات العملاء الخارجية',
+    'project_name' => 'اسم المشروع',
+    'developer' => 'المطور',
+    'reservation_percentage'=>'نسبة الحجوزات',
+    'contracted_percentage'=>'نسبة المتعاقدات',
+    'jeddah'=>'جدة',
 
 ];

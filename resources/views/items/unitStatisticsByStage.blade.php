@@ -4,6 +4,7 @@
 @php
     $logoDhahran = asset('images/logo1.png');
     $logoBashaer = asset('images/logo2.png');
+    $logoJeddah = asset('images/jadah.png'); // إضافة لوجو جدة
 @endphp
 
 <style>
@@ -38,11 +39,12 @@
             <option value="">-- {{ __('unit_stages_staticies.select_site') }} --</option>
             <option value="dhahran">{{ __('unit_stages_staticies.dhahran') }}</option>
             <option value="bashaer">{{ __('unit_stages_staticies.bashaer') }}</option>
+            <option value="jeddah">{{ __('components.jeddah') }}</option> <!-- إضافة جدة -->
         </select>
         <img id="logo" src="" style="max-height: 70px; display: none;" class="mt-2">
     </div>
 
-    <div class="header-section d-none" id="reportHeader">{{ __('unit_stages_staticies.title') }}   </div>
+    <div class="header-section d-none" id="reportHeader">{{ __('unit_stages_staticies.title') }}</div>
 
     <table class="unit-table d-none" id="unitTable">
         <thead id="unitTableHead"></thead>
@@ -73,7 +75,7 @@
     ];
 @endphp
 <script>
-    
+
 function exportPDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
@@ -95,14 +97,33 @@ document.getElementById('site').addEventListener('change', function () {
     const site = this.value;
     if (!site) return;
 
-    const logo = site === 'dhahran' ? '{{ $logoDhahran }}' : '{{ $logoBashaer }}';
-    const color = site === 'dhahran' ? '#00262f' : '#543829';
+    // تحديد اللوجو واللون بناءً على الموقع
+    let logo, color;
+    switch(site) {
+        case 'dhahran':
+            logo = '{{ $logoDhahran }}';
+            color = '#00262f';
+            break;
+        case 'bashaer':
+            logo = '{{ $logoBashaer }}';
+            color = '#543829';
+            break;
+        case 'jeddah':
+            logo = '{{ $logoJeddah }}';
+            color = '#1a472a'; // لون مختلف لجدة
+            break;
+        default:
+            logo = '';
+            color = '#000000';
+    }
+
     document.getElementById('logo').src = logo;
     document.getElementById('logo').style.display = 'block';
     document.getElementById('reportHeader').style.backgroundColor = color;
     document.getElementById('reportHeader').classList.remove('d-none');
 
-    fetch(`{{ route('admin.items.unitStages') }}?site=${site}`, {
+    // تأكد من أن الرابط يشير إلى المسار الصحيح
+    fetch(`{{ route('admin.items.unitStatisticsByStage') }}?site=${site}`, {
         headers: { 'X-Requested-With': 'XMLHttpRequest' }
     })
     .then(res => res.json())
@@ -112,36 +133,53 @@ document.getElementById('site').addEventListener('change', function () {
         const data = response.data;
         const phases = Object.keys(data);
         const translations = @json($translations);
+
+        // إنشاء رأس الجدول
         const headRow = `<tr><th>${translations.metric}</th>${phases.map(p => `<th>${p}</th>`).join('')}</tr>`;
         document.getElementById('unitTableHead').innerHTML = headRow;
 
         const body = document.getElementById('unitTableBody');
         body.innerHTML = '';
 
+        // دالة مساعدة لإنشاء الصفوف
         const getRow = (label, keyFn) => {
-            return `<tr><td>${label}</td>` + phases.map(p => keyFn(data[p])).join('') + `</tr>`;
+            return `<tr><td>${label}</td>` + phases.map(p => {
+                const cellData = keyFn(data[p]);
+                return `<td>${cellData}</td>`;
+            }).join('') + `</tr>`;
         };
-        body.innerHTML += getRow(translations.price_range, d => `<td>${d.min_price} - ${d.max_price}</td>`);
-        body.innerHTML += getRow(translations.total_count, d => `<td>${d.count}</td>`);
-        body.innerHTML += getRow(translations.available, d => `<td>${d.status_counts.available}</td>`);
-        body.innerHTML += getRow(translations.contracted, d => `<td>${d.status_counts.contracted}</td>`);
-        body.innerHTML += getRow(translations.reserved, d => `<td>${d.status_counts.reserved}</td>`);
-        body.innerHTML += getRow(translations.blocked, d => `<td>${d.status_counts.blocked}</td>`);
 
-        body.innerHTML += getRow(translations.contracted_percentage, d => {
-            const val = d.count ? Math.round((d.status_counts.contracted / d.count) * 100) : 0;
-            return `<td>${val}%</td>`;
+        // إضافة الصفوف حسب البيانات الجديدة
+        body.innerHTML += getRow(translations.price_range, d => {
+            return `${d.min_price ? d.min_price.toLocaleString() : '0'} - ${d.max_price ? d.max_price.toLocaleString() : '0'}`;
         });
-        body.innerHTML += getRow(translations.sold_percentage, d => {
 
-            const sold = d.status_counts.contracted + d.status_counts.reserved;
-            const val = d.count ? Math.round((sold / d.count) * 100) : 0;
-            return `<td>${val}%</td>`;
+        body.innerHTML += getRow(translations.total_count, d => `${d.count ? d.count : '0'}`);
+        body.innerHTML += getRow(translations.available, d => `${d.status_counts ? d.status_counts.available : '0'}`);
+        body.innerHTML += getRow(translations.contracted, d => `${d.status_counts ? d.status_counts.contracted : '0'}`);
+        body.innerHTML += getRow(translations.reserved, d => `${d.status_counts ? d.status_counts.reserved : '0'}`);
+        body.innerHTML += getRow(translations.blocked, d => `${d.status_counts ? d.status_counts.blocked : '0'}`);
+
+        // النسب المئوية
+        body.innerHTML += getRow(translations.contracted_percentage, d => {
+            const count = d.count || 1; // تجنب القسمة على صفر
+            const contracted = d.status_counts ? d.status_counts.contracted : 0;
+            const val = Math.round((contracted / count) * 100);
+            return `${val}%`;
+        });
+
+        body.innerHTML += getRow(translations.sold_percentage, d => {
+            const count = d.count || 1; // تجنب القسمة على صفر
+            const contracted = d.status_counts ? d.status_counts.contracted : 0;
+            const reserved = d.status_counts ? d.status_counts.reserved : 0;
+            const sold = contracted + reserved;
+            const val = Math.round((sold / count) * 100);
+            return `${val}%`;
         });
 
         document.getElementById('unitTable').classList.remove('d-none');
         document.getElementById('pdf-export-button').style.display = 'block';
-        document.getElementById('generatedAt').textContent = "Generated at: " + new Date().toLocaleString();
+        document.getElementById('generatedAt').textContent = translations.generated_at + ": " + new Date().toLocaleString();
     })
     .catch(err => {
         console.error(err);

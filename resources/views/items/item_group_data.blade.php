@@ -35,6 +35,7 @@
             <option value="">-- Select Site --</option>
             <option value="dhahran">Dhahran</option>
             <option value="bashaer">Bashaer</option>
+            <option value="jeddah">Jeddah</option>
         </select>
 
         <div id="overlay" class="overlay d-none">
@@ -45,15 +46,15 @@
                     @csrf
                     <input type="hidden" name="site" id="siteInput">
 
-                
+
 
                     <div class="form-group">
                         <label for="group">Select group:</label>
                         <select name="group" id="group" class="form-control"></select>
                     </div>
-                  
+
                         <button type="submit" class="btn btn-primary mt-3">Report</button>
-                    
+
                 </form>
             </div>
         </div>
@@ -79,8 +80,8 @@
 
     const groupSelect = document.getElementById('group');
     groupSelect.innerHTML = '<option value="">-- Select group --</option>';
-    
-    
+
+
     data.data.groups.forEach(group => {
         const option = document.createElement('option');
         option.value = group.id;
