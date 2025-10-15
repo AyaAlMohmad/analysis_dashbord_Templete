@@ -46,7 +46,6 @@
                 cursor: not-allowed;
             }
 
-
             .log-card {
                 background-color: #f9fafb;
                 border: 1px solid #e5e7eb;
@@ -69,6 +68,7 @@
                 display: flex;
                 align-items: center;
                 gap: 12px;
+                flex-wrap: wrap;
             }
 
             .log-action {
@@ -96,6 +96,11 @@
             .log-meta {
                 font-size: 14px;
                 color: #6b7280;
+            }
+
+            .user-name {
+                font-weight: bold;
+                color: #3b82f6;
             }
 
             .log-arrow {
@@ -143,13 +148,25 @@
                 font-weight: bold;
             }
 
+            .unchanged-value {
+                background-color: #f3f4f6;
+                color: #6b7280;
+                padding: 6px 10px;
+                border-radius: 6px;
+            }
+
             .log-body.show {
-                max-height: 500px;
+                max-height: 1000px;
                 opacity: 1;
             }
 
             .rotate-180 {
                 transform: rotate(180deg);
+            }
+
+            .field-name {
+                font-weight: bold;
+                color: #374151;
             }
         </style>
 
@@ -177,26 +194,42 @@
                     <a href="{{ route('admin.items.statistics', $site) }}" class="text-blue-500 hover:text-blue-600">
                         <i class="fas fa-chart-bar mr-2"></i>{{ __('unit_log.view_analysis') }}
                     </a>
-
                 </div>
 
-                <div class="space-y-4">
+               <div class="space-y-4">
                     @foreach ($logs as $index => $log)
                         <div class="log-card">
-
                             <div class="log-header" onclick="toggleLog('{{ $index }}')">
                                 <div class="log-info">
                                     <span class="log-action {{ $log->action }}">
                                         {{ ucfirst($log->action) }}
                                     </span>
+                                    @if($log->arabic_user_name)
+                                        <span class="user-name">
+                                            {{ $log->arabic_user_name }}
+                                        </span>
+                                    @endif
                                     <span class="log-meta">
-                                        {{ $log->created_at->format('Y-m-d H:i') }} {{ __('unit_log.by') }} {{ $log->changed_by }}
+                                        {{ $log->created_at->format('Y-m-d H:i') }} | Changed by: {{ $log->changed_by }}
+                                    </span>
+                                    <span class="log-meta">
+                                        Record ID: {{ $log->record_id }}
                                     </span>
                                 </div>
                                 <div id="arrow-{{ $index }}" class="log-arrow">▼</div>
                             </div>
 
                             <div id="log-{{ $index }}" class="log-body">
+                                @php
+                                    // Get all unique fields from both data_old and data_new
+                                    $allFields = array_unique(array_merge(
+                                        array_keys($log->data_old ?? []),
+                                        array_keys($log->data_new ?? [])
+                                    ));
+
+                                    // Sort fields alphabetically for better organization
+                                    sort($allFields);
+                                @endphp
                                 <table class="log-table">
                                     <thead>
                                         <tr>
@@ -208,42 +241,72 @@
                                     <tbody>
                                         @php
                                             $fields = [
+                                                'itemid' => __('unit_log.item_id'),
                                                 'description' => __('unit_log.description'),
                                                 'long_description' => __('unit_log.long_description'),
                                                 'rate' => __('unit_log.rate'),
                                                 'unit' => __('unit_log.unit'),
                                                 'group_id' => __('unit_log.group_id'),
-
+                                                'group_name' => __('unit_log.group_name'),
                                                 'unit_status' => __('unit_log.unit_status'),
-                                                'updated_at' => __('unit_log.updated_at'),
+                                                'taxrate' => __('unit_log.tax_rate'),
+                                                'taxname' => __('unit_log.tax_name')
                                             ];
+
+                                            $hasChanges = false;
                                         @endphp
+
                                         @foreach ($fields as $field => $label)
                                             @php
                                                 $old = $log->data_old[$field] ?? null;
                                                 $new = $log->data_new[$field] ?? null;
+
+                                                // For delete actions, show only old data
+                                                if($log->action === 'delete') {
+                                                    $new = null;
+                                                }
+
+                                                // Skip if both values are empty and not in delete action
+                                                if(($old === null && $new === null) && $log->action !== 'delete') {
+                                                    continue;
+                                                }
+
+                                                $hasChanges = true;
                                             @endphp
                                             <tr>
                                                 <td>{{ $label }}</td>
                                                 <td>
-                                                    <div class="{{ $old !== $new ? 'new-value' : '' }}">
-                                                        {{ is_array($new) ? json_encode($new) : $new ?? __('unit_log.not_available')}}
-                                                    </div>
+                                                    @if($log->action === 'delete')
+                                                        <span style="color: #991b1b; font-weight: bold;">
+                                                            {{ __('unit_log.deleted') }}
+                                                        </span>
+                                                    @else
+                                                        <div class="{{ $old !== $new ? 'new-value' : '' }}">
+                                                            {{ $new !== null ? (is_array($new) ? json_encode($new) : $new) : __('unit_log.not_available') }}
+                                                        </div>
+                                                    @endif
                                                 </td>
                                                 <td>
                                                     <div class="{{ $old !== $new ? 'old-value' : '' }}">
-                                                        {{ is_array($old) ? json_encode($old) : $old ??  __('unit_log.not_available')}} 
+                                                        {{ $old !== null ? (is_array($old) ? json_encode($old) : $old) : __('unit_log.not_available') }}
                                                     </div>
                                                 </td>
                                             </tr>
                                         @endforeach
+
+                                        @if(!$hasChanges && $log->action !== 'delete')
+                                            <tr>
+                                                <td colspan="3" class="no-changes">
+                                                    {{ __('unit_log.no_changes_detected') }}
+                                                </td>
+                                            </tr>
+                                        @endif
                                     </tbody>
                                 </table>
                             </div>
                         </div>
                     @endforeach
                 </div>
-
 
                 <div class="pagination">
                     {{ $logs->links() }}
@@ -256,11 +319,9 @@
         function toggleLog(index) {
             const logContent = document.getElementById(`log-${index}`);
             const arrow = document.getElementById(`arrow-${index}`);
-    
-       
+
             logContent.classList.toggle('show');
             arrow.classList.toggle('rotate-180');
         }
     </script>
-    
-    @endsection
+@endsection

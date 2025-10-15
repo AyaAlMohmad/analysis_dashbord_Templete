@@ -46,7 +46,6 @@
                 cursor: not-allowed;
             }
 
-
             .log-card {
                 background-color: #f9fafb;
                 border: 1px solid #e5e7eb;
@@ -69,6 +68,7 @@
                 display: flex;
                 align-items: center;
                 gap: 12px;
+                flex-wrap: wrap;
             }
 
             .log-action {
@@ -96,6 +96,11 @@
             .log-meta {
                 font-size: 14px;
                 color: #6b7280;
+            }
+
+            .user-name {
+                font-weight: bold;
+                color: #3b82f6;
             }
 
             .log-arrow {
@@ -143,13 +148,25 @@
                 font-weight: bold;
             }
 
+            .unchanged-value {
+                background-color: #f3f4f6;
+                color: #6b7280;
+                padding: 6px 10px;
+                border-radius: 6px;
+            }
+
             .log-body.show {
-                max-height: 500px;
+                max-height: 1000px;
                 opacity: 1;
             }
 
             .rotate-180 {
                 transform: rotate(180deg);
+            }
+
+            .field-name {
+                font-weight: bold;
+                color: #374151;
             }
         </style>
 
@@ -157,13 +174,13 @@
             <div class="bg-white shadow rounded-lg p-6">
 
                 @if (session('success'))
-                    <div style="background-color:#d1fae5; color:#166534; padding:4px; border-radius:4px;">
+                    <div style="background-color:#d1fae5; color:#166534; padding:12px; border-radius:8px; margin-bottom:20px;">
                         {{ session('success') }}
                     </div>
                 @endif
 
                 @if (session('error'))
-                    <div style="background-color:#fee2e2; color:#991b1b; padding:4px; border-radius:4px;">
+                    <div style="background-color:#fee2e2; color:#991b1b; padding:12px; border-radius:8px; margin-bottom:20px;">
                         {{ session('error') }}
                     </div>
                 @endif
@@ -171,93 +188,95 @@
                 <h1 class="text-2xl font-bold text-center text-gray-800 mb-8">
                     {{ __('leads_log.title', ['site' => ucfirst($site)]) }}
                 </h1>
-                <div class="flex flex-wrap justify-center mb-8">
-                    <a href="{{ route('admin.leads.log', $site) }}" class="text-blue-500 hover:text-blue-600"
-                        style="margin-right: 20px; color: blue">
-                        {{ __('leads_log.update_data') }}
-                    </a>
-                    <a href="{{ route('admin.leads.statistics', $site) }}" class="text-blue-500 hover:text-blue-600">
-                        <i class="fas fa-chart-bar mr-2"></i> {{ __('leads_log.view_analysis') }}
-                    </a>
-                </div>
 
+  <div class="flex flex-wrap justify-center mb-8 gap-4">
+    <a href="{{ route('admin.leads.log', $site) }}"
+      >
+        {{ __('leads_log.update_data') }}
+    </a>
+    <a href="{{ route('admin.leads.statistics', $site) }}"
+     >
+        <i class="fas fa-chart-bar mr-2"></i> {{ __('leads_log.view_analysis') }}
+    </a>
+</div>
 
                 <div class="space-y-4">
                     @foreach ($logs as $index => $log)
                         <div class="log-card">
-
                             <div class="log-header" onclick="toggleLog('{{ $index }}')">
                                 <div class="log-info">
                                     <span class="log-action {{ $log->action }}">
                                         {{ ucfirst($log->action) }}
                                     </span>
+                              @if($log->arabic_user_name)
+    <span class="user-name">
+        {{ $log->arabic_user_name }}
+    </span>
+@endif
                                     <span class="log-meta">
-                                        {{ $log->created_at->format('Y-m-d H:i') }} by {{ $log->changed_by }}
+                                        {{ $log->created_at->format('Y-m-d H:i') }} | Changed by: {{ $log->changed_by }}
+                                    </span>
+                                    <span class="log-meta">
+                                        Record ID: {{ $log->record_id }}
                                     </span>
                                 </div>
                                 <div id="arrow-{{ $index }}" class="log-arrow">▼</div>
                             </div>
 
                             <div id="log-{{ $index }}" class="log-body">
+                                @php
+                                    // Get all unique fields from both data_old and data_new
+                                    $allFields = array_unique(array_merge(
+                                        array_keys($log->data_old ?? []),
+                                        array_keys($log->data_new ?? [])
+                                    ));
+
+                                    // Sort fields alphabetically for better organization
+                                    sort($allFields);
+                                @endphp
+
                                 <table class="log-table">
                                     <thead>
                                         <tr>
-                                            <th>{{ __('leads_log.field') }}</th>
-                                            <th>{{ __('leads_log.new_value') }}</th>
-                                            <th>{{ __('leads_log.old_value') }}</th>
-
+                                            <th style="width: 25%;">{{ __('leads_log.field') }}</th>
+                                            <th style="width: 37.5%;">{{ __('leads_log.old_value') }}</th>
+                                            <th style="width: 37.5%;">{{ __('leads_log.new_value') }}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @php
-                                            $fields = [
-                                                'name' => __('leads_log.name'),
-                                                'title' => __('leads_log.title_field'),
-                                                'company' => __('leads_log.company'),
-                                                'description' => __('leads_log.description'),
-                                                'country' => __('leads_log.country'),
-                                                'zip' => __('leads_log.zip'),
-                                                'city' => __('leads_log.city'),
-                                                'state' => __('leads_log.state'),
-                                                'address' => __('leads_log.address'),
-                                                'assigned' => __('leads_log.assigned'),
-                                                'dateadded' => __('leads_log.dateadded'),
-                                                'status' => __('leads_log.status'),
-                                                'source' => __('leads_log.source'),
-                                                'email' => __('leads_log.email'),
-                                                'phonenumber' => __('leads_log.phonenumber'),
-                                                'website' => __('leads_log.website'),
-                                                'leadorder' => __('leads_log.leadorder'),
-                                                'date_converted' => __('leads_log.date_converted'),
-                                                'lead_value' => __('leads_log.lead_value'),
-                                                'lastcontact' => __('leads_log.lastcontact'),
-                                                'status_name' => __('leads_log.status_name'),
-                                                'source_name' => __('leads_log.source_name'),
-                                                'public_url' => __('leads_log.public_url'),
-                                                'color' => __('leads_log.color'),
-                                                'attachments' => __('leads_log.attachments'),
-                                                'hash' => __('leads_log.hash'),
-                                            ];
-
-                                        @endphp
-
-                                        @foreach ($fields as $field => $label)
+                                        @foreach ($allFields as $field)
                                             @php
                                                 $old = $log->data_old[$field] ?? null;
                                                 $new = $log->data_new[$field] ?? null;
+                                                $hasChanged = $old !== $new;
+
+                                                // Format values for display
+                                                $formatValue = function($value) {
+                                                    if (is_array($value)) {
+                                                        return json_encode($value, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+                                                    }
+                                                    if ($value === null || $value === '') {
+                                                        return __('leads_log.not_available');
+                                                    }
+                                                    if (is_bool($value)) {
+                                                        return $value ? 'true' : 'false';
+                                                    }
+                                                    return $value;
+                                                };
+
+                                                $formattedOld = $formatValue($old);
+                                                $formattedNew = $formatValue($new);
                                             @endphp
                                             <tr>
-                                                <td>{{ $label }}</td>
+                                                <td class="field-name">{{ $field }}</td>
                                                 <td>
-                                                    <div class="{{ $old !== $new ? 'new-value' : '' }}">
-                                                        {{ is_array($new) ? json_encode($new) : ($new ?? __('leads_log.not_available')) }}
-
+                                                    <div class="{{ $hasChanged ? 'old-value' : 'unchanged-value' }}">
+                                                        {{ $formattedOld }}
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <div class="{{ $old !== $new ? 'old-value' : '' }}">
-                                                        {{ is_array($old) ? json_encode($old) : ($old ?? __('leads_log.not_available')) }}
-
+                                                    <div class="{{ $hasChanged ? 'new-value' : 'unchanged-value' }}">
+                                                        {{ $formattedNew }}
                                                     </div>
                                                 </td>
                                             </tr>
@@ -268,7 +287,6 @@
                         </div>
                     @endforeach
                 </div>
-
 
                 <div class="pagination">
                     {{ $logs->links() }}
@@ -282,9 +300,16 @@
             const logContent = document.getElementById(`log-${index}`);
             const arrow = document.getElementById(`arrow-${index}`);
 
-
             logContent.classList.toggle('show');
             arrow.classList.toggle('rotate-180');
         }
+
+        // Auto-expand if there's only one log for better UX
+        document.addEventListener('DOMContentLoaded', function() {
+            const logCards = document.querySelectorAll('.log-card');
+            if (logCards.length === 1) {
+                toggleLog(0);
+            }
+        });
     </script>
 @endsection

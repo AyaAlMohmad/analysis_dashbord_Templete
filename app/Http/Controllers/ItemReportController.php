@@ -37,9 +37,17 @@ class ItemReportController extends Controller
             $data,
             $errors
         );
+        $this->fetchItemData(
+            'https://crm.azyanjeddah.com/api/items',
+            'jeddah',
+            $data,
+            $errors
+        );
+
         $dataDhahran = $data['dhahran'];
         $dataBashaer = $data['bashaer'];
-        return view('reports.items', compact('data', 'dataDhahran', 'dataBashaer', 'errors'));
+        $dataJeddah = $data['jeddah'];
+        return view('reports.items', compact('data', 'dataDhahran', 'dataBashaer','dataJeddah', 'errors'));
     }
 
 

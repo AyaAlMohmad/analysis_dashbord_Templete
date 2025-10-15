@@ -22,5 +22,7 @@ return [
     'page_of' => 'الصفحة :current من :total',
     'chart_label' => 'عدد المواعيد',
     'chart_title' => 'مخطط حركة المواعيد اليومية',
-    
+    'location_jeddah' => 'أزيان الجدة',
+    'view_log_jeddah' => 'عرض سجل الجدة',
+
 ];

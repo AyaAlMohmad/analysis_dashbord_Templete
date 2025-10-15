@@ -30,6 +30,12 @@ class LeadsSourcesReportController extends Controller
                     $data['albashaer'] = $this->formatApiData($response2->json());
                 }
 
+                // Fetch data from the third source
+                $response3 = Http::get('https://crm.azyanjeddah.com/api/leads_sources');
+                if ($response3->successful()) {
+                    $data['jeddah'] = $this->formatApiData($response3->json());
+                }
+
                 return $data;
             });
 

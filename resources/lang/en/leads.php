@@ -23,4 +23,8 @@ return [
     'status' => 'Status',
     'count' => 'Count',
     'report_title'=>'Leads Status Report',
+    'jeddah'=>'Jeddah',
+    'dhahran'=>'Dhahran',
+    'bashaer'=>'Bashaer',
+    'view_log_jeddah'=>'View Jeddah Log',
 ];

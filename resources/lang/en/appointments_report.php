@@ -22,4 +22,6 @@ return [
     'page_of' => 'Page :current of :total',
     'chart_label' => 'Appointments Count',
     'chart_title' => 'Daily Appointment Trend',
+    'location_jeddah' => 'Azyan Jeddah',
+    'view_log_jeddah' => 'View Jeddah Log',
 ];

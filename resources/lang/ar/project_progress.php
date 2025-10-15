@@ -29,5 +29,6 @@ return [
     'bashaer' => 'البشاير',
     'action' => 'الإجراءات',
     'save' => 'حفظ',
-    'success'=>'نجاح'
+    'success'=>'نجاح',
+    'jaddah'=>'الجدة',
 ];

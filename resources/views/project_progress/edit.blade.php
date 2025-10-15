@@ -29,6 +29,9 @@
                                 <option value="bashaer" {{ $progress->site == 'bashaer' ? 'selected' : '' }}>
                                     {{ __('project_progress.bashaer') }}
                                 </option>
+                                <option value="jaddah" {{ $progress->site == 'jaddah' ? 'selected' : '' }}>
+                                    {{ __('project_progress.jaddah') }}
+                                </option>
                             </select>
 
                         </div>

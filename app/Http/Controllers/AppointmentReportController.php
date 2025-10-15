@@ -13,17 +13,19 @@ class AppointmentReportController extends Controller
     {
         $appointments = [
             'dhahran' => ['by_date' => [], 'total' => 0],
-            'bashaer' => ['by_date' => [], 'total' => 0]
+            'bashaer' => ['by_date' => [], 'total' => 0],
+            'jeddah' => ['by_date' => [], 'total' => 0],
         ];
 
         $errors = [
             'dhahran' => null,
-            'bashaer' => null
+            'bashaer' => null,
+            'jeddah' => null,
         ];
 
         $appointments['dhahran'] = $this->fetchAppointments('https://crm.azyanaldhahran.com/api/appointments', $errors['dhahran']);
         $appointments['bashaer'] = $this->fetchAppointments('https://crm.azyanalbashaer.com/api/appointments', $errors['bashaer']);
-
+        $appointments['jeddah'] = $this->fetchAppointments('https://crm.azyanjeddah.com/api/appointments', $errors['jeddah']);
         $siteSelected = $request->get('site', 'dhahran');
 
         return view('reports.appointments', compact('appointments', 'errors', 'siteSelected'));
@@ -53,23 +55,23 @@ class AppointmentReportController extends Controller
     {
         $site = $request->get('site', 'dhahran');
         $type = $request->get('type', 'pdf');
-    
+
         $url = $site === 'bashaer'
             ? 'https://crm.azyanalbashaer.com/api/appointments'
             : 'https://crm.azyanaldhahran.com/api/appointments';
-    
+
         $error = null;
         $data = $this->fetchAppointments($url, $error);
-    
+
         if ($error) {
             return back()->with('error', 'Failed to fetch data from the selected site');
         }
-    
+
         $byDate = $data['by_date'] ?? [];
         $chartImage = NULL;
 
-      
-        
+
+
 
         switch ($type) {
             case 'pdf':
@@ -77,9 +79,9 @@ class AppointmentReportController extends Controller
                     'site' => $site,
                     'appointments' => $data,
                'byDate' => $byDate,
-               'maxCount' => max($byDate ?: [0]) 
+               'maxCount' => max($byDate ?: [0])
                 ]);
-                
+
                 return $pdf->download("appointments_{$site}.pdf");
             case 'csv':
                 return $this->exportCsv($byDate, $site);
@@ -87,29 +89,29 @@ class AppointmentReportController extends Controller
                 abort(400, 'Invalid export type');
         }
     }
-    
+
     protected function exportCsv($data, $site)
     {
         $filename = "appointments_{$site}_" . now()->format('Ymd_His') . ".csv";
-        
+
         $headers = [
             "Content-type" => "text/csv; charset=utf-8",
             "Content-Disposition" => "attachment; filename=$filename",
         ];
-    
+
         $callback = function() use ($data) {
             $file = fopen('php://output', 'w');
             fputcsv($file, ['Date', 'Appointments']);
-            
+
             foreach ($data as $date => $count) {
                 fputcsv($file, [$date, $count]);
             }
-            
+
             fclose($file);
         };
-    
+
         return response()->stream($callback, 200, $headers);
     }
-    
-    
+
+
 }

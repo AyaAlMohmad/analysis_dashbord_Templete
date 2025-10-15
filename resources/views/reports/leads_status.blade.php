@@ -27,6 +27,7 @@
                                     <option value="">{{ __('leads.choose_location') }}</option>
                                     <option value="dhahran">{{ __('leads.dhahran') }}</option>
                                     <option value="bashaer">{{ __('leads.bashaer') }}</option>
+                                    <option value="jeddah">{{ __('leads.jeddah') }}</option>
                                 </select>
                             </div>
                             <form id="exportForm" class="flex items-center gap-12 mt-12 justify-center">
@@ -60,7 +61,7 @@
             </div>
 
             <!-- Site Sections -->
-            @foreach (['dhahran' => 'Azyan Dhahran', 'bashaer' => 'Azyan Bashaer'] as $key => $label)
+            @foreach (['dhahran' => 'Azyan Dhahran', 'bashaer' => 'Azyan Bashaer','jeddah'=>'Azyan Jeddah'] as $key => $label)
                 <div class="site-section" id="site-{{ $key }}" style="display: none;">
 
 
@@ -164,7 +165,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
     <script src="jsPDF/dist/jspdf.umd.min.js"></script>
     <script src="jsPDF/fonts/Amiri-normal.js"></script>
-    
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const siteSelect = document.getElementById('siteSelect');
@@ -179,6 +180,10 @@
                 bashaer: {
                     labels: @json(array_keys($dataBashaer)),
                     counts: @json(array_values($dataBashaer))
+                },
+                jeddah: {
+                    labels: @json(array_keys($dataJeddah)),
+                    counts: @json(array_values($dataJeddah))
                 }
             };
 
@@ -255,11 +260,12 @@
 
             // Left logo (always Tatwir logo)
             const leftLogoUrl = "{{ asset('build/logo.png') }}";
-            
+
             // Right logo (conditional based on site)
-            const rightLogoUrl = site.toLowerCase() === 'dhahran' 
-                ? "{{ asset('images/logo5.png') }}" 
-                : "{{ asset('images/logo6.png') }}";
+            const rightLogoUrl = site.toLowerCase() === 'dhahran'
+                ? "{{ asset('images/logo5.png') }}"
+                : site.toLowerCase() === 'bashaer' ? "{{ asset('images/logo6.png') }}":
+                "{{ asset('images/jadah.png') }}";
 
             const chartCanvas = document.getElementById(`chart-${site}`);
             const detailsTable = document.querySelector(`#daily-details-${site} table`);
@@ -272,7 +278,7 @@
 
             if (type === 'pdf') {
                 const doc = new jsPDF('p', 'mm', 'a4');
-                
+
                 // Load both logos with error handling
                 const loadImage = (url) => {
                     return new Promise((resolve, reject) => {
@@ -350,7 +356,7 @@
                     for (let i = 1; i <= totalPages; i++) {
                         doc.setPage(i);
                         const pageHeight = doc.internal.pageSize.getHeight();
-                        
+
                         doc.setFontSize(10);
                         doc.text(`Exported by: ${exportedBy}`, 10, pageHeight - 20);
                         doc.text(`Export date: ${exportDate}`, 10, pageHeight - 15);
@@ -360,7 +366,7 @@
                     }
 
                     doc.save(`${site}_leads_report.pdf`);
-                    
+
                 } catch (error) {
                     console.error('PDF generation error:', error);
                     alert('Failed to generate PDF. See console for details.');
@@ -410,7 +416,7 @@
                     a.download = `${site}_leads_report.zip`;
                     document.body.appendChild(a);
                     a.click();
-                    
+
                     // Cleanup
                     setTimeout(() => {
                         document.body.removeChild(a);

@@ -126,8 +126,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->as('admin.')->group(funct
     Route::post('/project-progress', [ProjectProgressController::class, 'store'])->name('project-progress.store');
     Route::get('/project-progress/{id}/edit', [ProjectProgressController::class, 'edit'])->name('project-progress.edit');
     Route::put('/project-progress/{id}', [ProjectProgressController::class, 'update'])->name('project-progress.update');
-    Route::delete('/project-progress/{project-progress}', [ProjectProgressController::class, 'destroy'])->name('project-progress.destroy');
-
+Route::delete('/project-progress/{id}', [ProjectProgressController::class, 'destroy'])->name('project-progress.destroy');
     Route::get('/reports/itemReport', [ItemReportController::class, 'itemReport'])->name('reports.item');
     Route::post('/reports/itemReport/result', [ItemReportController::class, 'itemReportResult'])->name('reports.itemReport.result');
 

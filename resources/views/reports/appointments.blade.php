@@ -22,7 +22,8 @@
                                                 title="View Dhahran Log">
                                                 <i class="fas fa-clipboard-list"></i> {{ __('appointments_report.view_log_dhahran') }}
                                             </a>
-
+                                        </div>
+                                        <div class="flex items-center gap-4 mt-4">
                                             <!-- Bashaer Log -->
                                             <a href="{{ route('admin.appointments.log', 'bashaer') }}"
                                                 class="p-3 rounded-xl hover:bg-gray-100 transition text-gray-600 text-2xl"
@@ -30,17 +31,25 @@
                                                 <i class="fas fa-clipboard-list"></i>{{__('appointments_report.view_log_bashaer')}}
                                             </a>
                                         </div>
+                                        <div class="flex items-center gap-4 mt-4">
+                                            <!-- Jeddah Log -->
+                                            <a href="{{ route('admin.appointments.log', 'jeddah') }}"
+                                                class="p-3 rounded-xl hover:bg-gray-100 transition text-gray-600 text-2xl"
+                                                title="View Jeddah Log">
+                                                <i class="fas fa-clipboard-list"></i>{{__('appointments_report.view_log_jeddah')}}
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
-                     
+
                             <p class="text-center mt-4">{{ __('appointments_report.select_location') }}</p>
                             <select id="siteSelect" class="select2-placeholder form-control mt-2">
                                 <option value="">{{ __('appointments_report.choose_location') }}</option>
                                 <option value="dhahran">{{ __('appointments_report.location_dhahran') }}</option>
                                 <option value="bashaer">{{ __('appointments_report.location_bashaer') }}</option>
-
+                                <option value="jeddah">{{ __('appointments_report.location_jeddah') }}</option>
                             </select>
                         </div>
                         <form id="exportForm" class="flex items-center gap-12 mt-12 justify-center">
@@ -74,7 +83,7 @@
         </section>
 
 
-        @foreach (['dhahran' =>  __('appointments_report.location_dhahran') , 'bashaer' => __('appointments_report.location_bashaer') ] as $key => $label)
+        @foreach (['dhahran' =>  __('appointments_report.location_dhahran') , 'bashaer' => __('appointments_report.location_bashaer'), 'jeddah' => __('appointments_report.location_jeddah') ] as $key => $label)
             <div class="site-section" id="site-{{ $key }}" style="display: none;">
                 <!-- Hidden Export Header -->
                 <div class="export-header hidden" id="export-header-{{ $key }}">
@@ -174,7 +183,7 @@
     <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-    
+
     <!-- Chart Script -->
     <script>
         function toggleTable(key) {
@@ -201,7 +210,7 @@
         document.getElementById('siteSelect').addEventListener('change', function() {
             var selectedSite = this.value;
 
-           
+
             document.querySelectorAll('.site-section').forEach(section => {
                 section.style.display = 'none';
             });
@@ -212,7 +221,7 @@
                     siteDiv.style.display = 'block';
                 }
 
-         
+
                 if (!charts[selectedSite]) {
                     createChart(selectedSite);
                 }
@@ -288,12 +297,12 @@
         document.getElementById('siteSelect').addEventListener('change', function() {
             var selectedSite = this.value;
 
-         
+
             document.querySelectorAll('.site-section').forEach(section => {
                 section.style.display = 'none';
             });
 
-          
+
             if (selectedSite) {
                 var siteDiv = document.getElementById('site-' + selectedSite);
                 if (siteDiv) {
@@ -315,12 +324,16 @@
             const { jsPDF } = window.jspdf;
             const exportedBy = "{{ Auth::user()->name }}";
             const exportDate = new Date().toLocaleString();
-            const siteName = site === 'dhahran' ? 'Azyan Dhahran' : 'Azyan Bashaer';
+     const siteName = site === 'dhahran' ? 'Azyan Dhahran' :
+                 site === 'bashaer' ? 'Azyan Bashaer' :
+                 'Azyan Jeddah'; // Add this line if keeping jeddah
 
             const leftLogoUrl = "{{ asset('build/logo.png') }}";
-            const rightLogoUrl = site === 'dhahran'
-                ? "{{ asset('images/logo5.png') }}"
-                : "{{ asset('images/logo6.png') }}";
+          const rightLogoUrl = site === 'dhahran'
+    ? "{{ asset('images/logo5.png') }}"
+    : site === 'bashaer'
+    ? "{{ asset('images/logo6.png') }}"
+    : "{{ asset('images/jadah.png') }}"; // Add default for jeddah
 
             const chartCanvas = document.getElementById(`chart-${site}`);
             const detailsTable = document.querySelector(`#site-${site} table`);

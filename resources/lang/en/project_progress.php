@@ -18,5 +18,6 @@ return [
     'bashaer' => 'Bashaer',
     'action' => 'Action',
     'save' => 'Save',
-    'success'=>'Success'
+    'success'=>'Success',
+    'jaddah'=>'Jaddah',
 ];

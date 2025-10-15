@@ -23,12 +23,20 @@
                                                 title="View Dhahran Log">
                                                 <i class="fas fa-clipboard-list"></i> {{ __('units_report.dhahran') }}
                                             </a>
-
+                                            </div>
+                                            <div class="flex items-center gap-4 mt-4">
                                             <!-- Bashaer Log -->
                                             <a href="{{ route('admin.items.log', 'bashaer') }}"
                                                 class="p-3 rounded-xl hover:bg-gray-100 transition text-gray-600 text-2xl"
                                                 title="View Bashaer Log">
                                                 <i class="fas fa-clipboard-list"></i> {{ __('units_report.bashaer') }}
+                                            </a>
+                                            </div>
+                                            <div class="flex items-center gap-4 mt-4">
+                                            <a href="{{ route('admin.items.log', 'jeddah') }}"
+                                                class="p-3 rounded-xl hover:bg-gray-100 transition text-gray-600 text-2xl"
+                                                title="View Jeddah Log">
+                                                <i class="fas fa-clipboard-list"></i> {{ __('leads.jeddah') }}
                                             </a>
                                         </div>
                                     </div>
@@ -40,6 +48,7 @@
                                     <option value="">{{ __('units_report.choose_location') }}</option>
                                     <option value="dhahran">{{ __('units_report.dhahran') }} </option>
                                     <option value="bashaer">{{ __('units_report.bashaer') }} </option>
+                                    <option value="jeddah">{{ __('leads.jeddah') }} </option>
                                 </select>
                             </div>
                             <form id="exportForm" class="flex items-center gap-12 mt-12 justify-center">
@@ -86,10 +95,14 @@
 
 
 
-        @foreach (['dhahran' => 'Azyan Dhahran', 'bashaer' => 'Azyan Bashaer'] as $key => $label)
+        @foreach (['dhahran' => 'Azyan Dhahran', 'bashaer' => 'Azyan Bashaer','jeddah' => 'Azyan Jeddah'] as $key => $label)
             <div id="site-{{ $key }}" class="site-section" style="display: none;">
                 @php
-                    $data = $key === 'dhahran' ? $dataDhahran : $dataBashaer;
+                    $data = $key === 'dhahran'
+                        ? ($dataDhahran ?? [])
+                        : ($key === 'bashaer'
+                            ? ($dataBashaer ?? [])
+                            : ($dataJeddah ?? []));
                 @endphp
                 <div class="export-header hidden" id="export-header-{{ $key }}">
                     <h1 class="text-xl font-bold mb-1">{{ __('units_report.title') }}</h1>
@@ -103,13 +116,11 @@
                             {{ __('units_report.overview') }}</h2>
                     </div>
 
-                    @if ($errors[$key])
+                    @if ($errors[$key] ?? false)
                         <div class="mt-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
                             {{ $errors[$key] }}
                         </div>
                     @else
-                        <!-- Stats -->
-
                         <!-- Stats Cards -->
                         <div style="display: flex; flex-wrap: wrap; gap: 24px; padding: 24px;">
 
@@ -151,16 +162,9 @@
 
                         </div>
 
-
-
-
-
-
-
                         <!-- Chart -->
                         <div class="w-full max-w-3xl mx-auto mt-6 p-6">
                             <div class="bg-white p-6 rounded-lg shadow-sm relative">
-
                                 <div>
                                     <canvas id="chart-{{ $key }}" style="width:100%; height:400px;"></canvas>
                                 </div>
@@ -187,11 +191,10 @@
                 alert('Please select a site first');
                 return;
             }
-                window.location.href = `/admin/items/map/${site}`;
+            window.location.href = `/admin/items/map/${site}`;
         }
     </script>
-    
-    
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const siteSelect = document.getElementById('siteSelect');
@@ -204,6 +207,8 @@
                 });
                 if (selected) {
                     document.getElementById(`site-${selected}`).style.display = 'block';
+                    // Update chart when site changes
+                    updateChart(selected);
                 }
                 // Show map button after site selection
                 const mapButton = document.getElementById('mapButton');
@@ -212,68 +217,94 @@
                 }
             });
         });
-    </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
 
-            const siteSelect = document.getElementById('siteSelect');
-            siteSelect.addEventListener('change', function() {
-                const selected = this.value;
-                if (!selected) return;
-                if (window.currentChart) {
-                    window.currentChart.destroy();
-                }
+        function updateChart(site) {
+            // Destroy existing chart if it exists
+            if (window.currentChart) {
+                window.currentChart.destroy();
+            }
 
-                const ctx = document.getElementById('chart-' + selected).getContext('2d');
-                window.currentChart = new Chart(ctx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['{{ __('units_report.available') }}',
-                            '{{ __('units_report.reserved') }}',
-                            '{{ __('units_report.blocked') }}',
-                            '{{ __('units_report.contracted') }}'
+            const ctx = document.getElementById(`chart-${site}`).getContext('2d');
+
+            // Get data based on selected site
+            let data = [];
+            if (site === 'dhahran') {
+                data = [
+                    {{ $dataDhahran['available'] ?? 0 }},
+                    {{ $dataDhahran['reserved']['total'] ?? 0 }},
+                    {{ $dataDhahran['blocked'] ?? 0 }},
+                    {{ $dataDhahran['contracted']['total'] ?? 0 }}
+                ];
+            } else if (site === 'bashaer') {
+                data = [
+                    {{ $dataBashaer['available'] ?? 0 }},
+                    {{ $dataBashaer['reserved']['total'] ?? 0 }},
+                    {{ $dataBashaer['blocked'] ?? 0 }},
+                    {{ $dataBashaer['contracted']['total'] ?? 0 }}
+                ];
+            } else if (site === 'jeddah') {
+                data = [
+                    {{ $dataJeddah['available'] ?? 0 }},
+                    {{ $dataJeddah['reserved']['total'] ?? 0 }},
+                    {{ $dataJeddah['blocked'] ?? 0 }},
+                    {{ $dataJeddah['contracted']['total'] ?? 0 }}
+                ];
+            }
+
+            window.currentChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: [
+                        '{{ __('units_report.available') }}',
+                        '{{ __('units_report.reserved') }}',
+                        '{{ __('units_report.blocked') }}',
+                        '{{ __('units_report.contracted') }}'
+                    ],
+                    datasets: [{
+                        data: data,
+                        backgroundColor: [
+                            '#A2C2D6',
+                            '#D6B29C',
+                            '#00262f',
+                            '#543829'
                         ],
-
-                        datasets: [{
-                            data: [
-                                @json($dataDhahran['available'] ?? 0),
-                                @json($dataDhahran['reserved']['total'] ?? 0),
-                                @json($dataDhahran['blocked'] ?? 0),
-                                @json($dataDhahran['contracted']['total'] ?? 0)
-                            ],
-                            backgroundColor: [
-                                '#A2C2D6',
-                                '#D6B29C',
-                                '#00262f',
-                                '#543829'
-                            ],
-                            borderColor: [
-                                '#A2C2D6',
-                                '#D6B29C',
-                                '#00262f',
-                                '#543829'
-                            ],
-                            borderWidth: 2
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                position: 'bottom',
-                                labels: {
-                                    font: {
-                                        size: 14,
-                                        family: 'Tajawal'
-                                    }
+                        borderColor: [
+                            '#A2C2D6',
+                            '#D6B29C',
+                            '#00262f',
+                            '#543829'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: {
+                                    size: 14,
+                                    family: 'Tajawal'
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = total > 0 ? Math.round((value / total) * 100) : 0;
+                                    return `${label}: ${value} (${percentage}%)`;
                                 }
                             }
                         }
                     }
-                });
+                }
             });
-        });
+        }
     </script>
 
     <script>
@@ -297,34 +328,37 @@
             try {
                 const site = document.getElementById('siteSelect').value;
                 if (!site) return alert('Please select a site');
-    
+
                 const loadingOverlay = document.getElementById('pdf-loading-overlay');
                 if (loadingOverlay) loadingOverlay.style.display = 'flex';
-    
+
                 const { jsPDF } = window.jspdf;
                 const exportedBy = "{{ Auth::user()->name }}";
                 const exportDate = new Date().toLocaleString('en-US');
-    
-                const siteName = site === 'dhahran' ? 'Azyan Dhahran' : 'Azyan Bashaer';
-    
+
+                const siteName = site === 'dhahran' ? 'Azyan Dhahran' :
+                               site === 'bashaer' ? 'Azyan Bashaer' : 'Azyan Jeddah';
+
                 const leftLogoUrl = "{{ asset('build/logo.png') }}";
                 const rightLogoUrl = site === 'dhahran'
                     ? "{{ asset('images/logo5.png') }}"
-                    : "{{ asset('images/logo6.png') }}";
-    
+                    : site === 'bashaer'
+                    ? "{{ asset('images/logo6.png') }}"
+                    : "{{ asset('images/logo7.png') }}"; // Add Jeddah logo
+
                 const chartCanvas = document.getElementById(`chart-${site}`);
                 const siteSection = document.getElementById(`site-${site}`);
                 const statsCards = siteSection.querySelectorAll('[style*="background-color"]');
-    
+
                 if (!chartCanvas || !siteSection || !statsCards.length) {
                     if (loadingOverlay) loadingOverlay.style.display = 'none';
                     alert('Required elements not found');
                     return;
                 }
-    
+
                 if (type === 'pdf') {
                     const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
-    
+
                     const loadImage = (url) => {
                         return new Promise((resolve, reject) => {
                             const img = new Image();
@@ -334,53 +368,53 @@
                             img.src = url;
                         });
                     };
-    
+
                     try {
                         const [leftLogoImg, rightLogoImg] = await Promise.all([
                             loadImage(leftLogoUrl),
                             loadImage(rightLogoUrl)
                         ]);
-    
+
                         doc.addImage(leftLogoImg, 'PNG', 15, 10, 20, 20);
                         doc.addImage(rightLogoImg, 'PNG', 155, 10, 20, 20);
-    
+
                         doc.setFontSize(16);
                         doc.text(`Units Report - ${siteName}`, 105, 50, { align: 'center' });
                         doc.line(10, 55, 200, 55);
-    
+
                         let yPos = 60;
-    
+
                         const chartImg = await html2canvas(chartCanvas, {
                             scale: 2,
                             useCORS: true,
                             backgroundColor: '#FFFFFF'
                         });
-    
+
                         const chartDataUrl = chartImg.toDataURL('image/png', 1.0);
                         const chartAspectRatio = chartCanvas.height / chartCanvas.width;
                         const chartWidth = 190;
                         const chartHeight = chartWidth * chartAspectRatio;
-    
+
                         doc.addImage(chartDataUrl, 'PNG', 10, yPos, chartWidth, chartHeight);
                         yPos += chartHeight + 10;
-    
+
                         doc.setFontSize(14);
                         doc.text('Statistics:', 14, yPos);
                         yPos += 10;
-    
+
                         doc.setFontSize(12);
                         statsCards.forEach(card => {
                             const title = card.querySelector('h3')?.textContent.trim() ?? '';
                             const value = card.querySelector('div[style*="font-size: 32px"]')?.textContent.trim() ?? '';
                             doc.text(`${title}: ${value}`, 14, yPos);
                             yPos += 8;
-    
+
                             if (yPos > 270) {
                                 doc.addPage();
                                 yPos = 10;
                             }
                         });
-    
+
                         const totalPages = doc.internal.getNumberOfPages();
                         for (let i = 1; i <= totalPages; i++) {
                             doc.setPage(i);
@@ -390,41 +424,41 @@
                             doc.text(`Export date: ${exportDate}`, 10, pageHeight - 15);
                             doc.text(`Page ${i} of ${totalPages}`, 200 - 10, pageHeight - 15, { align: 'right' });
                         }
-    
+
                         doc.save(`${siteName}_Units_Report.pdf`);
                     } catch (error) {
                         console.error('PDF generation error:', error);
                         alert('Failed to generate PDF');
                     }
-    
+
                 } else if (type === 'csv') {
                     try {
                         const zip = new JSZip();
                         let csvContent = "\uFEFFMetric,Value\n";
-    
+
                         statsCards.forEach(card => {
                             const title = card.querySelector('h3')?.textContent.trim() ?? '';
                             const value = card.querySelector('div[style*="font-size: 32px"]')?.textContent.trim() ?? '';
                             csvContent += `"${title.replace(/"/g, '""')}",${value}\n`;
                         });
-    
+
                         csvContent += `\nExported by,${exportedBy}\nExport date,${exportDate}`;
-    
+
                         const chartImg = await html2canvas(chartCanvas, {
                             scale: 2,
                             useCORS: true,
                             backgroundColor: '#FFFFFF'
                         });
-    
+
                         const blob = await new Promise((resolve) =>
                             chartImg.toBlob(resolve, 'image/png', 1.0)
                         );
-    
+
                         const csvBlob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    
+
                         zip.file(`${siteName}_Units_Data.csv`, csvBlob);
                         zip.file(`${siteName}_Units_Chart.png`, blob);
-    
+
                         const content = await zip.generateAsync({ type: "blob" });
                         const url = URL.createObjectURL(content);
                         const a = document.createElement('a');
@@ -441,7 +475,7 @@
                         alert('Failed to generate ZIP');
                     }
                 }
-    
+
             } catch (error) {
                 console.error('Export error:', error);
                 alert('Unexpected export error');
@@ -451,6 +485,4 @@
             }
         }
     </script>
-    
-    
 @endsection

@@ -24,12 +24,20 @@
                                                 title="View Dhahran Log">
                                                 {{ __('leads.view_log_dhahran') }}<i class="fas fa-clipboard-list"></i>
                                             </a>
-
+                                            </div>
+                                            <div class="flex items-center gap-4 mt-4">
                                             <!-- Bashaer Log -->
                                             <a href="{{ route('admin.leads.log', 'bashaer') }}"
                                                 class="p-3 rounded-xl hover:bg-gray-100 transition text-gray-600 text-2xl"
                                                 title="View Bashaer Log">
                                                 {{ __('leads.view_log_bashaer') }} <i class="fas fa-clipboard-list"></i>
+                                            </a>
+                                            </div>
+                                            <div class="flex items-center gap-4 mt-4">
+                                            <a href="{{ route('admin.leads.log', 'jeddah') }}"
+                                                class="p-3 rounded-xl hover:bg-gray-100 transition text-gray-600 text-2xl"
+                                                title="View Jeddah Log">
+                                                {{ __('leads.view_log_jeddah') }} <i class="fas fa-clipboard-list"></i>
                                             </a>
                                         </div>
                                     </div>
@@ -39,8 +47,9 @@
 
                                 <select id="siteSelect" class="select2-placeholder form-control mt-2">
                                     <option value="">{{ __('leads.choose_location') }}</option>
-                                    <option value="dhahran">{{ __('leads.site_dhahran') }} </option>
-                                    <option value="bashaer">{{ __('leads.site_bashaer') }} </option>
+                                    <option value="dhahran">{{ __('leads.dhahran') }} </option>
+                                    <option value="bashaer">{{ __('leads.bashaer') }} </option>
+                                    <option value="jeddah">{{ __('leads.jeddah') }} </option>
                                 </select>
                             </div>
 
@@ -75,9 +84,14 @@
             </div>
 
 
-            @foreach (['dhahran' => 'Azyan Dhahran', 'bashaer' => 'Azyan Bashaer'] as $key => $title)
+            @foreach (['dhahran' => 'Azyan Dhahran', 'bashaer' => 'Azyan Bashaer', 'jeddah' => 'Azyan Jeddah'] as $key => $title)
                 @php
-                    $leadsData = $key === 'dhahran' ? $leadsAzyanDhahran : $leadsAzyanBashaer;
+                    // Fixed ternary operator with proper parentheses
+                    $leadsData = $key === 'dhahran'
+                        ? $leadsAzyanDhahran
+                        : ($key === 'bashaer'
+                            ? $leadsAzyanBashaer
+                            : $leadsAzyanJeddah);
                 @endphp
 
                 <div id="site-{{ $key }}" class="site-container hidden">
@@ -182,6 +196,11 @@
                     dates: @json(array_keys($leadsAzyanBashaer)),
                     added: @json(array_column($leadsAzyanBashaer, 'added')),
                     edited: @json(array_column($leadsAzyanBashaer, 'edited'))
+                },
+                jeddah: {
+                    dates: @json(array_keys($leadsAzyanJeddah)),
+                    added: @json(array_column($leadsAzyanJeddah, 'added')),
+                    edited: @json(array_column($leadsAzyanJeddah, 'edited'))
                 }
             };
 
@@ -240,14 +259,16 @@
         const { jsPDF } = window.jspdf;
         const exportedBy = "{{ Auth::user()->name }}";
         const exportDate = new Date().toLocaleString();
-        
+
         // Left logo (always Tatwir logo)
         const leftLogoUrl = "{{ asset('build/logo.png') }}";
-        
+
         // Right logo (conditional based on site)
-        const rightLogoUrl = site.toLowerCase() === 'aldhahran' 
-            ? "{{ asset('images/logo5.png') }}" 
-            : "{{ asset('images/logo6.png') }}";
+        const rightLogoUrl = site.toLowerCase() === 'dhahran'
+            ? "{{ asset('images/logo5.png') }}"
+            : (site.toLowerCase() === 'bashaer'
+                ? "{{ asset('images/logo6.png') }}"
+                : "{{ asset('images/jadah.png') }}");
 
         const chartCanvas = document.getElementById(`chart-${site}`);
         const detailsTable = document.querySelector(`#daily-details-${site} table`);
@@ -260,7 +281,7 @@
 
         if (type === 'pdf') {
             const doc = new jsPDF('p', 'mm', 'a4');
-            
+
             // Load both logos
             const leftLogoImg = new Image();
             leftLogoImg.crossOrigin = "anonymous";
@@ -322,7 +343,7 @@
             const totalPages = doc.internal.getNumberOfPages();
             doc.setPage(totalPages);
             const pageHeight = doc.internal.pageSize.height || doc.internal.pageSize.getHeight();
-            
+
             doc.setFontSize(10);
             doc.text(`Exported by: ${exportedBy}`, 10, pageHeight - 20);
             doc.text(`Export date: ${exportDate}`, 10, pageHeight - 15);
@@ -331,7 +352,7 @@
             });
 
             doc.save(`${site}_leads_report.pdf`);
-            
+
         } else if (type === 'csv') {
             const zip = new JSZip();
 

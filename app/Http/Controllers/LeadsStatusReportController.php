@@ -12,23 +12,35 @@ class LeadsStatusReportController extends Controller
     {
         $data = [
             'dhahran' => [],
-            'bashaer' => []
+            'bashaer' => [],
+            'jeddah'=>[]
+
         ];
 
         $totals = [
             'dhahran' => 0,
-            'bashaer' => 0
+            'bashaer' => 0,
+            'jeddah' => 0
         ];
 
         $errors = [
             'dhahran' => null,
-            'bashaer' => null
+            'bashaer' => null,
+            'jeddah' => null
         ];
 
         // Fetch Dhahran data
         $this->fetchData(
             'https://crm.azyanaldhahran.com/api/leads_status',
             'dhahran',
+            $data,
+            $totals,
+            $errors
+        );
+        // Fetch Jeddah data
+        $this->fetchData(
+            'https://crm.azyanjeddah.com/api/leads_status',
+            'jeddah',
             $data,
             $totals,
             $errors
@@ -42,9 +54,11 @@ class LeadsStatusReportController extends Controller
             $totals,
             $errors
         );
+
        $dataDhahran= $data['dhahran'];
         $dataBashaer= $data['bashaer'];
-        return view('reports.leads_status', compact('data', 'dataDhahran', 'dataBashaer', 'totals', 'errors'));
+        $dataJeddah= $data['jeddah'];
+        return view('reports.leads_status', compact('data', 'dataDhahran', 'dataJeddah','dataBashaer', 'totals', 'errors'));
     }
 
     private function fetchData($url, $location, &$data, &$totals, &$errors)
@@ -87,18 +101,18 @@ class LeadsStatusReportController extends Controller
     {
         $site = $request->get('site', 'dhahran');
         $type = $request->get('type', 'pdf');
-    
+
         $url = $site === 'bashaer'
             ? 'https://crm.azyanalbashaer.com/api/leads_status'
             : 'https://crm.azyanaldhahran.com/api/leads_status';
-    
+
         $error = null;
         $data = $this->fetchleads_status($url, $error);
-    
+
         if ($error) {
             return back()->with('error', 'Failed to fetch data from the selected site');
         }
-    
+
         $byCategory = $data['by_category'] ?? [];
         $chartImage = null;
 
@@ -108,39 +122,39 @@ class LeadsStatusReportController extends Controller
                     'site' => $site,
                     'leads_status' => $data,
                     'byCategory' => $byCategory,
-                    'maxCount' => max($byCategory ?: [0]) 
+                    'maxCount' => max($byCategory ?: [0])
                 ]);
-                
+
                 return $pdf->download("leads_status_{$site}.pdf");
-                
+
             case 'csv':
                 return $this->exportCsv($byCategory, $site);
-                
+
             default:
                 abort(400, 'Invalid export type');
         }
     }
-    
+
     protected function exportCsv($data, $site)
     {
         $filename = "leads_status_{$site}_" . now()->format('Ymd_His') . ".csv";
-        
+
         $headers = [
             "Content-type" => "text/csv; charset=utf-8",
             "Content-Disposition" => "attachment; filename=$filename",
         ];
-    
+
         $callback = function() use ($data) {
             $file = fopen('php://output', 'w');
             fputcsv($file, ['Category', 'Item Count']);
-            
+
             foreach ($data as $category => $count) {
                 fputcsv($file, [$category, $count]);
             }
-            
+
             fclose($file);
         };
-    
+
         return response()->stream($callback, 200, $headers);
     }
 }

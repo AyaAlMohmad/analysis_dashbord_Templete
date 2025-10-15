@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ProjectProgress;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class ProjectProgressController extends Controller
@@ -30,21 +31,29 @@ class ProjectProgressController extends Controller
     /**
      * store
      */
-    public function store(Request $request)
-    {
-        $request->validate([
-            'site' => 'required|in:dhahran,bashaer',
-            'progress_percentage' => 'required|numeric|min:0|max:100',
-        ]);
+public function store(Request $request)
+{
+    // Temporary debug
+    Log::info('Form data:', $request->all());
+    Log::info('User ID:', ['user_id' => auth()->id()]);
 
-        ProjectProgress::create([
-            'user_id' => auth()->id(),
-            'site' => $request->site,
-            'progress_percentage' => $request->progress_percentage,
-        ]);
+    $request->validate([
+        'site' => 'required|in:dhahran,bashaer,jaddah',
+        'progress_percentage' => 'required|numeric|min:0|max:100',
+    ]);
 
-        return redirect()->route('admin.project-progress.index')->with('success', __('project_progress.saved'));
-    }
+    Log::info('Validation passed');
+
+    ProjectProgress::create([
+        'user_id' => auth()->id(),
+        'site' => $request->site,
+        'progress_percentage' => $request->progress_percentage,
+    ]);
+
+    Log::info('Record created');
+
+    return redirect()->route('admin.project-progress.index')->with('success', __('project_progress.saved'));
+}
 
 
     /**

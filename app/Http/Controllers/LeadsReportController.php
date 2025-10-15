@@ -14,18 +14,21 @@ class LeadsReportController extends Controller
         $totals = [
             'dhahran' => ['added' => 0, 'edited' => 0],
             'bashaer' => ['added' => 0, 'edited' => 0],
+            'jeddah' => ['added' => 0, 'edited' => 0],
         ];
 
         // Initialize error messages
         $errors = [
             'dhahran' => null,
             'bashaer' => null,
+            'jeddah' => null,
         ];
 
         // Initialize leads data containers
         $leadsData = [
             'dhahran' => [],
             'bashaer' => [],
+            'jeddah' => [],
         ];
 
         // Fetch leads data from Dhahran site
@@ -45,16 +48,26 @@ class LeadsReportController extends Controller
             $totals,
             $errors
         );
+        // Fetch leads data from Jeddah site
+        $this->fetchLeadsData(
+            'https://crm.azyanjeddah.com/api/leads',
+            'jeddah',
+            $leadsData,
+            $totals,
+            $errors
+        );
 
         // Separate variables for easy access in view
         $leadsAzyanDhahran = $leadsData['dhahran'];
         $leadsAzyanBashaer = $leadsData['bashaer'];
+        $leadsAzyanJeddah = $leadsData['jeddah'];
 
         // Return the view with all required data
         return view('reports.leads', compact(
             'leadsData',
             'leadsAzyanDhahran',
             'leadsAzyanBashaer',
+            'leadsAzyanJeddah',
             'totals',
             'errors'
         ));

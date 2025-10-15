@@ -3,7 +3,6 @@
 @section('content')
     <div class="py-12">
         <style>
-       
             .pagination {
                 display: flex;
                 justify-content: center;
@@ -69,6 +68,7 @@
                 display: flex;
                 align-items: center;
                 gap: 12px;
+                flex-wrap: wrap;
             }
 
             .log-action {
@@ -96,6 +96,11 @@
             .log-meta {
                 font-size: 14px;
                 color: #6b7280;
+            }
+
+            .user-name {
+                font-weight: bold;
+                color: #3b82f6;
             }
 
             .log-arrow {
@@ -143,31 +148,108 @@
                 font-weight: bold;
             }
 
+            .unchanged-value {
+                background-color: #f3f4f6;
+                color: #6b7280;
+                padding: 6px 10px;
+                border-radius: 6px;
+            }
+
             .log-body.show {
-                max-height: 500px;
+                max-height: 1000px;
                 opacity: 1;
             }
 
             .rotate-180 {
                 transform: rotate(180deg);
             }
+
+            .field-name {
+                font-weight: bold;
+                color: #374151;
+            }
+
+            .no-change {
+                background-color: #f3f4f6;
+                color: #6b7280;
+                padding: 6px 10px;
+                border-radius: 6px;
+            }
+
+            .value-badge {
+                padding: 6px 10px;
+                border-radius: 6px;
+                font-weight: bold;
+                display: inline-block;
+                min-width: 60px;
+            }
+
+            /* Additional styles for the layout */
+            .header-section {
+                margin-bottom: 2rem;
+            }
+
+            .navigation-buttons {
+                display: flex;
+                gap: 1rem;
+                justify-content: center;
+                margin-bottom: 2rem;
+            }
+
+            .nav-btn {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                padding: 0.75rem 1.5rem;
+                background-color: #3b82f6;
+                color: white;
+                border-radius: 0.5rem;
+                text-decoration: none;
+                transition: background-color 0.3s ease;
+            }
+
+            .nav-btn:hover {
+                background-color: #2563eb;
+            }
+
+            .empty-state {
+                text-align: center;
+                padding: 3rem;
+                color: #6b7280;
+            }
+
+            .empty-state i {
+                font-size: 3rem;
+                margin-bottom: 1rem;
+                color: #d1d5db;
+            }
         </style>
 
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white shadow rounded-lg p-6">
-                <h1 class="text-2xl font-bold text-center text-gray-800 mb-8">{{ __('appointments_log.title') }} {{ $site }}</h1>
+        <div class="log-container px-4 sm:px-6 lg:px-8">
+            <!-- Header Section -->
+            <div class="header-section">
+                <h1 class="text-3xl font-bold text-center mb-4">
+                    {{ __('appointments_log.title') }} - {{ ucfirst($site) }}
+                </h1>
+                <p class="text-center text-blue-100 text-lg">
+                    {{ __('appointments_log.subtitle') }}
+                </p>
+            </div>
 
+            <!-- Navigation Buttons -->
+            <div class="navigation-buttons">
+                <a href="{{ route('admin.appointments.log', $site) }}" class="nav-btn">
+                    <i class="fas fa-sync-alt"></i>
+                    {{ __('appointments_log.update_data') }}
+                </a>
+                <a href="{{ route('admin.appointments.statistics', $site) }}" class="nav-btn">
+                    <i class="fas fa-chart-bar"></i>
+                    {{ __('appointments_log.view_analysis') }}
+                </a>
+            </div>
 
-                <div class="flex flex-wrap justify-center mb-8 gap-4">
-                    <a href="{{ route('admin.appointments.log', $site) }}" style="color: blue">
-                        {{ __('appointments_log.update_data') }}
-                    </a>
-                    <a href="{{ route('admin.appointments.statistics', $site) }}" class="text-blue-500 hover:text-blue-600">
-                        <i class="fas fa-chart-bar mr-2"></i>{{ __('appointments_log.view_analysis') }}
-                    </a>
-                </div>
-
-                <div class="space-y-4">
+            <div class="space-y-4">
+                @if($logs->count() > 0)
                     @foreach ($logs as $index => $log)
                         <div class="log-card">
                             <div class="log-header" onclick="toggleLog('{{ $index }}')">
@@ -175,84 +257,110 @@
                                     <span class="log-action {{ $log->action }}">
                                         {{ ucfirst($log->action) }}
                                     </span>
+                                    @if($log->arabic_user_name)
+                                        <span class="user-name">
+                                            {{ $log->arabic_user_name }}
+                                        </span>
+                                    @endif
                                     <span class="log-meta">
-                                        {{ $log->created_at->format('Y-m-d H:i') }} {{ __('appointments_log.by_user') }} {{ $log->changed_by }}
+                                        {{ $log->created_at->format('Y-m-d H:i') }} | Changed by: {{ $log->changed_by }}
+                                    </span>
+                                    <span class="log-meta">
+                                        Record ID: {{ $log->record_id }}
                                     </span>
                                 </div>
                                 <div id="arrow-{{ $index }}" class="log-arrow">▼</div>
                             </div>
 
-
                             <div id="log-{{ $index }}" class="log-body">
-                                <table class="log-table">
-                                    <thead>
-                                        <tr>
-                                            <th>{{ __('appointments_log.field') }}</th>
-                                            <th>{{ __('appointments_log.new_value') }}</th>
-                                            <th>{{ __('appointments_log.old_value')}}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @php
-                                            $fields = [
-                                                'description' => __('appointments_log.description'),
-                                                'date' => __('appointments_log.date'),
-                                                'address' => __('appointments_log.address'),
-                                                'reminder_before' => __('appointments_log.reminder_before'),
-                                                'reminder_before_type' => __('appointments_log.reminder_before_type'),
-                                                'name' => __('appointments_log.name'),
-                                                'email' => __('appointments_log.email'),
-                                                'phone' => __('appointments_log.phone'),
-                                                'source' => __('appointments_log.source'),
-                                                'notes' => __('appointments_log.notes'),
-                                                'approved' => __('appointments_log.approved'),
-                                                'start_hour' => __('appointments_log.start_hour'),
-                                                'recurring' => __('appointments_log.recurring'),
-                                       
-                                            ];
-                                        @endphp
+                                @php
+                                    // Define fields with their translations
+                                    $fields = [
+                                        'description' => __('appointments_log.description'),
+                                        'date' => __('appointments_log.date'),
+                                        'address' => __('appointments_log.address'),
+                                        'reminder_before' => __('appointments_log.reminder_before'),
+                                        'reminder_before_type' => __('appointments_log.reminder_before_type'),
+                                        'name' => __('appointments_log.name'),
+                                        'email' => __('appointments_log.email'),
+                                        'phone' => __('appointments_log.phone'),
+                                        'source' => __('appointments_log.source'),
+                                        'notes' => __('appointments_log.notes'),
+                                        'approved' => __('appointments_log.approved'),
+                                        'start_hour' => __('appointments_log.start_hour'),
+                                        'recurring' => __('appointments_log.recurring'),
+                                    ];
+                                @endphp
 
-                                        @foreach ($fields as $field => $label)
-                                            @php
-                                                $old = $log->data_old[$field] ?? null;
-                                                $new = $log->data_new[$field] ?? null;
-                                            @endphp
+                                <div class="log-table-container">
+                                    <table class="log-table">
+                                        <thead>
                                             <tr>
-                                                <td>{{ $label }}</td>
-                                                <td>
-                                                    <div class="{{ $old !== $new ? 'new-value' : '' }}">
-                                                        {{ is_array($new) ? json_encode($new) : $new ?? 'Not Available' }}
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div class="{{ $old !== $new ? 'old-value' : '' }}">
-                                                        {{ is_array($old) ? json_encode($old) : $old ?? 'Not Available' }}
-                                                    </div>
-                                                </td>
+                                                <th>{{ __('appointments_log.field') }}</th>
+                                                <th>{{ __('appointments_log.old_value') }}</th>
+                                                <th>{{ __('appointments_log.new_value') }}</th>
                                             </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($fields as $field => $label)
+                                                @php
+                                                    $old = $log->data_old[$field] ?? null;
+                                                    $new = $log->data_new[$field] ?? null;
+                                                    $hasChanged = $old !== $new;
+                                                @endphp
+                                                <tr>
+                                                    <td><strong>{{ $label }}</strong></td>
+                                                    <td>
+                                                        <span class="value-badge {{ $hasChanged ? 'old-value' : 'no-change' }}">
+                                                            {{ $old ? (is_array($old) ? json_encode($old) : $old) : __('appointments_log.no_data') }}
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <span class="value-badge {{ $hasChanged ? 'new-value' : 'no-change' }}">
+                                                            {{ $new ? (is_array($new) ? json_encode($new) : $new) : __('appointments_log.no_data') }}
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     @endforeach
-                </div>
+                @else
+                    <div class="empty-state">
+                        <i class="fas fa-clipboard-list"></i>
+                        <h3 class="text-xl font-semibold mb-2">{{ __('appointments_log.no_logs') }}</h3>
+                        <p class="text-gray-600">{{ __('appointments_log.no_logs_description') }}</p>
+                    </div>
+                @endif
+            </div>
 
-                <div class="pagination mt-8">
+            <!-- Pagination -->
+            @if($logs->count() > 0)
+                <div class="pagination mt-6">
                     {{ $logs->links() }}
                 </div>
-            </div>
+            @endif
         </div>
     </div>
 
     <script>
-       function toggleLog(index) {
+        function toggleLog(index) {
             const logContent = document.getElementById(`log-${index}`);
             const arrow = document.getElementById(`arrow-${index}`);
-    
-       
+
             logContent.classList.toggle('show');
             arrow.classList.toggle('rotate-180');
         }
+
+        // Auto-expand first log if only one exists
+        document.addEventListener('DOMContentLoaded', function() {
+            const logs = document.querySelectorAll('.log-card');
+            if (logs.length === 1) {
+                toggleLog(0);
+            }
+        });
     </script>
 @endsection

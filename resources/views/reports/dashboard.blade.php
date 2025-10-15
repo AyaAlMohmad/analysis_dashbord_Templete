@@ -53,6 +53,7 @@
         const leadsTimelineLabels = Object.keys(comparisonData.leads_timeline);
         const dhahranTimelineData = leadsTimelineLabels.map(d => comparisonData.leads_timeline[d].dhahran_added);
         const bashaerTimelineData = leadsTimelineLabels.map(d => comparisonData.leads_timeline[d].bashaer_added);
+        const jaddahTimelineData = leadsTimelineLabels.map(d => comparisonData.leads_timeline[d].jaddah_added);
 
         new Chart(document.getElementById('leadsTimelineChart'), {
             type: 'line',
@@ -69,6 +70,12 @@
                         data: bashaerTimelineData,
                         borderColor: '#543829',
                         fill: false
+                    },
+                    {
+                        label: "{{ __('comparison_report.jaddah') }}",
+                        data: jaddahTimelineData,
+                        borderColor: '#1a472a',
+                        fill: false
                     }
                 ]
             }
@@ -78,6 +85,7 @@
         const statusLabels = comparisonData.leads_status.map(s => s.status);
         const statusDhahran = comparisonData.leads_status.map(s => s.dhahran);
         const statusBashaer = comparisonData.leads_status.map(s => s.bashaer);
+        const statusJaddah = comparisonData.leads_status.map(s => s.jaddah);
 
         new Chart(document.getElementById('leadsStatusChart'), {
             type: 'bar',
@@ -92,6 +100,11 @@
                         label: "{{ __('comparison_report.bashaer') }}",
                         data: statusBashaer,
                         backgroundColor: '#543829'
+                    },
+                    {
+                        label: "{{ __('comparison_report.jaddah') }}",
+                        data: statusJaddah,
+                        backgroundColor: '#1a472a'
                     }
                 ]
             }
@@ -101,13 +114,14 @@
         new Chart(document.getElementById('appointmentsChart'), {
             type: 'pie',
             data: {
-                labels: ["{{ __('comparison_report.dhahran') }}", "{{ __('comparison_report.bashaer') }}"],
+                labels: ["{{ __('comparison_report.dhahran') }}", "{{ __('comparison_report.bashaer') }}", "{{ __('comparison_report.jaddah') }}"],
                 datasets: [{
                     data: [
                         comparisonData.appointments.total_dhahran,
-                        comparisonData.appointments.total_bashaer
+                        comparisonData.appointments.total_bashaer,
+                        comparisonData.appointments.total_jaddah,
                     ],
-                    backgroundColor: ['#00262f', '#543829']
+                    backgroundColor: ['#00262f', '#543829', '#1a472a']
                 }]
             },
             options: {
@@ -137,6 +151,11 @@
                         label: "{{ __('comparison_report.bashaer') }}",
                         data: Object.values(comparisonData.call_logs.totals.bashaer),
                         backgroundColor: '#543829'
+                    },
+                    {
+                        label: "{{ __('comparison_report.jaddah') }}",
+                        data: Object.values(comparisonData.call_logs.totals.jaddah),
+                        backgroundColor: '#1a472a'
                     }
                 ]
             }
@@ -172,6 +191,16 @@
                             comparisonData.items.contacted.bashaer,
                         ],
                         backgroundColor: '#543829'
+                    },
+                    {
+                        label: "{{ __('comparison_report.jaddah') }}",
+                        data: [
+                            comparisonData.items.available.jaddah,
+                            comparisonData.items.reserved.jaddah,
+                            comparisonData.items.blocked.jaddah,
+                            comparisonData.items.contacted.jaddah,
+                        ],
+                        backgroundColor: '#1a472a'
                     }
                 ]
             }

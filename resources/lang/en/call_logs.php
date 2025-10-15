@@ -27,5 +27,7 @@ return [
         'added' => 'Added',
         'started' => 'Started',
         'ended' => 'Ended',
+
     ],
+    'view_log_jeddah'=>'View Jeddah Log',
 ];
