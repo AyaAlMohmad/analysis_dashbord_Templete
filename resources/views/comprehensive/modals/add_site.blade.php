@@ -68,11 +68,11 @@
                                 data-bs-target="#visits-payments" type="button"
                                 role="tab">{{ __('components.visits_payments') }}</button>
                         </li>
-                        <li class="nav-item" role="presentation">
+                        <!-- <li class="nav-item" role="presentation">
                             <button class="nav-link" id="disinterest-reasons-tab" data-bs-toggle="tab"
                                 data-bs-target="#disinterest-reasons" type="button"
                                 role="tab">{{ __('components.disinterest_reasons') }}</button>
-                        </li>
+                        </li> -->
                         <li class="nav-item" role="presentation">
                             <button class="nav-link" id="total-sales-tab" data-bs-toggle="tab"
                                 data-bs-target="#total-sales" type="button"
@@ -245,12 +245,12 @@
                                     <thead>
                                         <tr>
                                             <th>{{ __('components.data') }}</th>
-                                            <th>A</th>
-                                            <th>B</th>
-                                            <th>C</th>
-                                            <th>D</th>
-                                            <th>E</th>
-                                            <th>F</th>
+                                           <th><input type="text" class="header-input" value="A"></th>
+                    <th><input type="text" class="header-input" value="B"></th>
+                    <th><input type="text" class="header-input" value="C"></th>
+                    <th><input type="text" class="header-input" value="D"></th>
+                    <th><input type="text" class="header-input" value="E"></th>
+                    <th><input type="text" class="header-input" value="F"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -326,12 +326,12 @@
                                         </tr>
                                         <tr>
                                             <th>{{ __('components.models') }}</th>
-                                            <th>A Abq</th>
-                                            <th>B Ewan</th>
-                                            <th>C Najdiyah</th>
-                                            <th>D Ruweiq</th>
-                                            <th>E Maqam</th>
-                                            <th>F Roof</th>
+                                             <th><input type="text" class="header-input" value="A Abq"></th>
+                    <th><input type="text" class="header-input" value="B Ewan"></th>
+                    <th><input type="text" class="header-input" value="C Najdiyah"></th>
+                    <th><input type="text" class="header-input" value="D Ruweiq"></th>
+                    <th><input type="text" class="header-input" value="E Maqam"></th>
+                    <th><input type="text" class="header-input" value="F Roof"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -429,23 +429,41 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach (['Abq (A)', 'Ewan (B)', 'Najdiyah (C)', 'Ruweiq (D)', 'Maqam (E)', 'Roof (F)'] as $model)
-                                            <tr>
-                                                <td>{{ $model }}</td>
-                                                <td><input type="number" class="form-control"
-                                                        name="unit_stats[phase1][{{ $model }}][units]">
-                                                </td>
-                                                <td><input type="text" class="form-control"
-                                                        name="unit_stats[phase1][{{ $model }}][sold_available]">
-                                                </td>
-                                                <td><input type="text" class="form-control"
-                                                        name="unit_stats[phase1][{{ $model }}][from]"
-                                                        value="--"></td>
-                                                <td><input type="text" class="form-control"
-                                                        name="unit_stats[phase1][{{ $model }}][to]"
-                                                        value="--"></td>
-                                            </tr>
-                                        @endforeach
+                                       <tr>
+                            <td><input type="text" class="model-input" value="Abq (A)"></td>
+                            <td><input type="number" class="form-control" name="unit_stats[phase1][Abq (A)][units]"></td>
+                            <td><input type="text" class="form-control" name="unit_stats[phase1][Abq (A)][sold_available]"></td>
+                            <td><input type="text" class="form-control" name="unit_stats[phase1][Abq (A)][from]" value="--"></td>
+                            <td><input type="text" class="form-control" name="unit_stats[phase1][Abq (A)][to]" value="--"></td>
+                        </tr>
+                        <tr>
+                            <td><input type="text" class="model-input" value="Ewan (B)"></td>
+                            <td><input type="number" class="form-control" name="unit_stats[phase1][Ewan (B)][units]"></td>
+                            <td><input type="text" class="form-control" name="unit_stats[phase1][Ewan (B)][sold_available]"></td>
+                            <td><input type="text" class="form-control" name="unit_stats[phase1][Ewan (B)][from]" value="--"></td>
+                            <td><input type="text" class="form-control" name="unit_stats[phase1][Ewan (B)][to]" value="--"></td>
+                        </tr>
+                        <tr>
+                            <td><input type="text" class="model-input" value="Najdiyah (C)"></td>
+                            <td><input type="number" class="form-control" name="unit_stats[phase1][Najdiyah (C)][units]"></td>
+                            <td><input type="text" class="form-control" name="unit_stats[phase1][Najdiyah (C)][sold_available]"></td>
+                            <td><input type="text" class="form-control" name="unit_stats[phase1][Najdiyah (C)][from]" value="--"></td>
+                            <td><input type="text" class="form-control" name="unit_stats[phase1][Najdiyah (C)][to]" value="--"></td>
+                        </tr>
+                        <tr>
+                            <td><input type="text" class="model-input" value="Ruweiq (D)"></td>
+                            <td><input type="number" class="form-control" name="unit_stats[phase1][Ruweiq (D)][units]"></td>
+                            <td><input type="text" class="form-control" name="unit_stats[phase1][Ruweiq (D)][sold_available]"></td>
+                            <td><input type="text" class="form-control" name="unit_stats[phase1][Ruweiq (D)][from]" value="--"></td>
+                            <td><input type="text" class="form-control" name="unit_stats[phase1][Ruweiq (D)][to]" value="--"></td>
+                        </tr>
+                        <tr>
+                            <td><input type="text" class="model-input" value="Maqam (E)"></td>
+                            <td><input type="number" class="form-control" name="unit_stats[phase1][Maqam (E)][units]"></td>
+                            <td><input type="text" class="form-control" name="unit_stats[phase1][Maqam (E)][sold_available]"></td>
+                            <td><input type="text" class="form-control" name="unit_stats[phase1][Maqam (E)][from]" value="--"></td>
+                            <td><input type="text" class="form-control" name="unit_stats[phase1][Maqam (E)][to]" value="--"></td>
+                        </tr>
                                     </tbody>
                                 </table>
 
@@ -468,11 +486,11 @@
                                         <tr>
                                             <th></th>
                                             <th>{{ __('components.current_month') }}</th>
-                                            <th>{{ __('components.last_month') }}</th>
+                                            <!--<th>{{ __('components.last_month') }}</th>
                                             <th>{{ __('components.two_months_ago') }}</th>
                                             @for ($i = 1; $i <= 5; $i++)
                                                 <th>{{ __('components.week') }} {{ $i }}</th>
-                                            @endfor
+                                            @endfor-->
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -480,7 +498,7 @@
                                             <td>{{ __('components.visits') }}</td>
                                             <td><input type="number" class="form-control"
                                                     name="visits_payments[visits][current_month]">
-                                            </td>
+                                            <!-- </td>
                                             <td><input type="number" class="form-control"
                                                     name="visits_payments[visits][last_month]">
                                             </td>
@@ -491,13 +509,13 @@
                                                 <td><input type="number" class="form-control"
                                                         name="visits_payments[visits][week{{ $i }}]">
                                                 </td>
-                                            @endfor
+                                            @endfor -->
                                         </tr>
                                         <tr>
                                             <td>{{ __('components.payments') }}</td>
                                             <td><input type="number" class="form-control"
                                                     name="visits_payments[payments][current_month]"></td>
-                                            <td><input type="number" class="form-control"
+                                            <!-- <td><input type="number" class="form-control"
                                                     name="visits_payments[payments][last_month]">
                                             </td>
                                             <td><input type="number" class="form-control"
@@ -507,12 +525,12 @@
                                                         name="visits_payments[payments][week{{ $i }}]">
                                                 </td>
                                             @endfor
-                                        </tr>
+                                        </tr> -->
                                         <tr>
                                             <td>{{ __('components.contracted_units') }}</td>
                                             <td><input type="number" class="form-control"
                                                     name="visits_payments[contracted_units][current_month]"></td>
-                                            <td><input type="number" class="form-control"
+                                            <!-- <td><input type="number" class="form-control"
                                                     name="visits_payments[contracted_units][last_month]"></td>
                                             <td><input type="number" class="form-control"
                                                     name="visits_payments[contracted_units][two_months_ago]"></td>
@@ -520,7 +538,7 @@
                                                 <td><input type="number" class="form-control"
                                                         name="visits_payments[contracted_units][week{{ $i }}]">
                                                 </td>
-                                            @endfor
+                                            @endfor -->
                                         </tr>
                                     </tbody>
                                 </table>
@@ -528,7 +546,7 @@
                         </div>
 
                         <!-- Disinterest Reasons Tab -->
-                        <div class="tab-pane fade" id="disinterest-reasons" role="tabpanel">
+                        <!-- <div class="tab-pane fade" id="disinterest-reasons" role="tabpanel">
                             <div class="table-responsive">
                                 <table class="table table-bordered">
                                     <thead>
@@ -564,22 +582,22 @@
                                     </tfoot>
                                 </table>
                             </div>
-                        </div>
+                        </div> -->
 
                         <!-- Total Sales Tab -->
                         <div class="tab-pane fade" id="total-sales" role="tabpanel">
                             <div class="table-responsive">
                                 <table class="table table-bordered">
                                     <thead>
-                                        <tr>
-                                            <th rowspan="2"></th>
-                                            <th colspan="2">Abq A</th>
-                                            <th colspan="2">Ewan B</th>
-                                            <th colspan="2">Najdiyah C</th>
-                                            <th colspan="2">Ruweiq D</th>
-                                            <th colspan="2">Maqam E</th>
-                                            <th colspan="2">Roof F</th>
-                                        </tr>
+                                       <tr>
+                            <th rowspan="2"></th>
+                            <th colspan="2"><input type="text" class="model-input" value="Abq A" placeholder="اسم النموذج"></th>
+                            <th colspan="2"><input type="text" class="model-input" value="Ewan B" placeholder="اسم النموذج"></th>
+                            <th colspan="2"><input type="text" class="model-input" value="Najdiyah C" placeholder="اسم النموذج"></th>
+                            <th colspan="2"><input type="text" class="model-input" value="Ruweiq D" placeholder="اسم النموذج"></th>
+                            <th colspan="2"><input type="text" class="model-input" value="Maqam E" placeholder="اسم النموذج"></th>
+                            <th colspan="2"><input type="text" class="model-input" value="Roof F" placeholder="اسم النموذج"></th>
+                        </tr>
                                         <tr>
                                             @foreach (['A', 'B', 'C', 'D', 'E', 'F'] as $model)
                                                 <th>{{ __('components.build_area') }}</th>
@@ -672,6 +690,7 @@
                                                 <th>{{ __('components.appointments') }}</th>
                                                 <th>{{ __('components.visited') }}</th>
                                                 <th>{{ __('components.success_rate') }}</th>
+                                                <th>{{ __('components.external_visit') }}</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -684,6 +703,9 @@
                                                 </td>
                                                 <td><input type="text" class="form-control"
                                                         name="monthly_appointments[success_rate]">
+                                                </td>
+                                                <td><input type="number" class="form-control"
+                                                        name="monthly_appointments[external_rate]">
                                                 </td>
                                             </tr>
                                         </tbody>
