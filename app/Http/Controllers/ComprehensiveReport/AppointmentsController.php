@@ -19,6 +19,7 @@ class AppointmentsController extends ReportBaseController
         $dhahranMonthlyAppointments = $this->getDhahranMonthlyAppointments($fromDate, $toDate);
         $albashaerMonthlyAppointments = $this->getAlbashaerMonthlyAppointments($fromDate, $toDate);
         $jeddahMonthlyAppointments = $this->getJeddahMonthlyAppointments($fromDate, $toDate);
+        $alfursanMonthlyAppointments = $this->getAlfursanMonthlyAppointments($fromDate, $toDate);
 
         return view($this->reportView, [
             'from_date' => $fromDate,
@@ -26,6 +27,7 @@ class AppointmentsController extends ReportBaseController
             'dhahranMonthlyAppointments' => $dhahranMonthlyAppointments,
             'albashaerMonthlyAppointments' => $albashaerMonthlyAppointments,
             'jeddahMonthlyAppointments' => $jeddahMonthlyAppointments,
+            'alfursanMonthlyAppointments' => $alfursanMonthlyAppointments,
         ]);
     }
 
@@ -126,6 +128,40 @@ class AppointmentsController extends ReportBaseController
             }
         } catch (\Exception $e) {
             Log::error("Jeddah Monthly Appointments API Error: " . $e->getMessage());
+        }
+
+        return [
+            'appointments' => [],
+            'totals' => [],
+        ];
+    }
+    /**
+     * Get Alfursan Monthly Appointments Data
+     */
+    private function getAlfursanMonthlyAppointments($fromDate = null, $toDate = null)
+    {
+        try {
+            $formData = [];
+
+            if ($fromDate) {
+                $formData['from_date'] = $fromDate;
+            }
+
+            if ($toDate) {
+                $formData['to_date'] = $toDate;
+            }
+
+            $response = Http::asForm()->post('https://crm.azyanalfursan.com/api/lead_reports/monthly_appointments_api', $formData);
+
+            if ($response->successful()) {
+                $data = $response->json();
+
+                if ($data['status'] ?? false) {
+                    return $data['data'] ?? [];
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error("Alfursan Monthly Appointments API Error: " . $e->getMessage());
         }
 
         return [

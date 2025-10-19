@@ -31,4 +31,5 @@ return [
     'save' => 'حفظ',
     'success'=>'نجاح',
     'jaddah'=>'الجدة',
+    'alfursan'=>'الفرسان',
 ];

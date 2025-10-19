@@ -16,6 +16,7 @@ class UnitDetailsController extends ReportBaseController
         $unitDetailsByStageResultDhahran = $this->unitDetailsByStageResultDhahran();
         $unitDetailsByStageResultAlbashaer = $this->unitDetailsByStageResultAlbashaer();
         $unitDetailsByStageResultJeddah = $this->unitDetailsByStageResultJeddah();
+        $unitDetailsByStageResultAlfursan = $this->unitDetailsByStageResultAlfursan();
 // dd($unitDetailsByStageResultJeddah);
         return view($this->reportView, [
             'from_date' => $request->input('from_date'),
@@ -23,6 +24,7 @@ class UnitDetailsController extends ReportBaseController
             'unitDetailsByStageResultDhahran' => $unitDetailsByStageResultDhahran,
             'unitDetailsByStageResultAlbashaer' => $unitDetailsByStageResultAlbashaer,
             'unitDetailsByStageResultJeddah' => $unitDetailsByStageResultJeddah,
+            'unitDetailsByStageResultAlfursan' => $unitDetailsByStageResultAlfursan,
         ]);
     }
 
@@ -90,6 +92,25 @@ class UnitDetailsController extends ReportBaseController
             }
         } catch (\Exception $e) {
             Log::error("Jeddah Unit Statistics by Stage API Error: " . $e->getMessage());
+        }
+
+        return [];
+    }
+    private function unitDetailsByStageResultAlfursan()
+    {
+        try {
+            $response = Http::post('https://crm.azyanalfursan.com/api/Item_reports/unit_details_by_stage_result');
+
+            if ($response->successful()) {
+                $data = $response->json();
+
+                if ($data['status'] ?? false) {
+                    // إرجاع البيانات مباشرة بدون 'reports'
+                    return $data['data']['reports'] ?? [];
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error("Alfursan Unit Statistics by Stage API Error: " . $e->getMessage());
         }
 
         return [];

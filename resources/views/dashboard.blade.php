@@ -122,6 +122,7 @@
 
         :root {
             --purple: #6f42c1;
+            --teal: #20c997;
         }
     </style>
     <div class="content-wrapper">
@@ -146,6 +147,10 @@
                                 <label class="btn btn-outline-primary" id="jaddah-btn">
                                     <input type="radio" name="site" value="jaddah">
                                     🏬 {{ __('comparison_report.jaddah') }}
+                                </label>
+                                <label class="btn btn-outline-primary" id="alfursan-btn">
+                                    <input type="radio" name="site" value="alfursan">
+                                    🏰 {{ __('comparison_report.alfursan') }}
                                 </label>
                             </div>
                         </div>
@@ -324,39 +329,43 @@
             const dh = getSiteData('dhahran');
             const bs = getSiteData('bashaer');
             const jd = getSiteData('jaddah');
+            const af = getSiteData('alfursan');
 
             summary = {
-                total_units: dh.total_units + bs.total_units + jd.total_units,
-                total_price: dh.total_price + bs.total_price + jd.total_price,
+                total_units: dh.total_units + bs.total_units + jd.total_units + af.total_units,
+                total_price: dh.total_price + bs.total_price + jd.total_price + af.total_price,
                 available: {
-                    count: dh.available.count + bs.available.count + jd.available.count,
-                    percentage: ((dh.available.count + bs.available.count + jd.available.count) / (dh.total_units + bs.total_units + jd.total_units || 1)) * 100,
-                    total_value: dh.available.total_value + bs.available.total_value + jd.available.total_value
+                    count: dh.available.count + bs.available.count + jd.available.count + af.available.count,
+                    percentage: ((dh.available.count + bs.available.count + jd.available.count + af.available.count) / (dh.total_units + bs.total_units + jd.total_units + af.total_units || 1)) * 100,
+                    total_value: dh.available.total_value + bs.available.total_value + jd.available.total_value + af.available.total_value
                 },
                 blocked: {
-                    count: dh.blocked.count + bs.blocked.count + jd.blocked.count,
-                    percentage: ((dh.blocked.count + bs.blocked.count + jd.blocked.count) / (dh.total_units + bs.total_units + jd.total_units || 1)) * 100,
-                    total_value: dh.blocked.total_value + bs.blocked.total_value + jd.blocked.total_value
+                    count: dh.blocked.count + bs.blocked.count + jd.blocked.count + af.blocked.count,
+                    percentage: ((dh.blocked.count + bs.blocked.count + jd.blocked.count + af.blocked.count) / (dh.total_units + bs.total_units + jd.total_units + af.total_units || 1)) * 100,
+                    total_value: dh.blocked.total_value + bs.blocked.total_value + jd.blocked.total_value + af.blocked.total_value
                 },
                 reserved: {
-                    count: dh.reserved.count + bs.reserved.count + jd.reserved.count,
-                    percentage: ((dh.reserved.count + bs.reserved.count + jd.reserved.count) / (dh.total_units + bs.total_units + jd.total_units || 1)) * 100,
-                    total_value: dh.reserved.total_value + bs.reserved.total_value + jd.reserved.total_value
+                    count: dh.reserved.count + bs.reserved.count + jd.reserved.count + af.reserved.count,
+                    percentage: ((dh.reserved.count + bs.reserved.count + jd.reserved.count + af.reserved.count) / (dh.total_units + bs.total_units + jd.total_units + af.total_units || 1)) * 100,
+                    total_value: dh.reserved.total_value + bs.reserved.total_value + jd.reserved.total_value + af.reserved.total_value
                 },
                 contracted: {
-                    count: dh.contracted.count + bs.contracted.count + jd.contracted.count,
-                    percentage: ((dh.contracted.count + bs.contracted.count + jd.contracted.count) / (dh.total_units + bs.total_units + jd.total_units || 1)) * 100,
-                    total_value: dh.contracted.total_value + bs.contracted.total_value + jd.contracted.total_value
+                    count: dh.contracted.count + bs.contracted.count + jd.contracted.count + af.contracted.count,
+                    percentage: ((dh.contracted.count + bs.contracted.count + jd.contracted.count + af.contracted.count) / (dh.total_units + bs.total_units + jd.total_units + af.total_units || 1)) * 100,
+                    total_value: dh.contracted.total_value + bs.contracted.total_value + jd.contracted.total_value + af.contracted.total_value
                 },
-                overall_value: dh.overall_value + bs.overall_value + jd.overall_value,
-                overall_progress_percentage: ((dh.reserved.count + bs.reserved.count + jd.reserved.count + dh.contracted.count + bs.contracted.count + jd.contracted.count) /
-                    (dh.total_units + bs.total_units + jd.total_units || 1)) * 100
+                overall_value: dh.overall_value + bs.overall_value + jd.overall_value + af.overall_value,
+                overall_progress_percentage: ((dh.reserved.count + bs.reserved.count + jd.reserved.count + af.reserved.count + dh.contracted.count + bs.contracted.count + jd.contracted.count + af.contracted.count) /
+                    (dh.total_units + bs.total_units + jd.total_units + af.total_units || 1)) * 100
             };
 
         } else {
             if (site === 'jaddah') {
                 siteName = '{{ __('comparison_report.jaddah') }}';
                 siteColor = 'warning';
+            } else if (site === 'alfursan') {
+                siteName = '{{ __('comparison_report.alfursan') }}';
+                siteColor = 'teal';
             } else {
                 siteName = site === 'dhahran' ? '{{ __('comparison_report.dhahran') }}' : '{{ __('comparison_report.bashaer') }}';
                 siteColor = site === 'dhahran' ? 'primary' : 'success';
@@ -472,7 +481,8 @@
                     ${site === 'all' ? '{{ $progressData['all'] }}%' :
                      site === 'dhahran' ? '{{ $progressData['dhahran'] }}%' :
                      site === 'bashaer' ? '{{ $progressData['bashaer'] }}%' :
-                     '{{ $progressData['jaddah'] }}%'}
+                     site === 'jaddah' ? '{{ $progressData['jaddah'] }}%' :
+                     '{{ $progressData['alfursan'] }}%'}
                 </h3>
             </div>
             <div class="card-body">
@@ -481,7 +491,8 @@
                      style="--width: ${site === 'all' ? '{{ $progressData['all'] }}%' :
                               site === 'dhahran' ? '{{ $progressData['dhahran'] }}%' :
                               site === 'bashaer' ? '{{ $progressData['bashaer'] }}%' :
-                              '{{ $progressData['jaddah'] }}%' };
+                              site === 'jaddah' ? '{{ $progressData['jaddah'] }}%' :
+                              '{{ $progressData['alfursan'] }}%' };
                             --color: var(--primary)">
                 </div>
             </div>
@@ -495,14 +506,17 @@
             const dh = callLogs.totals['dhahran'] || { added: 0, ended: 0 };
             const bs = callLogs.totals['bashaer'] || { added: 0, ended: 0 };
             const jd = callLogs.totals['jaddah'] || { added: 0, ended: 0 };
+            const af = callLogs.totals['alfursan'] || { added: 0, ended: 0 };
 
             document.getElementById('calls-section').innerHTML = `
         ${createCallCard('primary', dh.added, '{{ __('comparison_report.added_calls_dhahran') }}', 'icon-call-in')}
         ${createCallCard('info', bs.added, '{{ __('comparison_report.added_calls_bashaer') }}', 'icon-call-in')}
         ${createCallCard('warning', jd.added, '{{ __('comparison_report.added_calls_jaddah') }}', 'icon-call-in')}
+        ${createCallCard('teal', af.added, '{{ __('comparison_report.added_calls_alfursan') }}', 'icon-call-in')}
         ${createCallCard('danger', dh.ended, '{{ __('comparison_report.ended_calls_dhahran') }}', 'icon-call-end')}
         ${createCallCard('success', bs.ended, '{{ __('comparison_report.ended_calls_bashaer') }}', 'icon-call-end')}
         ${createCallCard('secondary', jd.ended, '{{ __('comparison_report.ended_calls_jaddah') }}', 'icon-call-end')}
+        ${createCallCard('dark', af.ended, '{{ __('comparison_report.ended_calls_alfursan') }}', 'icon-call-end')}
     `;
         } else {
             const totals = callLogs.totals[site] || { added: 0, ended: 0 };
@@ -593,6 +607,12 @@
                     tension: 0.4
                 },
                 {
+                    label: "{{ __('comparison_report.alfursan_added') }}",
+                    data: labels.map(date => leadsTimeline[date]?.['alfursan_added'] || 0),
+                    borderColor: '#20c997',
+                    tension: 0.4
+                },
+                {
                     label: "{{ __('comparison_report.dhahran_edited') }}",
                     data: labels.map(date => leadsTimeline[date]?.['dhahran_edited'] || 0),
                     borderColor: '#FFCD56',
@@ -610,6 +630,12 @@
                     borderColor: '#FF9F40',
                     tension: 0.4
                 },
+                {
+                    label: "{{ __('comparison_report.alfursan_edited') }}",
+                    data: labels.map(date => leadsTimeline[date]?.['alfursan_edited'] || 0),
+                    borderColor: '#6f42c1',
+                    tension: 0.4
+                }
             ];
         } else {
             datasets = [{
@@ -660,12 +686,14 @@
                 labels.reduce((a, b) => a + (leadsTimeline[b]?.['dhahran_added'] || 0), 0),
                 labels.reduce((a, b) => a + (leadsTimeline[b]?.['bashaer_added'] || 0), 0),
                 labels.reduce((a, b) => a + (leadsTimeline[b]?.['jaddah_added'] || 0), 0),
+                labels.reduce((a, b) => a + (leadsTimeline[b]?.['alfursan_added'] || 0), 0),
             ] : [labels.reduce((a, b) => a + (leadsTimeline[b]?.[`${site}_added`] || 0), 0)];
 
             const totalEdited = site === 'all' ? [
                 labels.reduce((a, b) => a + (leadsTimeline[b]?.['dhahran_edited'] || 0), 0),
                 labels.reduce((a, b) => a + (leadsTimeline[b]?.['bashaer_edited'] || 0), 0),
                 labels.reduce((a, b) => a + (leadsTimeline[b]?.['jaddah_edited'] || 0), 0),
+                labels.reduce((a, b) => a + (leadsTimeline[b]?.['alfursan_edited'] || 0), 0),
             ] : [labels.reduce((a, b) => a + (leadsTimeline[b]?.[`${site}_edited`] || 0), 0)];
 
             const doughnutData = site === 'all' ? {
@@ -673,13 +701,15 @@
                     "{{ __('comparison_report.dhahran_added') }}",
                     "{{ __('comparison_report.bashaer_added') }}",
                     "{{ __('comparison_report.jaddah_added') }}",
+                    "{{ __('comparison_report.alfursan_added') }}",
                     "{{ __('comparison_report.dhahran_edited') }}",
                     "{{ __('comparison_report.bashaer_edited') }}",
                     "{{ __('comparison_report.jaddah_edited') }}",
+                    "{{ __('comparison_report.alfursan_edited') }}",
                 ],
                 datasets: [{
                     data: [...totalAdded, ...totalEdited],
-                    backgroundColor: ['#FF6384', '#4BC0C0', '#9966FF', '#FFCD56', '#36A2EB', '#FF9F40']
+                    backgroundColor: ['#FF6384', '#4BC0C0', '#9966FF', '#20c997', '#FFCD56', '#36A2EB', '#FF9F40', '#6f42c1']
                 }]
             } : {
                 labels: [
@@ -715,7 +745,7 @@
 
         if (site === 'all') {
             labels = timeline.map(item => item.date);
-            values = timeline.map(item => (item.dhahran || 0) + (item.bashaer || 0) + (item.jaddah || 0));
+            values = timeline.map(item => (item.dhahran || 0) + (item.bashaer || 0) + (item.jaddah || 0) + (item.alfursan || 0));
         } else {
             labels = timeline.map(item => item.date);
             values = timeline.map(item => item[site] || 0);
@@ -732,7 +762,8 @@
                         label: site === 'all' ? '{{ __('comparison_report.all') }}' :
                                (site === 'dhahran' ? '{{ __('comparison_report.dhahran') }}' :
                                 site === 'bashaer' ? '{{ __('comparison_report.bashaer') }}' :
-                                '{{ __('comparison_report.jaddah') }}'),
+                                site === 'jaddah' ? '{{ __('comparison_report.jaddah') }}' :
+                                '{{ __('comparison_report.alfursan') }}'),
                         data: values,
                         borderColor: '#00bcd4',
                         backgroundColor: 'rgba(0, 188, 212, 0.2)',
@@ -765,15 +796,21 @@
         let appointmentsHtml = '';
         timeline.forEach(item => {
             const count = site === 'all' ?
-                (item.dhahran + item.bashaer + item.jaddah) :
+                (item.dhahran + item.bashaer + item.jaddah + item.alfursan) :
                 item[site];
+
+            const progressColor = site === 'dhahran' ? 'bg-primary' :
+                                site === 'bashaer' ? 'bg-success' :
+                                site === 'jaddah' ? 'bg-warning' :
+                                'bg-teal';
+
             appointmentsHtml += `
             <tr>
                 <td>${item.date}</td>
                 <td class="text-center font-small-2">
                     ${count}
                     <div class="progress progress-sm mt-1 mb-0">
-                        <div class="progress-bar ${site === 'dhahran' ? 'bg-primary' : site === 'bashaer' ? 'bg-success' : 'bg-warning'}" style="width: 100%"></div>
+                        <div class="progress-bar ${progressColor}" style="width: 100%"></div>
                     </div>
                 </td>
             </tr>
@@ -800,6 +837,10 @@
         document.getElementById('jaddah-btn').addEventListener('click', function() {
             setActiveButton(this);
             loadSiteData('jaddah');
+        });
+        document.getElementById('alfursan-btn').addEventListener('click', function() {
+            setActiveButton(this);
+            loadSiteData('alfursan');
         });
     });
 </script>

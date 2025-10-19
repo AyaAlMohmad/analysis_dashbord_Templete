@@ -27,4 +27,6 @@ return [
     'dhahran'=>'Dhahran',
     'bashaer'=>'Bashaer',
     'view_log_jeddah'=>'View Jeddah Log',
+    'alfursan'=>'Alfursan',
+    'view_log_alfursan'=>'View Alfursan Log',
 ];

@@ -15,7 +15,8 @@ class CallLogsReportController extends Controller
     $endpoints = [
         'dhahran' => 'https://crm.azyanaldhahran.com/api/call_logs',
         'bashaer' => 'https://crm.azyanalbashaer.com/api/call_logs',
-        'jeddah' => 'https://crm.azyanjeddah.com/api/call_logs'
+        'jeddah' => 'https://crm.azyanjeddah.com/api/call_logs',
+        'alfursan' => 'https://crm.azyanalfursan.com/api/call_logs',
     ];
 
     foreach ($endpoints as $location => $url) {
@@ -61,64 +62,64 @@ class CallLogsReportController extends Controller
         }
     }
 
-    public function export(Request $request)
-    {
-        $site = $request->get('site', 'dhahran');
-        $type = $request->get('type', 'pdf');
+    // public function export(Request $request)
+    // {
+    //     $site = $request->get('site', 'dhahran');
+    //     $type = $request->get('type', 'pdf');
 
-        $url = $site === 'bashaer'
-            ? 'https://crm.azyanalbashaer.com/api/call_logs'
-            : 'https://crm.azyanaldhahran.com/api/call_logs';
+    //     $url = $site === 'bashaer'
+    //         ? 'https://crm.azyanalbashaer.com/api/call_logs'
+    //         : 'https://crm.azyanaldhahran.com/api/call_logs';
 
-        $error = null;
-        $data = $this->fetchcall_logs($url, $error);
+    //     $error = null;
+    //     $data = $this->fetchcall_logs($url, $error);
 
-        if ($error) {
-            return back()->with('error', 'Failed to fetch data from the selected site');
-        }
+    //     if ($error) {
+    //         return back()->with('error', 'Failed to fetch data from the selected site');
+    //     }
 
-        $byCategory = $data['by_category'] ?? [];
-        $chartImage = null;
+    //     $byCategory = $data['by_category'] ?? [];
+    //     $chartImage = null;
 
-        switch ($type) {
-            case 'pdf':
-                $pdf = Pdf::loadView('exports.call_logs_pdf', [
-                    'site' => $site,
-                    'call_logs' => $data,
-                    'byCategory' => $byCategory,
-                    'maxCount' => max($byCategory ?: [0])
-                ]);
+    //     switch ($type) {
+    //         case 'pdf':
+    //             $pdf = Pdf::loadView('exports.call_logs_pdf', [
+    //                 'site' => $site,
+    //                 'call_logs' => $data,
+    //                 'byCategory' => $byCategory,
+    //                 'maxCount' => max($byCategory ?: [0])
+    //             ]);
 
-                return $pdf->download("call_logs_{$site}.pdf");
+    //             return $pdf->download("call_logs_{$site}.pdf");
 
-            case 'csv':
-                return $this->exportCsv($byCategory, $site);
+    //         case 'csv':
+    //             return $this->exportCsv($byCategory, $site);
 
-            default:
-                abort(400, 'Invalid export type');
-        }
-    }
+    //         default:
+    //             abort(400, 'Invalid export type');
+    //     }
+    // }
 
-    protected function exportCsv($data, $site)
-    {
-        $filename = "call_logs_{$site}_" . now()->format('Ymd_His') . ".csv";
+    // protected function exportCsv($data, $site)
+    // {
+    //     $filename = "call_logs_{$site}_" . now()->format('Ymd_His') . ".csv";
 
-        $headers = [
-            "Content-type" => "text/csv; charset=utf-8",
-            "Content-Disposition" => "attachment; filename=$filename",
-        ];
+    //     $headers = [
+    //         "Content-type" => "text/csv; charset=utf-8",
+    //         "Content-Disposition" => "attachment; filename=$filename",
+    //     ];
 
-        $callback = function() use ($data) {
-            $file = fopen('php://output', 'w');
-            fputcsv($file, ['Category', 'Item Count']);
+    //     $callback = function() use ($data) {
+    //         $file = fopen('php://output', 'w');
+    //         fputcsv($file, ['Category', 'Item Count']);
 
-            foreach ($data as $category => $count) {
-                fputcsv($file, [$category, $count]);
-            }
+    //         foreach ($data as $category => $count) {
+    //             fputcsv($file, [$category, $count]);
+    //         }
 
-            fclose($file);
-        };
+    //         fclose($file);
+    //     };
 
-        return response()->stream($callback, 200, $headers);
-    }
+    //     return response()->stream($callback, 200, $headers);
+    // }
 }

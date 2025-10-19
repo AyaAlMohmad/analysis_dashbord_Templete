@@ -16,6 +16,7 @@ class LeadsLogController extends Controller
             'dhahran' => 'https://crm.azyanaldhahran.com/api/activity-logs?table=tblleads',
             'bashaer' => 'https://crm.azyanalbashaer.com/api/activity-logs?table=tblleads',
             'jeddah' => 'https://crm.azyanjeddah.com/api/activity-logs?table=tblleads',
+            'alfursan' => 'https://crm.azyanalfursan.com/api/activity-logs?table=tblleads',
         ];
 
         if (!isset($sites[$site])) {

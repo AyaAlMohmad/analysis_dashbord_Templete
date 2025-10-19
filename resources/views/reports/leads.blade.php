@@ -40,6 +40,13 @@
                                                 {{ __('leads.view_log_jeddah') }} <i class="fas fa-clipboard-list"></i>
                                             </a>
                                         </div>
+                                        <div class="flex items-center gap-4 mt-4">
+                                            <a href="{{ route('admin.leads.log', 'alfursan') }}"
+                                                class="p-3 rounded-xl hover:bg-gray-100 transition text-gray-600 text-2xl"
+                                                title="View Alfursan Log">
+                                                {{ __('leads.view_log_alfursan') }} <i class="fas fa-clipboard-list"></i>
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -50,6 +57,7 @@
                                     <option value="dhahran">{{ __('leads.dhahran') }} </option>
                                     <option value="bashaer">{{ __('leads.bashaer') }} </option>
                                     <option value="jeddah">{{ __('leads.jeddah') }} </option>
+                                    <option value="alfursan">{{ __('leads.alfursan') }} </option>
                                 </select>
                             </div>
 
@@ -84,14 +92,16 @@
             </div>
 
 
-            @foreach (['dhahran' => 'Azyan Dhahran', 'bashaer' => 'Azyan Bashaer', 'jeddah' => 'Azyan Jeddah'] as $key => $title)
+            @foreach (['dhahran' => 'Azyan Dhahran', 'bashaer' => 'Azyan Bashaer', 'jeddah' => 'Azyan Jeddah', 'alfursan' => 'Azyan Alfursan'] as $key => $title)
                 @php
-                    // Fixed ternary operator with proper parentheses
+                    // Fixed ternary operator with proper syntax
                     $leadsData = $key === 'dhahran'
                         ? $leadsAzyanDhahran
                         : ($key === 'bashaer'
                             ? $leadsAzyanBashaer
-                            : $leadsAzyanJeddah);
+                            : ($key === 'jeddah'
+                                ? $leadsAzyanJeddah
+                                : $leadsAzyanAlfursan));
                 @endphp
 
                 <div id="site-{{ $key }}" class="site-container hidden">
@@ -201,6 +211,11 @@
                     dates: @json(array_keys($leadsAzyanJeddah)),
                     added: @json(array_column($leadsAzyanJeddah, 'added')),
                     edited: @json(array_column($leadsAzyanJeddah, 'edited'))
+                },
+                alfursan: {
+                    dates: @json(array_keys($leadsAzyanAlfursan)),
+                    added: @json(array_column($leadsAzyanAlfursan, 'added')),
+                    edited: @json(array_column($leadsAzyanAlfursan, 'edited'))
                 }
             };
 

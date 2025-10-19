@@ -2,313 +2,231 @@
 
 @section('content')
 @php
-    // تحديد اللوجو واللون بناءً على الموقع
-    $logos = [
-        'dhahran' => asset('images/logo1.png'),
-        'bashaer' => asset('images/logo2.png'),
-        'jeddah' => asset('images/jadah.png')
-    ];
-    $colors = [
-        'dhahran' => '#00262f',
-        'bashaer' => '#543829',
-        'jeddah' => '#1a472a'
-    ];
+    $logoDhahran = asset('images/logo1.png');
+    $logoBashaer = asset('images/logo2.png');
+    $logoJaddah = asset('images/jadah.png');
+    $logoAlfursan = asset('images/alfursan.png');
 
-    $logo = $logos[$site] ?? asset('images/logo1.png');
-    $primaryColor = $colors[$site] ?? '#00262f';
-    $projectNames = [
-        'dhahran' => 'Azyan Dhahran',
-        'bashaer' => 'Azyan Bashaer',
-        'jeddah' => 'Azyan Jeddah'
-    ];
-    $projectName = $projectNames[$site] ?? 'Azyan Project';
 @endphp
 
 <style>
-    .logo {
-        max-height: 80px;
-        margin-bottom: 20px;
-    }
-    .section-title {
-        background-color: {{ $primaryColor }};
-        color: #fff;
-        text-align: center;
-        padding: 15px;
-        font-size: 18px;
-        border-radius: 5px;
-        margin: 20px 0;
-        font-weight: bold;
-    }
-    .status-card {
-        padding: 20px;
-        color: white;
-        border-radius: 10px;
-        text-align: center;
-        min-width: 120px;
-        margin: 5px;
-        font-weight: bold;
-    }
-    .card {
-        border: none;
-        border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        transition: transform 0.3s ease;
-    }
-    .card:hover {
-        transform: translateY(-5px);
-    }
-    .table-container {
+    .unit-table {
         width: 100%;
-        overflow-x: auto;
-        margin-bottom: 20px;
-        box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        border-radius: 5px;
-    }
-    .data-table {
-        width: 100%;
-        background: #fff;
         border-collapse: collapse;
-        min-width: 600px;
+        margin-top: 20px;
     }
-    .data-table th,
-    .data-table td {
+
+    .unit-table th,
+    .unit-table td {
         text-align: center;
-        padding: 12px 10px;
-        border: 1px solid #ddd;
+        padding: 8px;
         font-size: 14px;
+        border: 1px solid #ccc;
     }
-    .data-table th {
-        background: {{ $primaryColor }};
-        color: #fff;
+
+    .summary-row {
         font-weight: bold;
-        position: sticky;
-        top: 0;
+        background-color: #f3f3f3;
     }
-    .data-table tr:nth-child(even) {
-        background-color: #f9f9f9;
-    }
-    .data-table tr:hover {
-        background-color: #f1f1f1;
-    }
-    .chart-container {
-        position: relative;
-        width: 120px;
-        height: 120px;
-        margin: 0 auto;
-    }
-    .chart-icon {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        font-size: 24px;
-        z-index: 1;
-    }
-    .pdf-button {
+
+    .header-section {
+        padding: 15px;
+        font-size: 20px;
+        border-radius: 8px;
+        margin: 20px 0;
         text-align: center;
-        margin: 30px 0;
+        color: white;
     }
-    .pdf-icon {
-        font-size: 48px;
-        color: #dc3545;
-        transition: all 0.3s ease;
-        cursor: pointer;
+
+    .centered-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
-    .pdf-icon:hover {
-        transform: scale(1.1);
-        color: #c82333;
-    }
-    .stat-value {
-        font-size: 24px;
-        font-weight: bold;
-        margin: 10px 0;
-    }
-    .stat-percentage {
-        font-weight: bold;
-        margin-top: 10px;
+
+    .site-select {
+        width: 200px;
+        margin-top: 15px;
     }
 </style>
 
-<div class="container mt-4" id="reportContent">
-    {{-- Logo and Project Title --}}
-    <div class="text-center mb-4">
-        <img src="{{ $logo }}" class="logo" alt="Logo">
-        <h3 class="mt-2" style="color: {{ $primaryColor }};">{{ $projectName }}</h3>
+<div class="container mt-4 text-center">
+    <div class="centered-section">
+        <h4 id="reportTitle" class="no-export">{{ __('components.unit_status_report') }}</h4>
+        <select name="site" id="site" class="form-control site-select no-export">
+            <option value="">{{ __('components.select_site') }}</option>
+            <option value="dhahran">{{ __('components.dhahran') }}</option>
+            <option value="bashaer">{{ __('components.bashaer') }}</option>
+            <option value="jaddah">{{ __('components.jeddah') }}</option>
+            <option value="alfursan">{{ __('components.alfursan') }}</option>
+        </select>
+
+        <img id="logo" src="" alt="Logo" style="max-height: 70px; display: none;">
     </div>
 
-    {{-- Statistics Cards --}}
-    <div class="row text-center my-4">
-        @php
-            $statuses = [
-                'available' => ['label' => __('units.available'), 'color' => '#27ae60', 'icon' => 'check-circle'],
-                'blocked' => ['label' => __('units.blocked'), 'color' => '#e74c3c', 'icon' => 'ban'],
-                'reserved' => ['label' => __('units.reserved'), 'color' => '#f39c12', 'icon' => 'clock'],
-                'contracted' => ['label' => __('units.contracted'), 'color' => '#2c3e50', 'icon' => 'file-signature'],
-            ];
+    <div class="header-section d-none" id="reportHeader">{{ __('components.unit_status_report') }}</div>
 
-            $chartConfig = [];
-            foreach ($statuses as $key => $info) {
-                $count = $result[$key] ?? 0;
-                $total = $result['total'] ?? 1;
-                $percentage = round(($count / $total) * 100);
-                $chartConfig[$key] = [
-                    'value' => $percentage,
-                    'color' => $info['color'],
-                    'icon' => $info['icon'],
-                    'count' => $count
-                ];
-            }
-        @endphp
+    <table class="unit-table d-none" id="unitTable">
+        <thead>
+            <tr id="tableHeaderRow1"></tr>
+            <tr id="tableHeaderRow2"></tr>
+        </thead>
+        <tbody id="unitTableBody"></tbody>
+        <tfoot>
+            <tr class="summary-row" id="summaryRow">
+                <td>{{ __('components.total') }}</td>
+                <td id="totalUnits">0</td>
+                <td id="totalAvailableB">0</td>
+                <td id="totalAvailableNB">0</td>
+                <td id="totalReservedB">0</td>
+                <td id="totalReservedNB">0</td>
+                <td id="totalSoldB">0</td>
+                <td id="totalSoldNB">0</td>
+            </tr>
+        </tfoot>
+    </table>
 
-        @foreach ($statuses as $key => $info)
-            @php
-                $count = $result[$key] ?? 0;
-                $total = $result['total'] ?? 1;
-                $percentage = round(($count / $total) * 100);
-            @endphp
-            <div class="col-md-3 col-sm-6 mb-4">
-                <div class="card shadow p-3 text-center h-100">
-                    <h5 style="color: {{ $info['color'] }}">{{ $info['label'] }}</h5>
-                    <div class="stat-value" style="color: {{ $info['color'] }}">{{ $count }}</div>
-                    <div class="chart-container">
-                        <canvas id="circle_{{ $key }}" width="120" height="120"></canvas>
-                        <div class="chart-icon" style="color: {{ $info['color'] }}">
-                            <i class="fas fa-{{ $info['icon'] }}"></i>
-                        </div>
-                    </div>
-                    <div class="stat-percentage" style="color: {{ $info['color'] }}">
-                        {{ $percentage }}%
-                    </div>
-                </div>
-            </div>
-        @endforeach
-    </div>
-
-    {{-- Table Title --}}
-    <div class="section-title">{{ __('units.title') }}</div>
-
-    {{-- Data Table --}}
-    <div class="table-container">
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th width="20%">{{ __('units.table.group') }}</th>
-                    <th width="40%">{{ __('units.table.description') }}</th>
-                    <th width="20%">{{ __('units.table.status') }}</th>
-                    <th width="20%">{{ __('units.table.block') }}</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse ($result['items'] ?? [] as $item)
-                    <tr>
-                        <td>{{ $item['group'] ?? '-' }}</td>
-                        <td>{{ $item['description'] ?? '-' }}</td>
-                        <td>
-                            <span class="badge
-                                @if(($item['unit_status'] ?? '') === 'available') badge-success
-                                @elseif(($item['unit_status'] ?? '') === 'blocked') badge-danger
-                                @elseif(($item['unit_status'] ?? '') === 'reserved') badge-warning
-                                @elseif(($item['unit_status'] ?? '') === 'contracted') badge-dark
-                                @else badge-secondary @endif">
-                                {{ $item['unit_status'] ?? '-' }}
-                            </span>
-                        </td>
-                        <td>{{ $item['value'] ?? '-' }}</td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="4" class="text-center py-4">
-                            {{ __('units.no_data') }}
-                        </td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
-
-    <div class="text-center mt-3 mb-4">
-        <small class="text-muted">
-            {{ __('units.export_date', ['date' => \Carbon\Carbon::now()->format('d-m-Y H:i:s')]) }}
-        </small>
-    </div>
+    <div class="text-muted text-center mt-3" id="generatedAt"></div>
 
     {{-- PDF Export Button --}}
-    <div class="pdf-button">
-        <a href="javascript:void(0);" onclick="exportPDF()" title="{{ __('Export PDF') }}">
-            <i class="fas fa-file-pdf pdf-icon"></i>
-            <div style="margin-top: 10px; color: #dc3545; font-weight: bold;">
-                {{ __('Download PDF Report') }}
+    <div class="text-center my-4" id="pdf-export-button" style="display: none;">
+        <a href="javascript:void(0);" onclick="exportPDF()" title="{{ __('components.export_pdf') }}"
+            class="transition duration-300 transform hover:scale-110 hover:rotate-6 d-block mt-4">
+            <div class="fonticon-container flex items-center justify-center custom-hover-red">
+                <div class="fonticon-wrap"
+                    style="float: left; width: 1104px; height: 60px;line-height: 4.8rem; text-align: center; border-radius: 0.1875rem;margin-right: 1rem;
+                    margin-bottom: 1.5rem;">
+                    <i class="fa fa-file-pdf-o text-red-500 hover:text-red-700 text-5xl"></i>
+                </div>
             </div>
         </a>
     </div>
 </div>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{{-- PDF Libraries --}}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script>
-    async function exportPDF() {
-        const { jsPDF } = window.jspdf;
-        const pdf = new jsPDF('p', 'mm', 'a4');
-        const element = document.getElementById('reportContent');
+  function exportPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('p', 'mm', 'a4');
+    const reportElement = document.querySelector('.container');
 
-        // إخفاء زر التصدير مؤقتاً
-        const pdfButton = document.querySelector('.pdf-button');
-        if (pdfButton) pdfButton.style.display = 'none';
+    const hiddenElements = document.querySelectorAll('.no-export');
+    hiddenElements.forEach(el => el.style.display = 'none');
 
-        const canvas = await html2canvas(element, {
-            scale: 2,
-            useCORS: true,
-            logging: false
+    html2canvas(reportElement, { scale: 2 }).then(canvas => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdfWidth = doc.internal.pageSize.getWidth();
+        const pdfHeight = canvas.height * pdfWidth / canvas.width;
+
+        const now = new Date();
+        const timestamp = now.toISOString().slice(0, 10);
+        const selectedSite = document.getElementById('site').value || 'site';
+
+        doc.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+        doc.save(`unit_status_report_${selectedSite}_${timestamp}.pdf`);
+
+        hiddenElements.forEach(el => el.style.display = '');
+    });
+}
+
+    document.getElementById('site').addEventListener('change', function () {
+        const site = this.value;
+        if (!site) return;
+
+        const logo = site === 'dhahran' ? '{{ $logoDhahran }}' : site === 'bashaer' ? '{{ $logoBashaer }}' : site === 'jaddah' ? '{{ $logoJaddah }}' : '{{ $logoAlfursan }}';
+        const color = site === 'dhahran' ? '#00262f' : site=== 'bashaer' ? '#543829' : site === 'jaddah' ? '#1a472a' : '#37160d';
+
+        document.getElementById('logo').src = logo;
+        document.getElementById('logo').style.display = 'block';
+        document.getElementById('reportTitle').classList.remove('d-none');
+        const header = document.getElementById('reportHeader');
+        header.classList.remove('d-none');
+        header.style.backgroundColor = color;
+
+        const table = document.getElementById('unitTable');
+        table.classList.remove('d-none');
+        document.getElementById('tableHeaderRow1').innerHTML = `
+            <th>{{ __('components.phase') }}</th>
+            <th>{{ __('components.total_units') }}</th>
+            <th colspan="2">{{ __('components.available') }}</th>
+            <th colspan="2">{{ __('components.reserved') }}</th>
+            <th colspan="2">{{ __('components.sold') }}</th>`;
+        document.getElementById('tableHeaderRow2').innerHTML = `
+            <th></th>
+            <th></th>
+            <th>{{ __('components.beneficiary') }}</th>
+            <th>{{ __('components.non_beneficiary') }}</th>
+            <th>{{ __('components.beneficiary') }}</th>
+            <th>{{ __('components.non_beneficiary') }}</th>
+            <th>{{ __('components.beneficiary') }}</th>
+            <th>{{ __('components.non_beneficiary') }}</th>`;
+
+        table.querySelectorAll('th').forEach(th => {
+            th.style.backgroundColor = color;
+            th.style.color = 'white';
         });
 
-        const imgData = canvas.toDataURL('image/png');
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+        fetch(`{{ route('admin.items.status') }}?site=${site}`, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(res => res.json())
+        .then(response => {
+            if (!response.status) return;
 
-        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-        pdf.save("{{ $site }}_unit_report.pdf");
+            const data = response.data;
 
-        // إعادة عرض زر التصدير
-        if (pdfButton) pdfButton.style.display = 'block';
-    }
-</script>
+    const groups = data.groups ?? [];
+    const totals = data.totals?.status_totals ?? {};
 
-<script>
-    const chartConfig = @json($chartConfig);
+            const tbody = document.getElementById('unitTableBody');
+            tbody.innerHTML = '';
 
-    document.addEventListener("DOMContentLoaded", function() {
-        Object.entries(chartConfig).forEach(([key, data]) => {
-            const canvas = document.getElementById('circle_' + key);
-            const ctx = canvas.getContext('2d');
-            const value = data.value > 100 ? 100 : data.value;
+            groups.forEach(group => {
+                const row = document.createElement('tr');
+                const getStatus = (statusName) => {
+                    const s = group.statuses.find(s => s.status_name === statusName);
+                    return {
+                        b: s?.beneficiary ?? 0,
+                        nb: s?.non_beneficiary ?? 0
+                    };
+                };
+                const available = getStatus('available');
+                const reserved = getStatus('reserved');
+                const sold = getStatus('sold');
 
-            new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    datasets: [{
-                        data: [value, 100 - value],
-                        backgroundColor: [data.color, '#f8f9fa'],
-                        borderWidth: 0,
-                        borderRadius: value === 100 ? 0 : 10,
-                    }]
-                },
-                options: {
-                    cutout: '75%',
-                    responsive: false,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        tooltip: { enabled: false },
-                        legend: { display: false },
-                    },
-                    animation: {
-                        animateScale: true,
-                        animateRotate: true
-                    }
-                }
+                row.innerHTML = `
+                    <td>${group.group_id}</td>
+                    <td>${group.total_items}</td>
+                    <td>${available.b}</td>
+                    <td>${available.nb}</td>
+                    <td>${reserved.b}</td>
+                    <td>${reserved.nb}</td>
+                    <td>${sold.b}</td>
+                    <td>${sold.nb}</td>`;
+                tbody.appendChild(row);
             });
+
+            const totalAvailable = totals.available ?? { beneficiary: 0, non_beneficiary: 0 };
+            const totalReserved = totals.reserved ?? { beneficiary: 0, non_beneficiary: 0 };
+            const totalSold = totals.sold ?? { beneficiary: 0, non_beneficiary: 0 };
+
+            document.getElementById('totalUnits').textContent = data.totals.total_items;
+            document.getElementById('totalAvailableB').textContent = totalAvailable.beneficiary;
+            document.getElementById('totalAvailableNB').textContent = totalAvailable.non_beneficiary;
+            document.getElementById('totalReservedB').textContent = totalReserved.beneficiary;
+            document.getElementById('totalReservedNB').textContent = totalReserved.non_beneficiary;
+            document.getElementById('totalSoldB').textContent = totalSold.beneficiary;
+            document.getElementById('totalSoldNB').textContent = totalSold.non_beneficiary;
+
+            document.getElementById('generatedAt').textContent = "{{ __('components.generated_at') }}: " + new Date().toLocaleString();
+            document.getElementById('pdf-export-button').style.display = 'block';
+        })
+        .catch(err => {
+            console.error(err);
+            document.getElementById('unitTableBody').innerHTML = `<tr><td colspan="8">{{ __('components.error_loading_data') }}</td></tr>`;
         });
     });
 </script>

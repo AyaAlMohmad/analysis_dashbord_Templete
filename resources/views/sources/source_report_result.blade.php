@@ -6,12 +6,14 @@
     $logos = [
         'dhahran' => asset('images/logo1.png'),
         'bashaer' => asset('images/logo2.png'),
-        'jeddah' => asset('images/jadah.png')
+        'jeddah' => asset('images/jadah.png'),
+        'alfursan' => asset('images/alfursan.png')
     ];
     $colors = [
         'dhahran' => '#00262f',
         'bashaer' => '#543829',
-        'jeddah' => '#1a472a'
+        'jeddah' => '#1a472a',
+        'alfursan' => '#37160d'
     ];
 
     $logo = $logos[$site] ?? asset('images/logo1.png');

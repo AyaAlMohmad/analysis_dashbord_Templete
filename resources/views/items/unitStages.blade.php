@@ -5,6 +5,7 @@
     $logoDhahran = asset('images/logo1.png');
     $logoBashaer = asset('images/logo2.png');
     $logoJeddah = asset('images/jadah.png');
+    $logoAlfursan = asset('images/alfursan.png');
 @endphp
 
 <style>
@@ -56,6 +57,7 @@
             <option value="dhahran">{{ __('unit_stages.dhahran') }}</option>
             <option value="bashaer">{{ __('unit_stages.bashaer') }}</option>
             <option value="jeddah">{{ __('components.jeddah') }}</option>
+            <option value="alfursan">{{ __('components.alfursan') }}</option>
         </select>
         <img id="logo" src="" alt="Logo" style="max-height: 70px; display: none;" class="mt-2">
     </div>
@@ -146,6 +148,10 @@
             case 'jeddah':
                 logo = '{{ $logoJeddah }}';
                 color = '#1a472a';
+                break;
+                case 'alfursan':
+                logo = '{{ $logoAlfursan }}';
+                color = '#37160d';
                 break;
             default:
                 logo = '';

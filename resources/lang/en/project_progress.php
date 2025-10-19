@@ -20,4 +20,5 @@ return [
     'save' => 'Save',
     'success'=>'Success',
     'jaddah'=>'Jaddah',
+    'alfursan'=>'Alfursan',
 ];

@@ -31,4 +31,7 @@ return [
 
     ],
     'view_log_jeddah'=>'عرض سجل جدة',
+    'view_log_alfursan'=>'عرض سجل الفرسان',
+    'location_jeddah'=>'جدة',
+    'location_alfursan'=>'الفرسان',
 ];

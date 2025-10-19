@@ -14,6 +14,7 @@ class ItemLogController extends Controller
             'dhahran' => 'https://crm.azyanaldhahran.com/api/activity-logs?table=tblitems',
             'bashaer' => 'https://crm.azyanalbashaer.com/api/activity-logs?table=tblitems',
             'jeddah' => 'https://crm.azyanjeddah.com/api/activity-logs?table=tblitems',
+            'alfursan' => 'https://crm.azyanalfursan.com/api/activity-logs?table=tblitems',
         ];
 
         if (!isset($sites[$site])) {

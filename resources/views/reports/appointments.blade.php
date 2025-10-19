@@ -39,6 +39,14 @@
                                                 <i class="fas fa-clipboard-list"></i>{{__('appointments_report.view_log_jeddah')}}
                                             </a>
                                         </div>
+                                        <div class="flex items-center gap-4 mt-4">
+                                            <!-- Alfursan Log -->
+                                            <a href="{{ route('admin.appointments.log', 'alfursan') }}"
+                                                class="p-3 rounded-xl hover:bg-gray-100 transition text-gray-600 text-2xl"
+                                                title="View Alfursan Log">
+                                                <i class="fas fa-clipboard-list"></i>{{__('appointments_report.view_log_alfursan')}}
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -50,6 +58,7 @@
                                 <option value="dhahran">{{ __('appointments_report.location_dhahran') }}</option>
                                 <option value="bashaer">{{ __('appointments_report.location_bashaer') }}</option>
                                 <option value="jeddah">{{ __('appointments_report.location_jeddah') }}</option>
+                                <option value="alfursan">{{ __('appointments_report.location_alfursan') }}</option>
                             </select>
                         </div>
                         <form id="exportForm" class="flex items-center gap-12 mt-12 justify-center">
@@ -333,6 +342,8 @@
     ? "{{ asset('images/logo5.png') }}"
     : site === 'bashaer'
     ? "{{ asset('images/logo6.png') }}"
+    : site === 'alfursan'
+    ? "{{ asset('images/alfursan.png') }}"
     : "{{ asset('images/jadah.png') }}"; // Add default for jeddah
 
             const chartCanvas = document.getElementById(`chart-${site}`);

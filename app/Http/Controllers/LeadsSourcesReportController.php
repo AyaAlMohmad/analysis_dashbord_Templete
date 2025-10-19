@@ -35,6 +35,11 @@ class LeadsSourcesReportController extends Controller
                 if ($response3->successful()) {
                     $data['jeddah'] = $this->formatApiData($response3->json());
                 }
+                // Fetch data from the fourth source
+                $response4 = Http::get('https://crm.azyanalfursan.com/api/leads_sources');
+                if ($response4->successful()) {
+                    $data['alfursan'] = $this->formatApiData($response4->json());
+                }
 
                 return $data;
             });
@@ -65,7 +70,7 @@ class LeadsSourcesReportController extends Controller
    public function sourceReportResult(Request $request)
 {
     $validated = $request->validate([
-        'site' => 'required|in:dhahran,bashaer,jeddah', // إضافة جدة
+        'site' => 'required|in:dhahran,bashaer,jeddah,alfursan', // إضافة جدة
         'from_date' => 'nullable|date',
         'to_date' => 'nullable|date|after_or_equal:from_date',
     ]);
@@ -73,7 +78,8 @@ class LeadsSourcesReportController extends Controller
     $apiUrls = [
         'dhahran' => 'https://crm.azyanaldhahran.com/api/custom-reports/api_generate_source_report',
         'bashaer' => 'https://crm.azyanalbashaer.com/api/custom-reports/api_generate_source_report',
-        'jeddah' => 'https://crm.azyanjeddah.com/api/custom-reports/api_generate_source_report', // إضافة جدة
+        'jeddah' => 'https://crm.azyanjeddah.com/api/custom-reports/api_generate_source_report',
+        'alfursan' => 'https://crm.azyanalfursan.com/api/custom-reports/api_generate_source_report',
     ];
 
     try {

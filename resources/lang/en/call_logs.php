@@ -30,4 +30,7 @@ return [
 
     ],
     'view_log_jeddah'=>'View Jeddah Log',
+    'view_log_alfursan'=>'View Alfursan Log',
+    'location_jeddah'=>'Jeddah',
+    'location_alfursan'=>'Alfursan',
 ];

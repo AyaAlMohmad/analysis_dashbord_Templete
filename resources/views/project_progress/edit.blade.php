@@ -32,6 +32,9 @@
                                 <option value="jaddah" {{ $progress->site == 'jaddah' ? 'selected' : '' }}>
                                     {{ __('project_progress.jaddah') }}
                                 </option>
+                                <option value="alfursan" {{ $progress->site == 'alfursan' ? 'selected' : '' }}>
+                                    {{ __('project_progress.alfursan') }}
+                                </option>
                             </select>
 
                         </div>

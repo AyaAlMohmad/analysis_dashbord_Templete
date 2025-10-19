@@ -32,6 +32,7 @@
                 <option value="dhahran" {{ old('site') == 'dhahran' ? 'selected' : '' }}>{{ __('project_progress.dhahran') }}</option>
                 <option value="bashaer" {{ old('site') == 'bashaer' ? 'selected' : '' }}>{{ __('project_progress.bashaer') }}</option>
                 <option value="jaddah" {{ old('site') == 'jaddah' ? 'selected' : '' }}>{{ __('project_progress.jaddah') }}</option>
+                <option value="alfursan" {{ old('site') == 'alfursan' ? 'selected' : '' }}>{{ __('project_progress.alfursan') }}</option>
             </select>
             @error('site')
               <span style="color: #dc2626; font-size: 0.875rem;">{{ $message }}</span>

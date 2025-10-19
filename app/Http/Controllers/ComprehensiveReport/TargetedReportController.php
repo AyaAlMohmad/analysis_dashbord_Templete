@@ -19,6 +19,7 @@ class TargetedReportController extends ReportBaseController
         $albashaerTargetedReport = $this->getAlbashaerTargetedReport($from_date, $to_date);
         $dhahranTargetedReport = $this->getDhahranTargetedReport($from_date, $to_date);
         $jeddahTargetedReport = $this->getJeddahTargetedReport($from_date, $to_date);
+        $alfursanTargetedReport = $this->getAlfursanTargetedReport($from_date, $to_date);
 
         // dd($albashaerTargetedReport, $dhahranTargetedReport, $jeddahTargetedReport);
         return view($this->reportView, [
@@ -27,6 +28,7 @@ class TargetedReportController extends ReportBaseController
             'albashaerTargetedReport' => $albashaerTargetedReport,
             'dhahranTargetedReport' => $dhahranTargetedReport,
             'jeddahTargetedReport' => $jeddahTargetedReport,
+            'alfursanTargetedReport' => $alfursanTargetedReport,
         ]);
     }
 
@@ -104,6 +106,31 @@ class TargetedReportController extends ReportBaseController
         return [
             'status' => false,
             'message' => 'Failed to fetch data from Jeddah Targeted Report API',
+            'data' => [],
+        ];
+    }
+    private function getAlfursanTargetedReport($from_date, $to_date)
+    {
+        try {
+            $response = Http::post('https://crm.azyanalfursan.com/api/lead_reports/targeted_report_api', [
+                'from_date' => $from_date,
+                'to_date' => $to_date,
+            ]);
+
+            if ($response->successful()) {
+                $data = $response->json();
+
+                if ($data['status'] ?? false) {
+                    return $data;
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error("Alfursan Targeted Report API Error: " . $e->getMessage());
+        }
+
+        return [
+            'status' => false,
+            'message' => 'Failed to fetch data from Alfursan Targeted Report API',
             'data' => [],
         ];
     }

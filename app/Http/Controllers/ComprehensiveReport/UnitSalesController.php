@@ -19,6 +19,7 @@ class UnitSalesController extends ReportBaseController
         $albashaerUnitSales = $this->getAlbashaerUnitSales($from_date, $to_date);
         $dhahranUnitSales = $this->getDhahranUnitSales($from_date, $to_date);
         $jeddahUnitSales = $this->getJeddahUnitSales($from_date, $to_date);
+        $alfursanUnitSales = $this->getAlfursanUnitSales($from_date, $to_date);
 // var_dump($dhahranUnitSales);
         return view($this->reportView, [
             'from_date' => $from_date,
@@ -26,6 +27,7 @@ class UnitSalesController extends ReportBaseController
             'albashaerUnitSales' => $albashaerUnitSales,
             'dhahranUnitSales' => $dhahranUnitSales,
             'jeddahUnitSales' => $jeddahUnitSales,
+            'alfursanUnitSales' => $alfursanUnitSales,
         ]);
     }
 
@@ -100,6 +102,27 @@ class UnitSalesController extends ReportBaseController
         return [
             'status'  => false,
             'message' => 'Failed to fetch data from Jeddah Unit Sales API',
+            'data'    => [],
+        ];
+    }
+    private function getAlfursanUnitSales($from_date, $to_date)
+    {
+        try {
+            $response = Http::get('https://crm.azyanalfursan.com/api/Item_reports/unit_sales_api');
+
+            if ($response->successful()) {
+                $data = $response->json();
+                if ($data['status'] ?? false) {
+                    return $data;
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error("Alfursan Unit Sales API Error: " . $e->getMessage());
+        }
+
+        return [
+            'status'  => false,
+            'message' => 'Failed to fetch data from Alfursan Unit Sales API',
             'data'    => [],
         ];
     }

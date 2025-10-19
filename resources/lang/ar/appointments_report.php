@@ -24,5 +24,7 @@ return [
     'chart_title' => 'مخطط حركة المواعيد اليومية',
     'location_jeddah' => 'أزيان الجدة',
     'view_log_jeddah' => 'عرض سجل الجدة',
+    'location_alfursan' => 'أزيان الافرسان',
+    'view_log_alfursan' => 'عرض سجل الافرسان',
 
 ];

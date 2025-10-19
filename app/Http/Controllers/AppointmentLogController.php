@@ -15,6 +15,7 @@ class AppointmentLogController extends Controller
             'dhahran' => 'https://crm.azyanaldhahran.com/api/activity-logs?table=appointly_appointments',
             'bashaer' => 'https://crm.azyanalbashaer.com/api/activity-logs?table=appointly_appointments',
             'jeddah' => 'https://crm.azyanjeddah.com/api/activity-logs?table=appointly_appointments',
+            'alfursan' => 'https://crm.azyanalfursan.com/api/activity-logs?table=appointly_appointments',
         ];
 
         if (!isset($sites[$site])) {

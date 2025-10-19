@@ -19,6 +19,7 @@ class ProjectSummaryController extends ReportBaseController
         $albashaerProjectSummary = $this->getAlbashaerProjectSummaryReport($from_date, $to_date);
         $dhahranProjectSummary = $this->getDhahranProjectSummaryReport($from_date, $to_date);
         $jeddahProjectSummary = $this->getJeddahProjectSummaryReport($from_date, $to_date);
+        $alfursanProjectSummary = $this->getAlfursanProjectSummaryReport($from_date, $to_date);
 // dd($jeddahProjectSummary);
         return view($this->reportView, [
             'from_date' => $from_date,
@@ -26,6 +27,7 @@ class ProjectSummaryController extends ReportBaseController
             'albashaerProjectSummary' => $albashaerProjectSummary,
             'dhahranProjectSummary' => $dhahranProjectSummary,
             'jeddahProjectSummary' => $jeddahProjectSummary,
+            'alfursanProjectSummary' => $alfursanProjectSummary,
         ]);
     }
 
@@ -43,7 +45,7 @@ class ProjectSummaryController extends ReportBaseController
             }
 
             // استخدام POST إذا كانت التواريخ موجودة، وإلا استخدام GET
-        
+
                 $response = Http::get('https://crm.azyanalbashaer.com/api/Item_reports/api_project_summary_report');
 
 
@@ -136,4 +138,41 @@ class ProjectSummaryController extends ReportBaseController
             'data' => [],
         ];
     }
+
+    private function getAlfursanProjectSummaryReport($from_date = null, $to_date = null)
+    {
+        try {
+            $formData = [];
+
+            if ($from_date) {
+                $formData['from_date'] = $from_date;
+            }
+
+            if ($to_date) {
+                $formData['to_date'] = $to_date;
+            }
+
+            // استخدام POST إذا كانت التواريخ موجودة، وإلا استخدام GET
+
+                $response = Http::get('https://crm.azyanalfursan.com/api/Item_reports/api_project_summary_report');
+
+
+            if ($response->successful()) {
+                $data = $response->json();
+
+                if ($data['status'] ?? false) {
+                    return $data;
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error("Alfursan Project Summary API Error: " . $e->getMessage());
+        }
+
+        return [
+            'status' => false,
+            'message' => 'Failed to fetch project summary report from Alfursan API',
+            'data' => [],
+        ];
+    }
+
 }

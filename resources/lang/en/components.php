@@ -162,7 +162,7 @@ return [
         'زيارة' => 'Visit',
         'حجز' => 'Reservation',
         'إلغاء' => 'Canceled',
-        'عقد' => 'Contract',
+        'تم التعاقد' => 'Contract',
     ],
     'close' => 'Close',
     'save_site' => 'Save Site',
@@ -275,4 +275,5 @@ return [
 'reservation_percentage'=>'Reservation Percentage',
 'contracted_percentage'=>'Contracted Percentage',
 'jeddah'=>'Jeddah',
+'alfursan'=>'Alfursan',
 ];

@@ -16,6 +16,7 @@ class VisitsPaymentsContractsController extends ReportBaseController
         $albashaerVPCData = $this->getAlbashaerVisitsPaymentsContracts();
         $dhahranVPCData = $this->getDhahranVisitsPaymentsContracts();
         $jeddahVPCData = $this->getJeddahVisitsPaymentsContracts();
+        $alfursanVPCData = $this->getAlfursanVisitsPaymentsContracts();
 // var_dump($albashaerVPCData);
         return view($this->reportView, [
             'from_date' => $request->input('from_date'),
@@ -23,6 +24,7 @@ class VisitsPaymentsContractsController extends ReportBaseController
             'albashaerVPCData' => $albashaerVPCData,
             'dhahranVPCData' => $dhahranVPCData,
             'jeddahVPCData' => $jeddahVPCData,
+            'alfursanVPCData' => $alfursanVPCData,
         ]);
     }
 
@@ -112,6 +114,34 @@ class VisitsPaymentsContractsController extends ReportBaseController
         return [
             'status' => false,
             'message' => 'Failed to fetch data from Jeddah Visits Payments Contracts API',
+            'data' => [
+                'contracts' => 0,
+                'payments' => 0,
+                'visits' => 0
+            ],
+            'date_from' => null,
+            'date_to' => null
+        ];
+    }
+    private function getAlfursanVisitsPaymentsContracts()
+    {
+        try {
+            $response = Http::get('https://crm.azyanalfursan.com/api/Item_reports/visits_payments_contracts_api');
+
+            if ($response->successful()) {
+                $data = $response->json();
+
+                if ($data['status'] ?? false) {
+                    return $data;
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error("Alfursan Visits Payments Contracts API Error: " . $e->getMessage());
+        }
+
+        return [
+            'status' => false,
+            'message' => 'Failed to fetch data from Alfursan Visits Payments Contracts API',
             'data' => [
                 'contracts' => 0,
                 'payments' => 0,

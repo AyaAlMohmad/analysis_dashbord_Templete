@@ -24,4 +24,6 @@ return [
     'chart_title' => 'Daily Appointment Trend',
     'location_jeddah' => 'Azyan Jeddah',
     'view_log_jeddah' => 'View Jeddah Log',
+    'location_alfursan' => 'Azyan Alfursan',
+    'view_log_alfursan' => 'View Alfursan Log',
 ];

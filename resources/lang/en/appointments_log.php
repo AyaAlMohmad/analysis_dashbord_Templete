@@ -35,4 +35,7 @@ return [
     'hide_log' => 'Hide Details',
     'Appointment_Logs_Statistics'=>'Appointment Logs Statistics ',
     'Back_to_Logs'=>'Back to Logs',
+    'subtitle'=>'Appointments Change Log',
+    'no_logs'=>'No Logs Found',
+    'no_logs_description'=>'No logs found for this site.',
 ];

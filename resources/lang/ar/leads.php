@@ -29,5 +29,7 @@ return [
     'dhahran'=>'أزيان الظهران',
     'bashaer'=>'أزيان البشائر',
     'view_log_jeddah'=>'سجل الجدة',
+    'alfursan'=>'أزيان الفرسان',
+    'view_log_alfursan'=>'سجل الفرسان',
 
 ];

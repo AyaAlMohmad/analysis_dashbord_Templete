@@ -38,7 +38,7 @@ public function store(Request $request)
     Log::info('User ID:', ['user_id' => auth()->id()]);
 
     $request->validate([
-        'site' => 'required|in:dhahran,bashaer,jaddah',
+        'site' => 'required|in:dhahran,bashaer,jaddah,alfursan',
         'progress_percentage' => 'required|numeric|min:0|max:100',
     ]);
 

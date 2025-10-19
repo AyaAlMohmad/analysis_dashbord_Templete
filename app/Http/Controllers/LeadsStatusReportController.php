@@ -54,11 +54,20 @@ class LeadsStatusReportController extends Controller
             $totals,
             $errors
         );
+        // Fetch Alfursan data
+        $this->fetchData(
+            'https://crm.azyanalfursan.com/api/leads_status',
+            'alfursan',
+            $data,
+            $totals,
+            $errors
+        );
 
        $dataDhahran= $data['dhahran'];
         $dataBashaer= $data['bashaer'];
         $dataJeddah= $data['jeddah'];
-        return view('reports.leads_status', compact('data', 'dataDhahran', 'dataJeddah','dataBashaer', 'totals', 'errors'));
+        $dataAlfursan= $data['alfursan'];
+        return view('reports.leads_status', compact('data', 'dataDhahran', 'dataJeddah','dataBashaer', 'dataAlfursan','totals', 'errors'));
     }
 
     private function fetchData($url, $location, &$data, &$totals, &$errors)
@@ -97,43 +106,43 @@ class LeadsStatusReportController extends Controller
         }
     }
 
-    public function export(Request $request)
-    {
-        $site = $request->get('site', 'dhahran');
-        $type = $request->get('type', 'pdf');
+    // public function export(Request $request)
+    // {
+    //     $site = $request->get('site', 'dhahran');
+    //     $type = $request->get('type', 'pdf');
 
-        $url = $site === 'bashaer'
-            ? 'https://crm.azyanalbashaer.com/api/leads_status'
-            : 'https://crm.azyanaldhahran.com/api/leads_status';
+    //     $url = $site === 'bashaer'
+    //         ? 'https://crm.azyanalbashaer.com/api/leads_status'
+    //         : 'https://crm.azyanaldhahran.com/api/leads_status';
 
-        $error = null;
-        $data = $this->fetchleads_status($url, $error);
+    //     $error = null;
+    //     $data = $this->fetchleads_status($url, $error);
 
-        if ($error) {
-            return back()->with('error', 'Failed to fetch data from the selected site');
-        }
+    //     if ($error) {
+    //         return back()->with('error', 'Failed to fetch data from the selected site');
+    //     }
 
-        $byCategory = $data['by_category'] ?? [];
-        $chartImage = null;
+    //     $byCategory = $data['by_category'] ?? [];
+    //     $chartImage = null;
 
-        switch ($type) {
-            case 'pdf':
-                $pdf = Pdf::loadView('exports.leads_status_pdf', [
-                    'site' => $site,
-                    'leads_status' => $data,
-                    'byCategory' => $byCategory,
-                    'maxCount' => max($byCategory ?: [0])
-                ]);
+    //     switch ($type) {
+    //         case 'pdf':
+    //             $pdf = Pdf::loadView('exports.leads_status_pdf', [
+    //                 'site' => $site,
+    //                 'leads_status' => $data,
+    //                 'byCategory' => $byCategory,
+    //                 'maxCount' => max($byCategory ?: [0])
+    //             ]);
 
-                return $pdf->download("leads_status_{$site}.pdf");
+    //             return $pdf->download("leads_status_{$site}.pdf");
 
-            case 'csv':
-                return $this->exportCsv($byCategory, $site);
+    //         case 'csv':
+    //             return $this->exportCsv($byCategory, $site);
 
-            default:
-                abort(400, 'Invalid export type');
-        }
-    }
+    //         default:
+    //             abort(400, 'Invalid export type');
+    //     }
+    // }
 
     protected function exportCsv($data, $site)
     {

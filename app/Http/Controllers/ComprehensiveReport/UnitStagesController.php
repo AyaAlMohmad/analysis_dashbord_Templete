@@ -19,6 +19,7 @@ class UnitStagesController extends ReportBaseController
         $dhahranUnitStages = $this->getDhahranUnitStages($from_date, $to_date);
         $albashaerUnitStages = $this->getAlbashaerUnitStages($from_date, $to_date);
         $jeddahUnitStages = $this->getJeddahUnitStages($from_date, $to_date);
+        $alfursanUnitStages = $this->getAlfursanUnitStages($from_date, $to_date);
 // dd($dhahranUnitStages,$albashaerUnitStages,$jeddahUnitStages);
         return view($this->reportView, [
             'from_date' => $from_date,
@@ -26,6 +27,7 @@ class UnitStagesController extends ReportBaseController
             'dhahranUnitStages' => $dhahranUnitStages,
             'albashaerUnitStages' => $albashaerUnitStages,
             'jeddahUnitStages' => $jeddahUnitStages,
+            'alfursanUnitStages' => $alfursanUnitStages,
         ]);
 
     }
@@ -133,6 +135,42 @@ class UnitStagesController extends ReportBaseController
             }
         } catch (\Exception $e) {
             Log::error("Jeddah Unit Stages API Error: " . $e->getMessage());
+        }
+
+        return [
+            'stages' => [],
+            'totals' => [],
+        ];
+    }
+    private function getAlfursanUnitStages($from_date = null, $to_date = null)
+    {
+        try {
+            $formData = [];
+
+            if ($from_date) {
+                $formData['from_date'] = $from_date;
+            }
+
+            if ($to_date) {
+                $formData['to_date'] = $to_date;
+            }
+
+            // استخدام POST إذا كانت التواريخ موجودة، وإلا استخدام GET
+            if (!empty($formData)) {
+                $response = Http::asForm()->post('https://crm.azyanalfursan.com/api/Item_reports/unitStages', $formData);
+            } else {
+                $response = Http::get('https://crm.azyanalfursan.com/api/Item_reports/unitStages');
+            }
+
+            if ($response->successful()) {
+                $data = $response->json();
+
+                if ($data['status'] ?? false) {
+                    return $data['data'] ?? [];
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error("Alfursan Unit Stages API Error: " . $e->getMessage());
         }
 
         return [

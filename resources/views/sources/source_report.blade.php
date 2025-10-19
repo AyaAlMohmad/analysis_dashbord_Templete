@@ -14,6 +14,7 @@
                         <option value="dhahran">{{ __('source_report.dhahran') }}</option>
                         <option value="bashaer">{{ __('source_report.bashaer') }}</option>
                         <option value="jeddah">{{ __('components.jeddah') }}</option>
+                        <option value="alfursan">{{ __('components.alfursan') }}</option>
                     </select>
                 </div>
 

@@ -16,6 +16,7 @@ class CallLogsLogController extends Controller
             'dhahran' => 'https://crm.azyanaldhahran.com/api/activity-logs?table=call_logs',
             'bashaer' => 'https://crm.azyanalbashaer.com/api/activity-logs?table=call_logs',
             'jeddah' => 'https://crm.azyanjeddah.com/api/activity-logs?table=call_logs',
+            'alfursan' => 'https://crm.azyanalfursan.com/api/activity-logs?table=call_logs',
         ];
 
         if (!isset($sites[$site])) {
