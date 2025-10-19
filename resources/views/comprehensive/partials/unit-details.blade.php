@@ -215,7 +215,41 @@
 
 
         </div>
+      <div class="page-section">
+                <div class="khozam-section"
+                    style="background-color: #f9f6f2; padding: 60px 20px; direction: rtl; position: relative; display: flex; align-items: center; justify-content: space-between; font-family: 'Arial', sans-serif; flex-wrap: wrap;">
+                    <div style="position: absolute; top: 30px; right: 30px;">
+                        <img src="{{ asset('build/logo.png') }}" alt="Tatwir Logo" style="height: 60px;">
+                    </div>
+                    <div style="flex: 2; text-align: center; padding: 20px; max-width: 100%;">
+                        <div style="margin-bottom: 30px;">
+                            <img src="{{ asset('images/alfursan.png') }}" alt="Project Logo" style="height:200px;">
+                        </div>
+                        <div style="margin-top: 20px; font-size: 18px; color: #8b5a3b;">
+                            @if (request()->filled('from_date') && request()->filled('to_date'))
+                                From {{ request('from_date') }} to {{ request('to_date') }}
+                            @else
+                                Please select a date range from the form
+                            @endif
+                        </div>
 
+
+                    </div>
+                    <div style="flex: 1; min-width: 200px; display: flex; justify-content: flex-start;">
+                        <img src="{{ asset('images/style.png') }}" alt="Decoration" style="height: 400px;">
+                    </div>
+                </div>
+            </div>
+
+
+        <div class="project-section" style="margin-bottom: 50px;">
+            <div class="page-section">@include('comprehensive.unitStatisticsByStage', [
+                'unitStats' => $unitDetailsByStageResultAlfursan,
+                'project_name' => 'أزيان الفرسان',
+            ])</div>
+
+
+        </div>
 
 
 

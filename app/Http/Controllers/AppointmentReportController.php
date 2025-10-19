@@ -26,6 +26,7 @@ class AppointmentReportController extends Controller
         $appointments['dhahran'] = $this->fetchAppointments('https://crm.azyanaldhahran.com/api/appointments', $errors['dhahran']);
         $appointments['bashaer'] = $this->fetchAppointments('https://crm.azyanalbashaer.com/api/appointments', $errors['bashaer']);
         $appointments['jeddah'] = $this->fetchAppointments('https://crm.azyanjeddah.com/api/appointments', $errors['jeddah']);
+        $appointments['alfursan'] = $this->fetchAppointments('https://crm.azyanalfursan.com/api/appointments', $errors['alfursan']);
         $siteSelected = $request->get('site', 'dhahran');
 
         return view('reports.appointments', compact('appointments', 'errors', 'siteSelected'));
@@ -51,67 +52,7 @@ class AppointmentReportController extends Controller
         }
     }
 
-    public function export(Request $request)
-    {
-        $site = $request->get('site', 'dhahran');
-        $type = $request->get('type', 'pdf');
-
-        $url = $site === 'bashaer'
-            ? 'https://crm.azyanalbashaer.com/api/appointments'
-            : 'https://crm.azyanaldhahran.com/api/appointments';
-
-        $error = null;
-        $data = $this->fetchAppointments($url, $error);
-
-        if ($error) {
-            return back()->with('error', 'Failed to fetch data from the selected site');
-        }
-
-        $byDate = $data['by_date'] ?? [];
-        $chartImage = NULL;
-
-
-
-
-        switch ($type) {
-            case 'pdf':
-                $pdf = Pdf::loadView('exports.appointments_pdf', [
-                    'site' => $site,
-                    'appointments' => $data,
-               'byDate' => $byDate,
-               'maxCount' => max($byDate ?: [0])
-                ]);
-
-                return $pdf->download("appointments_{$site}.pdf");
-            case 'csv':
-                return $this->exportCsv($byDate, $site);
-            default:
-                abort(400, 'Invalid export type');
-        }
-    }
-
-    protected function exportCsv($data, $site)
-    {
-        $filename = "appointments_{$site}_" . now()->format('Ymd_His') . ".csv";
-
-        $headers = [
-            "Content-type" => "text/csv; charset=utf-8",
-            "Content-Disposition" => "attachment; filename=$filename",
-        ];
-
-        $callback = function() use ($data) {
-            $file = fopen('php://output', 'w');
-            fputcsv($file, ['Date', 'Appointments']);
-
-            foreach ($data as $date => $count) {
-                fputcsv($file, [$date, $count]);
-            }
-
-            fclose($file);
-        };
-
-        return response()->stream($callback, 200, $headers);
-    }
+ 
 
 
 }

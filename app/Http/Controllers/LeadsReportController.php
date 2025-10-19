@@ -15,6 +15,7 @@ class LeadsReportController extends Controller
             'dhahran' => ['added' => 0, 'edited' => 0],
             'bashaer' => ['added' => 0, 'edited' => 0],
             'jeddah' => ['added' => 0, 'edited' => 0],
+            'alfursan' => ['added' => 0, 'edited' => 0],
         ];
 
         // Initialize error messages
@@ -22,6 +23,7 @@ class LeadsReportController extends Controller
             'dhahran' => null,
             'bashaer' => null,
             'jeddah' => null,
+            'alfursan' => null,
         ];
 
         // Initialize leads data containers
@@ -29,6 +31,7 @@ class LeadsReportController extends Controller
             'dhahran' => [],
             'bashaer' => [],
             'jeddah' => [],
+            'alfursan' => [],
         ];
 
         // Fetch leads data from Dhahran site
@@ -56,11 +59,20 @@ class LeadsReportController extends Controller
             $totals,
             $errors
         );
+        // Fetch leads data from Alfursan site
+        $this->fetchLeadsData(
+            'https://crm.azyanalfursan.com/api/leads',
+            'alfursan',
+            $leadsData,
+            $totals,
+            $errors
+        );
 
         // Separate variables for easy access in view
         $leadsAzyanDhahran = $leadsData['dhahran'];
         $leadsAzyanBashaer = $leadsData['bashaer'];
         $leadsAzyanJeddah = $leadsData['jeddah'];
+        $leadsAzyanAlfursan = $leadsData['alfursan'];
 
         // Return the view with all required data
         return view('reports.leads', compact(
@@ -68,6 +80,7 @@ class LeadsReportController extends Controller
             'leadsAzyanDhahran',
             'leadsAzyanBashaer',
             'leadsAzyanJeddah',
+            'leadsAzyanAlfursan',
             'totals',
             'errors'
         ));
@@ -114,44 +127,44 @@ class LeadsReportController extends Controller
         }
     }
 
-    public function export(Request $request)
-    {
-        $site = $request->get('site', 'dhahran');
-        $type = $request->get('type', 'pdf');
+    // public function export(Request $request)
+    // {
+    //     $site = $request->get('site', 'dhahran');
+    //     $type = $request->get('type', 'pdf');
 
-        // Determine the appropriate URL based on the site
-        $url = $site === 'bashaer'
-            ? 'https://crm.azyanalbashaer.com/api/leads'
-            : 'https://crm.azyanaldhahran.com/api/leads';
+    //     // Determine the appropriate URL based on the site
+    //     $url = $site === 'bashaer'
+    //         ? 'https://crm.azyanalbashaer.com/api/leads'
+    //         : 'https://crm.azyanaldhahran.com/api/leads';
 
-        $error = null;
-        $data = $this->fetchleads($url, $error);
+    //     $error = null;
+    //     $data = $this->fetchleads($url, $error);
 
-        if ($error) {
-            return back()->with('error', 'Failed to fetch data from the selected site');
-        }
+    //     if ($error) {
+    //         return back()->with('error', 'Failed to fetch data from the selected site');
+    //     }
 
-        $byCategory = $data['by_category'] ?? [];
-        $chartImage = null;
+    //     $byCategory = $data['by_category'] ?? [];
+    //     $chartImage = null;
 
-        switch ($type) {
-            case 'pdf':
-                $pdf = Pdf::loadView('exports.leads_pdf', [
-                    'site' => $site,
-                    'leads' => $data,
-                    'byCategory' => $byCategory,
-                    'maxCount' => max($byCategory ?: [0])
-                ]);
+    //     switch ($type) {
+    //         case 'pdf':
+    //             $pdf = Pdf::loadView('exports.leads_pdf', [
+    //                 'site' => $site,
+    //                 'leads' => $data,
+    //                 'byCategory' => $byCategory,
+    //                 'maxCount' => max($byCategory ?: [0])
+    //             ]);
 
-                return $pdf->download("leads_{$site}.pdf");
+    //             return $pdf->download("leads_{$site}.pdf");
 
-            case 'csv':
-                return $this->exportCsv($byCategory, $site);
+    //         case 'csv':
+    //             return $this->exportCsv($byCategory, $site);
 
-            default:
-                abort(400, 'Invalid export type');
-        }
-    }
+    //         default:
+    //             abort(400, 'Invalid export type');
+    //     }
+    // }
 
     protected function exportCsv($data, $site)
     {

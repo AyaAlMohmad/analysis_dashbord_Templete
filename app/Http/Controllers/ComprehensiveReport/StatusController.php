@@ -16,6 +16,7 @@ class StatusController extends ReportBaseController
         $dhahranStatusData = $this->getDhahranStatus();
         $bashaerStatusData = $this->getBashaerStatus();
         $jeddahStatusData = $this->getJeddahStatus();
+        $alfursanStatusData = $this->getAlfursanStatus();
 
         return view($this->reportView, [
             'from_date' => $request->input('from_date'),
@@ -23,6 +24,7 @@ class StatusController extends ReportBaseController
             'dhahranStatusData' => $dhahranStatusData,
             'bashaerStatusData' => $bashaerStatusData,
             'jeddahStatusData' => $jeddahStatusData,
+            'alfursanStatusData' => $alfursanStatusData,
         ]);
     }
 
@@ -95,6 +97,28 @@ class StatusController extends ReportBaseController
             }
         } catch (\Exception $e) {
             Log::error("Jeddah Status API Error: " . $e->getMessage());
+        }
+
+        return [
+            'groups' => [],
+            'statuses' => [],
+            'totals' => [],
+        ];
+    }
+     private function getAlfursanStatus()
+    {
+        try {
+            $response = Http::get('https://crm.azyanalfursan.com/api/Item_reports_api/api_status_item');
+
+            if ($response->successful()) {
+                $data = $response->json();
+
+                if ($data['status'] ?? false) {
+                    return $data['data'] ?? [];
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error("Alfursan Status API Error: " . $e->getMessage());
         }
 
         return [

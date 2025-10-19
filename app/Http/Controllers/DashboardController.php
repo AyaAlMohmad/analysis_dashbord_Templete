@@ -32,12 +32,13 @@ class DashboardController extends Controller
         $dhahran = ProjectProgress::where('site', 'dhahran')->latest()->value('progress_percentage') ?? 0;
         $bashaer = ProjectProgress::where('site', 'bashaer')->latest()->value('progress_percentage') ?? 0;
         $jaddah = ProjectProgress::where('site', 'jaddah')->latest()->value('progress_percentage') ?? 0;
-
+        $alfursan = ProjectProgress::where('site', 'alfursan')->latest()->value('progress_percentage') ?? 0;
         return [
             'dhahran' => $dhahran,
             'bashaer' => $bashaer,
             'jaddah' => $jaddah,
-            'all' => round(($dhahran + $bashaer + $jaddah) / 3, 2), // Fixed: use average instead of sum
+            'alfursan' => $alfursan,
+            'all' => round(($dhahran + $bashaer + $jaddah+$alfursan) / 4, 2), // Fixed: use average instead of sum
         ];
     }
 
@@ -147,11 +148,13 @@ class DashboardController extends Controller
             $dhahran = Http::get('https://crm.azyanaldhahran.com/api/appointments')->json();
             $bashaer = Http::get('https://crm.azyanalbashaer.com/api/appointments')->json();
             $jaddah = Http::get('https://crm.azyanjeddah.com/api/appointments')->json();
+            $alfursan = Http::get('https://crm.azyanalfursan.com/api/appointments')->json();
 
             $dates = array_unique(array_merge(
                 array_keys($dhahran['by_date'] ?? []),
                 array_keys($bashaer['by_date'] ?? []),
-                array_keys($jaddah['by_date'] ?? [])
+                array_keys($jaddah['by_date'] ?? []),
+                array_keys($alfursan['by_date'] ?? [])
             ));
             sort($dates);
 
@@ -162,6 +165,7 @@ class DashboardController extends Controller
                     'dhahran' => $dhahran['by_date'][$date] ?? 0,
                     'bashaer' => $bashaer['by_date'][$date] ?? 0,
                     'jaddah' => $jaddah['by_date'][$date] ?? 0,
+                    'alfursan' => $alfursan['by_date'][$date] ?? 0,
                 ];
             }
 
@@ -169,7 +173,9 @@ class DashboardController extends Controller
                 'total_dhahran' => $dhahran['total'] ?? 0,
                 'total_bashaer' => $bashaer['total'] ?? 0,
                 'total_jaddah' => $jaddah['total'] ?? 0,
+                'total_alfursan' => $alfursan['total'] ?? 0,
                 'timeline' => $timeline,
+
             ];
         } catch (\Exception $e) {
             return ['error' => 'Connection error in Appointments'];
@@ -182,12 +188,14 @@ class DashboardController extends Controller
             $dhahran = Http::get('https://crm.azyanaldhahran.com/api/items')->json();
             $bashaer = Http::get('https://crm.azyanalbashaer.com/api/items')->json();
             $jaddah = Http::get('https://crm.azyanjeddah.com/api/items')->json();
+            $alfursan = Http::get('https://crm.azyanalfursan.com/api/items')->json();
 
             return [
                 'available' => [
                     'dhahran' => $dhahran['available'] ?? 0,
                     'bashaer' => $bashaer['available'] ?? 0,
                     'jaddah' => $jaddah['available'] ?? 0,
+                    'alfursan' => $alfursan['available'] ?? 0,
                 ],
                 'blocked' => [
                     'dhahran' => $dhahran['blocked'] ?? 0,
@@ -198,11 +206,13 @@ class DashboardController extends Controller
                     'dhahran' => $dhahran['reserved']['total'] ?? 0,
                     'bashaer' => $bashaer['reserved']['total'] ?? 0,
                     'jaddah' => $jaddah['reserved']['total'] ?? 0,
+                    'alfursan' => $alfursan['reserved']['total'] ?? 0,
                 ],
                 'contracted' => [
                     'dhahran' => $dhahran['contracted']['total'] ?? 0,
                     'bashaer' => $bashaer['contracted']['total'] ?? 0,
                     'jaddah' => $jaddah['contracted']['total'] ?? 0,
+                    'alfursan' => $alfursan['contracted']['total'] ?? 0,
                 ]
             ];
         } catch (\Exception $e) {
@@ -215,13 +225,15 @@ class DashboardController extends Controller
             $dhahran = Http::get('https://crm.azyanaldhahran.com/api/leads')->json();
             $bashaer = Http::get('https://crm.azyanalbashaer.com/api/leads')->json();
             $jaddah = Http::get('https://crm.azyanjeddah.com/api/leads')->json();
+            $alfursan = Http::get('https://crm.azyanalfursan.com/api/leads')->json();
             $result = [];
 
             // Get all unique dates from both APIs
             $allDates = array_unique(array_merge(
                 array_keys($dhahran ?? []),
                 array_keys($bashaer ?? []),
-                array_keys($jaddah ?? [])
+                array_keys($jaddah ?? []),
+                array_keys($alfursan ?? [])
             ));
 
             sort($allDates);
@@ -234,6 +246,8 @@ class DashboardController extends Controller
                     'bashaer_edited' => $bashaer[$date]['edited'] ?? 0,
                     'jaddah_added' => $jaddah[$date]['added'] ?? 0,
                     'jaddah_edited' => $jaddah[$date]['edited'] ?? 0,
+                    'alfursan_added' => $alfursan[$date]['added'] ?? 0,
+                    'alfursan_edited' => $alfursan[$date]['edited'] ?? 0,
                 ];
             }
 
@@ -256,6 +270,7 @@ class DashboardController extends Controller
                     'dhahran_added' => $values['added'] ?? 0,
                     'bashaer_added' => $bashaer[$date]['added'] ?? 0,
                     'jaddah_added' => $jaddah[$date]['added'] ?? 0,
+                    'alfursan_added' => $alfursan[$date]['added'] ?? 0,
                 ];
             }
 
@@ -271,6 +286,7 @@ class DashboardController extends Controller
             $dhahran = Http::get('https://crm.azyanaldhahran.com/api/leads_status')->json();
             $bashaer = Http::get('https://crm.azyanalbashaer.com/api/leads_status')->json();
             $jaddah = Http::get('https://crm.azyanjeddah.com/api/leads_status')->json();
+            $alfursan = Http::get('https://crm.azyanalfursan.com/api/leads_status')->json();
             $result = [];
 
             foreach ($dhahran as $status => $count) {
@@ -279,7 +295,9 @@ class DashboardController extends Controller
                     'dhahran' => $count,
                     'bashaer' => $bashaer[$status] ?? 0,
                     'jaddah' => $jaddah[$status] ?? 0,
+                    'alfursan' => $alfursan[$status] ?? 0,
                 ];
+
             }
 
             return $result;
@@ -294,6 +312,7 @@ class DashboardController extends Controller
             $dhahran = Http::get('https://crm.azyanaldhahran.com/api/appointments')->json();
             $bashaer = Http::get('https://crm.azyanalbashaer.com/api/appointments')->json();
             $jaddah = Http::get('https://crm.azyanjeddah.com/api/appointments')->json();
+            $alfursan = Http::get('https://crm.azyanalfursan.com/api/appointments')->json();
 
             return [
                 'total_dhahran' => $dhahran['total'] ?? 0,
@@ -316,12 +335,14 @@ class DashboardController extends Controller
             $dhahran = Http::get('https://crm.azyanaldhahran.com/api/call_logs')->json();
             $bashaer = Http::get('https://crm.azyanalbashaer.com/api/call_logs')->json();
             $jaddah = Http::get('https://crm.azyanjeddah.com/api/call_logs')->json();
+            $alfursan = Http::get('https://crm.azyanalfursan.com/api/call_logs')->json();
 
             return [
                 'totals' => [
                     'dhahran' => $dhahran['totals'] ?? ['added' => 0, 'started' => 0, 'ended' => 0],
                     'bashaer' => $bashaer['totals'] ?? ['added' => 0, 'started' => 0, 'ended' => 0],
                     'jaddah' => $jaddah['totals'] ?? ['added' => 0, 'started' => 0, 'ended' => 0],
+                    'alfursan' => $alfursan['totals'] ?? ['added' => 0, 'started' => 0, 'ended' => 0],
                     ]
             ];
         } catch (\Exception $e) {
@@ -335,27 +356,32 @@ class DashboardController extends Controller
             $dhahran = Http::get('https://crm.azyanaldhahran.com/api/items')->json();
             $bashaer = Http::get('https://crm.azyanalbashaer.com/api/items')->json();
             $jaddah = Http::get('https://crm.azyanjeddah.com/api/items')->json();
+            $alfursan = Http::get('https://crm.azyanalfursan.com/api/items')->json();
 
             return [
                 'available' => [
                     'dhahran' => $dhahran['available'] ?? 0,
                     'bashaer' => $bashaer['available'] ?? 0,
                     'jaddah' => $jaddah['available'] ?? 0,
+                    'alfursan' => $alfursan['available'] ?? 0,
                 ],
                 'reserved' => [
                     'dhahran' => $dhahran['reserved'] ?? 0,
                     'bashaer' => $bashaer['reserved'] ?? 0,
                     'jaddah' => $jaddah['reserved'] ?? 0,
+                    'alfursan' => $alfursan['reserved'] ?? 0,
                 ],
                 'blocked' => [
                     'dhahran' => $dhahran['blocked'] ?? 0,
                     'bashaer' => $bashaer['blocked'] ?? 0,
                     'jaddah' => $jaddah['blocked'] ?? 0,
+                    'alfursan' => $alfursan['blocked'] ?? 0,
                 ],
                 'contacted' => [
                     'dhahran' => $dhahran['contacted'] ?? 0,
                     'bashaer' => $bashaer['contacted'] ?? 0,
                     'jaddah' => $jaddah['contacted'] ?? 0,
+                    'alfursan' => $alfursan['contacted'] ?? 0,
                 ]
             ];
         } catch (\Exception $e) {
@@ -369,11 +395,13 @@ class DashboardController extends Controller
             $dhahran = Http::get('https://crm.azyanaldhahran.com/api/leads_sources')->json();
             $bashaer = Http::get('https://crm.azyanalbashaer.com/api/leads_sources')->json();
             $jaddah = Http::get('https://crm.azyanjeddah.com/api/leads_sources')->json();
+            $alfursan = Http::get('https://crm.azyanalfursan.com/api/leads_sources')->json();
 
             return [
                 'dhahran' => $dhahran,
                 'bashaer' => $bashaer,
                 'jaddah' => $jaddah,
+                'alfursan' => $alfursan,
             ];
         } catch (\Exception $e) {
             return ['error' => 'Connection error in Leads Sources'];

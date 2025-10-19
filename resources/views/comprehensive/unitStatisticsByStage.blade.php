@@ -224,6 +224,11 @@
                 <img src="{{ asset('images/logo6.png') }}" alt="Azyan Logo Albashaer" style="height: 50px;">
             @elseif(isset($project_name) && $project_name == 'أزيان جدة')
                 <img src="{{ asset('images/jadah.png') }}" alt="Azyan Logo Jeddah" style="height: 50px;">
+            @elseif(isset($project_name) && $project_name == 'أزيان الفرسان')
+            <img src="{{ asset('images/alfursan.png') }}" alt="Azyan Logo Farsan" style="height: 50px;">
+
+            @elseif (!empty($logo) && file_exists(public_path('storage/' . $logo)))
+            <img src="{{ asset('storage/' . $logo) }}" alt="Site Logo" style="height: 50px;">
             @else
                 <span style="font-size: 14px; color: #8b5a3b; font-weight: bold;">{{ $project_name }}</span>
             @endif

@@ -17,14 +17,15 @@ class UnitStatisticsController extends ReportBaseController
         // $dhahranUnitStatistics = $this->getDhahranUnitStatisticsByStage();
         $albashaerUnitStatistics = $this->getAlbashaerSourceStats();
         $dhahranUnitStatistics = $this->getDhahranSourceStats();
-        $jeddahUnitStatistics = $this->getJeddahSourceStats(); // تمت الإضافة هنا
-
+        $jeddahUnitStatistics = $this->getJeddahSourceStats();
+        $alfursanUnitStatistics = $this->getAlfursanSourceStats();
         return view($this->reportView, [
             'from_date' => $request->input('from_date'),
             'to_date' => $request->input('to_date'),
             'albashaerUnitStatistics' => $albashaerUnitStatistics,
             'dhahranUnitStatistics' => $dhahranUnitStatistics,
-            'jeddahUnitStatistics' => $jeddahUnitStatistics, // تمت الإضافة هنا
+            'jeddahUnitStatistics' => $jeddahUnitStatistics,
+            'alfursanUnitStatistics' => $alfursanUnitStatistics,
         ]);
     }
 
@@ -99,6 +100,27 @@ class UnitStatisticsController extends ReportBaseController
             'sources' => [],
         ];
     }
+    private function getAlfursanSourceStats()
+    {
+        try {
+            $response = Http::get('https://crm.azyanalfursan.com/api/lead_reports/source_stats_api');
+
+            if ($response->successful()) {
+                $data = $response->json();
+
+                if ($data['status'] ?? false) {
+                    return $data['data'] ?? [];
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error("Alfursan Source Stats API Error: " . $e->getMessage());
+        }
+
+        return [
+            'sources' => [],
+        ];
+    }
+
 
     /**
      * Get Dhahran Unit Statistics by Stage
@@ -149,4 +171,28 @@ class UnitStatisticsController extends ReportBaseController
             'totals' => [],
         ];
     }
+
+    private function getAlfursanUnitStatisticsByStage()
+    {
+        try {
+            $response = Http::get('https://crm.azyanalfursan.com/api/Item_reports/unitStatisticsByStage');
+
+            if ($response->successful()) {
+                $data = $response->json();
+
+                if ($data['status'] ?? false) {
+                    return $data['data'] ?? [];
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error("Alfursan Unit Statistics by Stage API Error: " . $e->getMessage());
+        }
+
+        return [
+            'statistics' => [],
+            'totals' => [],
+        ];
+    }
+
+
 }

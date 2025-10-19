@@ -35,5 +35,8 @@ return [
     'hide_log' => 'إخفاء التفاصيل',
     'Appointment_Logs_Statistics'=>'إحصائيات سجلات المواعيد ',
     'Back_to_Logs'=>'العودة إلى السجلات',
+    'subtitle'=>'سجل تغييرات المواعيد',
+    'no_logs'=>'لا يوجد سجلات',
+    'no_logs_description'=>'لا يوجد سجلات لعرضها.',
 
 ];

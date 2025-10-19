@@ -28,6 +28,7 @@
                                     <option value="dhahran">{{ __('leads.dhahran') }}</option>
                                     <option value="bashaer">{{ __('leads.bashaer') }}</option>
                                     <option value="jeddah">{{ __('leads.jeddah') }}</option>
+                                    <option value="alfursan">{{ __('leads.alfursan') }}</option>
                                 </select>
                             </div>
                             <form id="exportForm" class="flex items-center gap-12 mt-12 justify-center">
@@ -184,6 +185,10 @@
                 jeddah: {
                     labels: @json(array_keys($dataJeddah)),
                     counts: @json(array_values($dataJeddah))
+                },
+                alfursan: {
+                    labels: @json(array_keys($dataAlfursan)),
+                    counts: @json(array_values($dataAlfursan))
                 }
             };
 

@@ -13,9 +13,11 @@ class SalesController extends Controller
     $apiUrls = [
         'dhahran' => 'https://crm.azyanaldhahran.com/api/custom-reports/sales',
         'bashaer' => 'https://crm.azyanalbashaer.com/api/custom-reports/sales',
+        'jeddah' => 'https://crm.azyanjeddah.com/api/custom-reports/sales',
+        'alfursan' => 'https://crm.azyanalfursan.com/api/custom-reports/sales',
     ];
 
-    if (!in_array($site, ['dhahran', 'bashaer'])) {
+    if (!in_array($site, ['dhahran', 'bashaer','jeddah','alfursan'])) {
         return view('sales.sale', [
             'site' => $site,
             'data' => [],
@@ -59,9 +61,12 @@ public function salesReportResult(Request $request)
     $apiUrls = [
         'dhahran' => 'https://crm.azyanaldhahran.com/api/custom-reports/sales-report',
         'bashaer' => 'https://crm.azyanalbashaer.com/api/custom-reports/sales-report',
+        'jeddah' => 'https://crm.azyanjeddah.com/api/custom-reports/sales-report',
+        'alfursan' => 'https://crm.azyanalfursan.com/api/custom-reports/sales-report',
+
     ];
 
-    if (!in_array($site, ['dhahran', 'bashaer'])) {
+    if (!in_array($site, ['dhahran', 'bashaer','jeddah','alfursan'])) {
         return response()->json(['error' => 'Invalid site selected.'], 400);
     }
 

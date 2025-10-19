@@ -54,7 +54,7 @@
         const dhahranTimelineData = leadsTimelineLabels.map(d => comparisonData.leads_timeline[d].dhahran_added);
         const bashaerTimelineData = leadsTimelineLabels.map(d => comparisonData.leads_timeline[d].bashaer_added);
         const jaddahTimelineData = leadsTimelineLabels.map(d => comparisonData.leads_timeline[d].jaddah_added);
-
+        const alfursanTimelineData = leadsTimelineLabels.map(d => comparisonData.leads_timeline[d].alfursan_added);
         new Chart(document.getElementById('leadsTimelineChart'), {
             type: 'line',
             data: {
@@ -76,6 +76,12 @@
                         data: jaddahTimelineData,
                         borderColor: '#1a472a',
                         fill: false
+                    },
+                    {
+                        label: "{{ __('comparison_report.alfursan') }}",
+                        data: alfursanTimelineData,
+                        borderColor: '#37160d;',
+                        fill: false
                     }
                 ]
             }
@@ -86,6 +92,7 @@
         const statusDhahran = comparisonData.leads_status.map(s => s.dhahran);
         const statusBashaer = comparisonData.leads_status.map(s => s.bashaer);
         const statusJaddah = comparisonData.leads_status.map(s => s.jaddah);
+        const statusAlfursan = comparisonData.leads_status.map(s => s.alfursan);
 
         new Chart(document.getElementById('leadsStatusChart'), {
             type: 'bar',
@@ -105,6 +112,11 @@
                         label: "{{ __('comparison_report.jaddah') }}",
                         data: statusJaddah,
                         backgroundColor: '#1a472a'
+                    },
+                    {
+                        label: "{{ __('comparison_report.alfursan') }}",
+                        data: statusAlfursan,
+                        backgroundColor: '#37160d'
                     }
                 ]
             }
@@ -114,14 +126,15 @@
         new Chart(document.getElementById('appointmentsChart'), {
             type: 'pie',
             data: {
-                labels: ["{{ __('comparison_report.dhahran') }}", "{{ __('comparison_report.bashaer') }}", "{{ __('comparison_report.jaddah') }}"],
+                labels: ["{{ __('comparison_report.dhahran') }}", "{{ __('comparison_report.bashaer') }}", "{{ __('comparison_report.jaddah') }}", "{{ __('comparison_report.alfursan') }}"],
                 datasets: [{
                     data: [
                         comparisonData.appointments.total_dhahran,
                         comparisonData.appointments.total_bashaer,
                         comparisonData.appointments.total_jaddah,
+                        comparisonData.appointments.total_alfursan,
                     ],
-                    backgroundColor: ['#00262f', '#543829', '#1a472a']
+                    backgroundColor: ['#00262f', '#543829', '#1a472a', '#37160d']
                 }]
             },
             options: {
@@ -156,6 +169,11 @@
                         label: "{{ __('comparison_report.jaddah') }}",
                         data: Object.values(comparisonData.call_logs.totals.jaddah),
                         backgroundColor: '#1a472a'
+                    },
+                    {
+                        label: "{{ __('comparison_report.alfursan') }}",
+                        data: Object.values(comparisonData.call_logs.totals.alfursan),
+                        backgroundColor: '#37160d'
                     }
                 ]
             }
@@ -201,6 +219,16 @@
                             comparisonData.items.contacted.jaddah,
                         ],
                         backgroundColor: '#1a472a'
+                    },
+                    {
+                        label: "{{ __('comparison_report.alfursan') }}",
+                        data: [
+                            comparisonData.items.available.alfursan,
+                            comparisonData.items.reserved.alfursan,
+                            comparisonData.items.blocked.alfursan,
+                            comparisonData.items.contacted.alfursan,
+                        ],
+                        backgroundColor: '#37160d'
                     }
                 ]
             }

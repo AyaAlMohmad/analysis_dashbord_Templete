@@ -26,6 +26,9 @@
                                                         Azyan Bashaer
                                                     @elseif($location == 'jaddah')
                                                         Azyan Jaddah
+                                                        @elseif($location == 'alfursan')
+                                                        Azyan Alfursan
+
                                                     @else
                                                         Azyan {{ ucfirst($location) }}
                                                     @endif
@@ -275,6 +278,7 @@
                     if (site === 'aldhahran') siteName = 'Dhahran';
                     else if (site === 'albashaer') siteName = 'Bashaer';
                     else if (site === 'jaddah') siteName = 'Jaddah';
+                    else if (site === 'alfursan') siteName = 'Alfursan';
                     else siteName = site.charAt(0).toUpperCase() + site.slice(1);
 
                     doc.text(`Leads Sources Report - Azyan ${siteName}`, 105, yPos, { align: 'center' });

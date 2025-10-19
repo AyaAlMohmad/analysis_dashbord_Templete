@@ -120,7 +120,7 @@
                         <img src="{{ asset('images/logo3.png') }}" alt="Azyan Al Bashaer">
                     </div>
                     <div class="project-logo">
-                        <img src="{{ asset('images/jadah.png') }}" alt="Azyan Al Bashaer">
+                        <img src="{{ asset('images/JeddahLogo.png') }}" alt="Azyan Al Bashaer">
                     </div>
                     @foreach ($localSites as $site)
                         @if ($site->logo_path_white)
@@ -171,13 +171,13 @@
             @if (in_array('dhahran', $requestSites) && in_array('reserved_report', $requestSections))
                 <div class="page-section">@include('comprehensive.reserved_report', [
                     'data' => $dhahranData,
-                    'project_name' => 'أزيان الظهران',
+                    'project_name' => 'أزيان ظهران',
                 ])</div>
             @endif
             @if (in_array('dhahran', $requestSites) && in_array('contracts_report', $requestSections))
                 <div class="page-section">@include('comprehensive.contracts_report', [
                     'data' => $dhahranDataContract,
-                    'project_name' => 'أزيان الظهران',
+                    'project_name' => 'أزيان ظهران',
                 ])</div>
             @endif
             @if (in_array('dhahran', $requestSites) && in_array('status_item', $requestSections))
@@ -222,8 +222,8 @@
                     'project_name' => 'أزيان الظهران',
                 ])</div>
             @endif
-            @if (in_array('dhahran', $requestSites) && in_array('unitStatisticsByStage', $requestSections))
-                <div class="page-section">@include('comprehensive.unitStatisticsByStage', [
+             @if (in_array('dhahran', $requestSites) && in_array('source_stats', $requestSections))
+                <div class="page-section">@include('comprehensive.source_stats', [
                     'data' => $dhahranUnitStatisticsByStage,
                     'project_name' => 'أزيان الظهران',
                 ])></div>
@@ -635,7 +635,7 @@
             <div class="page-section">
                 <div class="logo-section">
                     <div class="main-logo">
-                        <img src="{{ asset('build/logo5.png') }}" alt="Tatwir Logo">
+                        <img src="{{ asset('build/logo6.png') }}" alt="Tatwir Logo">
                     </div>
                     <div style="margin-top: 20px; font-size: 24px; color: #ccc;">
                         {{ __('components.thanks') }}
@@ -648,7 +648,7 @@
                             <img src="{{ asset('images/logo3.png') }}" alt="Azyan Al Bashaer">
                         </div>
                          <div class="project-logo">
-                            <img src="{{ asset('images/jadah.png') }}" alt="Azyan Al Bashaer">
+                            <img src="{{ asset('images/JeddahLogo.png') }}" alt="Azyan Al Bashaer">
                         </div>
                         @foreach ($localSites as $site)
                             @if ($site->logo_path_white)

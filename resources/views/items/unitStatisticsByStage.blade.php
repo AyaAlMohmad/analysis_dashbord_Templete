@@ -5,6 +5,7 @@
     $logoDhahran = asset('images/logo1.png');
     $logoBashaer = asset('images/logo2.png');
     $logoJeddah = asset('images/jadah.png'); // إضافة لوجو جدة
+    $logoAlfursan = asset('images/alfursan.png');
 @endphp
 
 <style>
@@ -40,6 +41,7 @@
             <option value="dhahran">{{ __('unit_stages_staticies.dhahran') }}</option>
             <option value="bashaer">{{ __('unit_stages_staticies.bashaer') }}</option>
             <option value="jeddah">{{ __('components.jeddah') }}</option> <!-- إضافة جدة -->
+            <option value="alfursan">{{ __('components.alfursan') }}</option>
         </select>
         <img id="logo" src="" style="max-height: 70px; display: none;" class="mt-2">
     </div>
@@ -111,6 +113,10 @@ document.getElementById('site').addEventListener('change', function () {
         case 'jeddah':
             logo = '{{ $logoJeddah }}';
             color = '#1a472a'; // لون مختلف لجدة
+            break;
+            case 'alfursan':
+            logo = '{{ $logoAlfursan }}';
+            color = '#37160d';
             break;
         default:
             logo = '';

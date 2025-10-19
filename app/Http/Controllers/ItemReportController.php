@@ -14,12 +14,16 @@ class ItemReportController extends Controller
     {
         $data = [
             'dhahran' => [],
-            'bashaer' => []
+            'bashaer' => [],
+            'jeddah' => [],
+            'alfursan' => [],
         ];
 
         $errors = [
             'dhahran' => null,
-            'bashaer' => null
+            'bashaer' => null,
+            'jeddah' => null,
+            'alfursan' => null,
         ];
 
         // Fetch data for Dhahran
@@ -43,11 +47,19 @@ class ItemReportController extends Controller
             $data,
             $errors
         );
+        $this->fetchItemData(
+            'https://crm.azyanalfursan.com/api/items',
+            'alfursan',
+            $data,
+            $errors
+        );
+
 
         $dataDhahran = $data['dhahran'];
         $dataBashaer = $data['bashaer'];
         $dataJeddah = $data['jeddah'];
-        return view('reports.items', compact('data', 'dataDhahran', 'dataBashaer','dataJeddah', 'errors'));
+        $dataAlfursan = $data['alfursan'];
+        return view('reports.items', compact('data', 'dataDhahran', 'dataBashaer','dataJeddah','dataAlfursan', 'errors'));
     }
 
 
@@ -88,7 +100,7 @@ class ItemReportController extends Controller
 
     public function map($site)
     {
-        $validSites = ['dhahran', 'bashaer'];
+        $validSites = ['dhahran', 'bashaer','jeddah','alfursan'];
 
        if (!in_array($site, $validSites)) {
             return redirect()->back()->with('error', 'Invalid site selected.');
@@ -96,7 +108,9 @@ class ItemReportController extends Controller
 
         $apiUrls = [
             'dhahran' => 'https://crm.azyanaldhahran.com/api/items/all',
-            'bashaer' => 'https://crm.azyanalbashaer.com/api/items/all'
+            'bashaer' => 'https://crm.azyanalbashaer.com/api/items/all',
+            'jeddah' => 'https://crm.azyanjeddah.com/api/items/all',
+            'alfursan' => 'https://crm.azyanalfursan.com/api/items/all',
         ];
 
         $response = Http::timeout(30)->get($apiUrls[$site]);
@@ -189,9 +203,10 @@ class ItemReportController extends Controller
         'dhahran' => 'https://crm.azyanaldhahran.com/api/custom-reports/api_item_report_data',
         'bashaer' => 'https://crm.azyanalbashaer.com/api/custom-reports/api_item_report_data',
         'jeddah' => 'https://crm.azyanjeddah.com/api/custom-reports/api_item_report_data',
+        'alfursan' => 'https://crm.azyanalfursan.com/api/custom-reports/api_item_report_data',
     ];
 
-    if (!in_array($site, ['dhahran', 'bashaer', 'jeddah'])) {
+    if (!in_array($site, ['dhahran', 'bashaer', 'jeddah', 'alfursan'])) {
         return response()->json(['error' => 'Invalid site selected.'], 400);
     }
 
@@ -246,6 +261,8 @@ class ItemReportController extends Controller
         $apiUrls = [
             'dhahran' => 'https://crm.azyanaldhahran.com/api/custom-reports/api_contracts_report',
             'bashaer' => 'https://crm.azyanalbashaer.com/api/custom-reports/api_contracts_report',
+            'jeddah' => 'https://crm.azyanjeddah.com/api/custom-reports/api_contracts_report',
+            'alfursan' => 'https://crm.azyanalfursan.com/api/custom-reports/api_contracts_report',
         ];
 
         try {
@@ -284,6 +301,7 @@ class ItemReportController extends Controller
         'dhahran' => 'https://crm.azyanaldhahran.com/api/custom-reports/api_item_report',
         'bashaer' => 'https://crm.azyanalbashaer.com/api/custom-reports/api_item_report',
         'jeddah' => 'https://crm.azyanjeddah.com/api/custom-reports/api_item_report',
+        'alfursan' => 'https://crm.azyanalfursan.com/api/custom-reports/api_item_report',
     ];
 
     try {
@@ -320,6 +338,7 @@ class ItemReportController extends Controller
             'dhahran' => 'https://crm.azyanaldhahran.com/api/Item_reports_api/api_status_item',
             'bashaer' => 'https://crm.azyanalbashaer.com/api/Item_reports_api/api_status_item',
             'jeddah' => 'https://crm.azyanjeddah.com/api/Item_reports_api/api_status_item',
+            'alfursan' => 'https://crm.azyanalfursan.com/api/Item_reports_api/api_status_item',
         ];
 
         if (!array_key_exists($site, $apiUrls)) {
@@ -359,6 +378,7 @@ public function unitStages(Request $request)
             'dhahran' => 'https://crm.azyanaldhahran.com/api/Item_reports/unitStages',
             'bashaer' => 'https://crm.azyanalbashaer.com/api/Item_reports/unitStages',
             'jeddah' => 'https://crm.azyanjeddah.com/api/Item_reports/unitStages',
+            'alfursan' => 'https://crm.azyanalfursan.com/api/Item_reports/unitStages',
         ];
 
         if (!array_key_exists($site, $apiUrls)) {
@@ -384,6 +404,7 @@ public function unitStages(Request $request)
             'dhahran' => 'https://crm.azyanaldhahran.com/api/Item_reports/unitStages',
             'bashaer' => 'https://crm.azyanalbashaer.com/api/Item_reports/unitStages',
             'jeddah' => 'https://crm.azyanjeddah.com/api/Item_reports/unitStages',
+            'alfursan' => 'https://crm.azyanalfursan.com/api/Item_reports/unitStages',
         ];
 
         if (array_key_exists($site, $apiUrls)) {
@@ -464,7 +485,8 @@ public function unitStages(Request $request)
         $apiUrls = [
             'dhahran' => 'https://crm.azyanaldhahran.com/api/Item_reports/unitStatisticsByStage',
             'bashaer' => 'https://crm.azyanalbashaer.com/api/Item_reports/unitStatisticsByStage',
-            'jeddah' => 'https://crm.azyanjeddah.com/api/Item_reports/unitStatisticsByStage', // إضافة جدة
+            'jeddah' => 'https://crm.azyanjeddah.com/api/Item_reports/unitStatisticsByStage',
+            'alfursan' => 'https://crm.azyanalfursan.com/api/Item_reports/unitStatisticsByStage',
         ];
 
         if (!array_key_exists($site, $apiUrls)) {
@@ -497,9 +519,12 @@ public function unitStages(Request $request)
         $apiUrls = [
             'dhahran' => 'https://crm.azyanaldhahran.com/api/Item_reports/itemGroupData',
             'bashaer' => 'https://crm.azyanalbashaer.com/api/Item_reports/itemGroupData',
+            'jeddah' => 'https://crm.azyanjeddah.com/api/Item_reports/itemGroupData',
+            'alfursan' => 'https://crm.azyanalfursan.com/api/Item_reports/itemGroupData',
+
         ];
 
-        if (!in_array($site, ['dhahran', 'bashaer'])) {
+        if (!in_array($site, ['dhahran', 'bashaer','jeddah','alfursan'])) {
             return response()->json(['error' => 'Invalid site selected.'], 400);
         }
 
@@ -551,6 +576,8 @@ public function unitStages(Request $request)
         $apiUrls = [
             'dhahran' => 'https://crm.azyanaldhahran.com/api/Item_reports/groupItemsStatusResult',
             'bashaer' => 'https://crm.azyanalbashaer.com/api/Item_reports/groupItemsStatusResult',
+            'jeddah' => 'https://crm.azyanjeddah.com/api/Item_reports/groupItemsStatusResult',
+            'alfursan' => 'https://crm.azyanalfursan.com/api/Item_reports/groupItemsStatusResult',
         ];
 
         try {

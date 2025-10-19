@@ -23,20 +23,27 @@
                                                 title="View Dhahran Log">
                                                 <i class="fas fa-clipboard-list"></i> {{ __('units_report.dhahran') }}
                                             </a>
-                                            </div>
-                                            <div class="flex items-center gap-4 mt-4">
+                                        </div>
+                                        <div class="flex items-center gap-4 mt-4">
                                             <!-- Bashaer Log -->
                                             <a href="{{ route('admin.items.log', 'bashaer') }}"
                                                 class="p-3 rounded-xl hover:bg-gray-100 transition text-gray-600 text-2xl"
                                                 title="View Bashaer Log">
                                                 <i class="fas fa-clipboard-list"></i> {{ __('units_report.bashaer') }}
                                             </a>
-                                            </div>
-                                            <div class="flex items-center gap-4 mt-4">
+                                        </div>
+                                        <div class="flex items-center gap-4 mt-4">
                                             <a href="{{ route('admin.items.log', 'jeddah') }}"
                                                 class="p-3 rounded-xl hover:bg-gray-100 transition text-gray-600 text-2xl"
                                                 title="View Jeddah Log">
                                                 <i class="fas fa-clipboard-list"></i> {{ __('leads.jeddah') }}
+                                            </a>
+                                        </div>
+                                        <div class="flex items-center gap-4 mt-4">
+                                            <a href="{{ route('admin.items.log', 'alfursan') }}"
+                                                class="p-3 rounded-xl hover:bg-gray-100 transition text-gray-600 text-2xl"
+                                                title="View Alfursan Log">
+                                                <i class="fas fa-clipboard-list"></i> {{ __('leads.alfursan') }}
                                             </a>
                                         </div>
                                     </div>
@@ -49,6 +56,7 @@
                                     <option value="dhahran">{{ __('units_report.dhahran') }} </option>
                                     <option value="bashaer">{{ __('units_report.bashaer') }} </option>
                                     <option value="jeddah">{{ __('leads.jeddah') }} </option>
+                                    <option value="alfursan">{{ __('leads.alfursan') }} </option>
                                 </select>
                             </div>
                             <form id="exportForm" class="flex items-center gap-12 mt-12 justify-center">
@@ -95,14 +103,17 @@
 
 
 
-        @foreach (['dhahran' => 'Azyan Dhahran', 'bashaer' => 'Azyan Bashaer','jeddah' => 'Azyan Jeddah'] as $key => $label)
+        @foreach (['dhahran' => 'Azyan Dhahran', 'bashaer' => 'Azyan Bashaer', 'jeddah' => 'Azyan Jeddah'] as $key => $label)
             <div id="site-{{ $key }}" class="site-section" style="display: none;">
                 @php
-                    $data = $key === 'dhahran'
-                        ? ($dataDhahran ?? [])
-                        : ($key === 'bashaer'
-                            ? ($dataBashaer ?? [])
-                            : ($dataJeddah ?? []));
+                    $data =
+                        $key === 'dhahran'
+                            ? $dataDhahran ?? []
+                            : ($key === 'bashaer'
+                                ? $dataBashaer ?? []
+                                : ($key === 'jeddah'
+                                    ? $dataJeddah ?? []
+                                    : $dataAlfursan ?? []));
                 @endphp
                 <div class="export-header hidden" id="export-header-{{ $key }}">
                     <h1 class="text-xl font-bold mb-1">{{ __('units_report.title') }}</h1>
@@ -250,6 +261,14 @@
                     {{ $dataJeddah['contracted']['total'] ?? 0 }}
                 ];
             }
+            else if (site === 'alfursan') {
+                data = [
+                    {{ $dataAlfursan['available'] ?? 0 }},
+                    {{ $dataAlfursan['reserved']['total'] ?? 0 }},
+                    {{ $dataAlfursan['blocked'] ?? 0 }},
+                    {{ $dataAlfursan['contracted']['total'] ?? 0 }}
+                ];
+            }
 
             window.currentChart = new Chart(ctx, {
                 type: 'doughnut',
@@ -332,19 +351,23 @@
                 const loadingOverlay = document.getElementById('pdf-loading-overlay');
                 if (loadingOverlay) loadingOverlay.style.display = 'flex';
 
-                const { jsPDF } = window.jspdf;
+                const {
+                    jsPDF
+                } = window.jspdf;
                 const exportedBy = "{{ Auth::user()->name }}";
                 const exportDate = new Date().toLocaleString('en-US');
 
                 const siteName = site === 'dhahran' ? 'Azyan Dhahran' :
-                               site === 'bashaer' ? 'Azyan Bashaer' : 'Azyan Jeddah';
+                    site === 'bashaer' ? 'Azyan Bashaer' : site === 'jeddah' ? 'Azyan Jeddah' : site === 'alfursan' ? 'Azyan Alfursan' : '';
 
                 const leftLogoUrl = "{{ asset('build/logo.png') }}";
-                const rightLogoUrl = site === 'dhahran'
-                    ? "{{ asset('images/logo5.png') }}"
-                    : site === 'bashaer'
-                    ? "{{ asset('images/logo6.png') }}"
-                    : "{{ asset('images/logo7.png') }}"; // Add Jeddah logo
+                const rightLogoUrl = site === 'dhahran' ?
+                    "{{ asset('images/logo5.png') }}" :
+                    site === 'bashaer' ?
+                    "{{ asset('images/logo6.png') }}" :
+                    site === 'jeddah' ?
+                    "{{ asset('images/jadah.png') }}"
+                    : site === 'alfursan' ? "{{ asset('images/logo8.png') }}" : '';
 
                 const chartCanvas = document.getElementById(`chart-${site}`);
                 const siteSection = document.getElementById(`site-${site}`);
@@ -357,7 +380,11 @@
                 }
 
                 if (type === 'pdf') {
-                    const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
+                    const doc = new jsPDF({
+                        orientation: 'p',
+                        unit: 'mm',
+                        format: 'a4'
+                    });
 
                     const loadImage = (url) => {
                         return new Promise((resolve, reject) => {
@@ -379,7 +406,9 @@
                         doc.addImage(rightLogoImg, 'PNG', 155, 10, 20, 20);
 
                         doc.setFontSize(16);
-                        doc.text(`Units Report - ${siteName}`, 105, 50, { align: 'center' });
+                        doc.text(`Units Report - ${siteName}`, 105, 50, {
+                            align: 'center'
+                        });
                         doc.line(10, 55, 200, 55);
 
                         let yPos = 60;
@@ -405,7 +434,8 @@
                         doc.setFontSize(12);
                         statsCards.forEach(card => {
                             const title = card.querySelector('h3')?.textContent.trim() ?? '';
-                            const value = card.querySelector('div[style*="font-size: 32px"]')?.textContent.trim() ?? '';
+                            const value = card.querySelector('div[style*="font-size: 32px"]')?.textContent
+                            .trim() ?? '';
                             doc.text(`${title}: ${value}`, 14, yPos);
                             yPos += 8;
 
@@ -422,7 +452,9 @@
                             doc.setFontSize(10);
                             doc.text(`Exported by: ${exportedBy}`, 10, pageHeight - 20);
                             doc.text(`Export date: ${exportDate}`, 10, pageHeight - 15);
-                            doc.text(`Page ${i} of ${totalPages}`, 200 - 10, pageHeight - 15, { align: 'right' });
+                            doc.text(`Page ${i} of ${totalPages}`, 200 - 10, pageHeight - 15, {
+                                align: 'right'
+                            });
                         }
 
                         doc.save(`${siteName}_Units_Report.pdf`);
@@ -438,7 +470,8 @@
 
                         statsCards.forEach(card => {
                             const title = card.querySelector('h3')?.textContent.trim() ?? '';
-                            const value = card.querySelector('div[style*="font-size: 32px"]')?.textContent.trim() ?? '';
+                            const value = card.querySelector('div[style*="font-size: 32px"]')?.textContent
+                            .trim() ?? '';
                             csvContent += `"${title.replace(/"/g, '""')}",${value}\n`;
                         });
 
@@ -454,12 +487,16 @@
                             chartImg.toBlob(resolve, 'image/png', 1.0)
                         );
 
-                        const csvBlob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                        const csvBlob = new Blob([csvContent], {
+                            type: 'text/csv;charset=utf-8;'
+                        });
 
                         zip.file(`${siteName}_Units_Data.csv`, csvBlob);
                         zip.file(`${siteName}_Units_Chart.png`, blob);
 
-                        const content = await zip.generateAsync({ type: "blob" });
+                        const content = await zip.generateAsync({
+                            type: "blob"
+                        });
                         const url = URL.createObjectURL(content);
                         const a = document.createElement('a');
                         a.href = url;
