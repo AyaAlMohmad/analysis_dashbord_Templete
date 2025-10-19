@@ -19,6 +19,7 @@ class CrmAdvertisingCampaignController extends Controller
         $apiUrls = [
             'aldhahran' => 'https://crm.azyanaldhahran.com/api/Advertising_campaign/get_source',
             'albashaer' => 'https://crm.azyanalbashaer.com/api/Advertising_campaign/get_source',
+            'jeddah' => 'https://crm.azyanjeddah.com/api/advertising_campaign_api/get_source',
         ];
 
         if (!isset($apiUrls[$site])) {
@@ -53,6 +54,7 @@ $campaigns=CrmAdvertisingCampaign::all();
             'from_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:from_date',
             'source' => 'required|numeric',
+            'tag' => 'nullable|string',
             'total_amount' => 'required|numeric',
             'source_name' => 'required|string',
             'impression' => 'nullable|integer',
@@ -62,6 +64,7 @@ $campaigns=CrmAdvertisingCampaign::all();
         $siteMap = [
             'aldhahran' => 'https://crm.azyanaldhahran.com',
             'albashaer' => 'https://crm.azyanalbashaer.com',
+            
         ];
 
         $site = $request->site;
@@ -100,6 +103,7 @@ $campaigns=CrmAdvertisingCampaign::all();
                     'site' => $site,
                     'end_date' => $campaignData['end_date'] ?? $request->end_date,
                     'source' => $request->input('source_name'),
+                    'tag' => $request->tag,
                     'leads_count' => $leadsCount,
                     'leads_reserved' => $campaignData['leads_reserved'] ?? 0,
                     'leads_contacted' => $campaignData['leads_contacted'] ?? 0,
@@ -121,6 +125,7 @@ $campaigns=CrmAdvertisingCampaign::all();
                     'from_date' => $campaignData['from_date'] ?? $request->from_date,
                     'end_date' => $campaignData['end_date'] ?? $request->end_date,
                     'source' => $request->input('source_name'),
+                    'tag' => $request->tag,
                     'leads_count' => $leadsCount,
                     'leads_reserved' => $campaignData['leads_reserved'] ?? 0,
                     'leads_contracted' => $campaignData['leads_contracted'] ?? 0,

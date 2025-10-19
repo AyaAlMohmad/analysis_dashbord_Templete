@@ -15,6 +15,7 @@ class CrmAdvertisingCampaign extends Model
         'from_date',
         'end_date',
         'source',
+        'tag',
         'leads_count',
         'leads_reserved',
         'leads_contracted',
