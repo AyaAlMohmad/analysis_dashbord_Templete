@@ -35,6 +35,7 @@ use App\Http\Controllers\ProjectProgressController;
 use App\Http\Controllers\SalesController;
 use App\Http\Controllers\TeamController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProjectPlanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -214,3 +215,4 @@ Route::delete('/project-progress/{id}', [ProjectProgressController::class, 'dest
 });
 Route::get('/api/sites/filter', [SiteController::class, 'filterByDate'])->name('api.sites.filter');
 require __DIR__ . '/auth.php';
+Route::get('/project_plan', [ProjectPlanController::class, 'index']);
