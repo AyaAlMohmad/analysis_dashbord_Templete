@@ -153,6 +153,7 @@ Route::delete('/project-progress/{id}', [ProjectProgressController::class, 'dest
     Route::get('/campaign/result', [CrmAdvertisingCampaignController::class, 'show'])->name('campaign.show');
 
     Route::get('/admin/campaign/sources', [CrmAdvertisingCampaignController::class, 'getSources'])->name('campaign.sources');
+ Route::get('/admin/campaign/tags', [CrmAdvertisingCampaignController::class, 'getTags'])->name('campaign.tags');
     Route::get('/comprehensive/form', [ComprehensiveReportController::class, 'form'])->name('comprehensive.form');
     // Route::post('/comprehensive', [ComprehensiveReportController::class, 'index'])->name('comprehensive.index');
     Route::post('/comprehensive', [ComprehensiveReportController::class, 'store'])->name('comprehensive.store');
