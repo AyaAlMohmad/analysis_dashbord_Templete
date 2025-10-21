@@ -39,6 +39,8 @@
             <option value="">{{ __('campaigns.select_site') }}</option>
             <option value="aldhahran">{{ __('campaigns.aldhahran') }}</option>
             <option value="albashaer">{{ __('campaigns.albashaer') }}</option>
+            <option value="jeddah">{{ __('components.jeddah') }}</option>
+            <option value="alfursan">{{ __('components.alfursan') }}</option>
         </select>
 
         <div id="overlay" class="overlay d-none">
@@ -85,8 +87,8 @@
 
 
                     <div class="tab-pane fade" id="newCampaign" role="tabpanel">
-                        <form method="POST" action="{{ route('admin.campaign.result') }}">
-                            @csrf
+                       <form method="POST" action="{{ route('admin.campaign.result') }}">
+    @csrf
                             <input type="hidden" name="site" id="siteInput">
                             <div class="form-group">
                                 <label>{{ __('campaigns.campaign_name') }}</label>
@@ -166,9 +168,7 @@
                         alert('البيانات غير صحيحة من السيرفر.');
                         return;
                     }
-
-                    // تهيئة الفورم
-                    sourceSelect.empty().append(
+    sourceSelect.empty().append(
                         '<option value="">{{ __('campaigns.select_source') }}</option>'
                     );
                     data.sources.forEach(source => {
@@ -176,17 +176,14 @@
                             `<option value="${source.id}">${source.name}</option>`);
                     });
 
-                    // حقل الاسم عند تغيير المصدر
-                    sourceSelect.on('change', function() {
+                   sourceSelect.on('change', function() {
                         const selectedOption = $(this).find('option:selected');
                         $('#sourceNameInput').val(selectedOption.text());
                     });
 
-                    // عيّن قيمة الموقع في كلا النموذجين
                     siteInput.val(site);
                     $('#existingSiteInput').val(site);
 
-                    // أظهر المودال
                     overlay.removeClass('d-none');
                     setTimeout(() => {
                         overlay.addClass('show');

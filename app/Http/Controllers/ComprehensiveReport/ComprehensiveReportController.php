@@ -215,7 +215,7 @@ class ComprehensiveReportController extends Controller
 
         // dd($bashaerStatusData);
         // dd($albashaerUnitSales );
-        // dd($albashaerUnitStatisticsByStage );
+        dd($dhahranUnitStatisticsByStage );
         // dd($localSectionResults[2]['sections']['reserved_report']);
         // dd($unitDetailsByStageResultDhahran,$unitDetailsByStageResultJeddah,$unitDetailsByStageResultAlbashaer);
         return view('comprehensive.index', [

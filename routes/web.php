@@ -154,6 +154,7 @@ Route::delete('/project-progress/{id}', [ProjectProgressController::class, 'dest
     Route::get('/campaign/result', [CrmAdvertisingCampaignController::class, 'show'])->name('campaign.show');
 
     Route::get('/admin/campaign/sources', [CrmAdvertisingCampaignController::class, 'getSources'])->name('campaign.sources');
+ Route::get('/admin/campaign/tags', [CrmAdvertisingCampaignController::class, 'getTags'])->name('campaign.tags');
     Route::get('/comprehensive/form', [ComprehensiveReportController::class, 'form'])->name('comprehensive.form');
     // Route::post('/comprehensive', [ComprehensiveReportController::class, 'index'])->name('comprehensive.index');
     Route::post('/comprehensive', [ComprehensiveReportController::class, 'store'])->name('comprehensive.store');
@@ -211,8 +212,8 @@ Route::delete('/project-progress/{id}', [ProjectProgressController::class, 'dest
     Route::post('/comprehensive/site/store-or-update', [SiteController::class, 'storeOrUpdate'])->name('comprehensive.site.storeOrUpdate');
 
     Route::delete('/comprehensive/site/{site}', [SiteController::class, 'destroy'])->name('comprehensive.site.destroy');
+Route::get('/project_plan', [ProjectPlanController::class, 'index'])->name('project_plan');
 
 });
 Route::get('/api/sites/filter', [SiteController::class, 'filterByDate'])->name('api.sites.filter');
 require __DIR__ . '/auth.php';
-Route::get('/project_plan', [ProjectPlanController::class, 'index']);

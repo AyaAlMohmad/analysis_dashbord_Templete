@@ -80,8 +80,14 @@
         </li>
     @endif
 
-
-
+{{-- @if (auth()->user()->is_admin) --}}
+    <li class="nav-item {{ Route::is('admin.project_plan') ? 'active' : '' }}">
+        <a href="{{ route('admin.project_plan') }}">
+            <i class="ft-target"></i>
+            <span>{{ __('sidebar.project_plan') }}</span>
+        </a>
+    </li>
+{{-- @endif --}}
         <li class="nav-item has-sub {{ Route::is('admin.reports.*') ? 'open' : '' }}">
             <a href="#">
                 <i class="ft-pie-chart"></i>

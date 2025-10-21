@@ -966,4 +966,3 @@ document.addEventListener('click', function (e) {
         document.getElementById('totalPercentage').textContent = '100%';
     }
 </script>
-
