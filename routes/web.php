@@ -35,6 +35,7 @@ use App\Http\Controllers\ProjectProgressController;
 use App\Http\Controllers\SalesController;
 use App\Http\Controllers\TeamController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProjectPlanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -211,6 +212,7 @@ Route::delete('/project-progress/{id}', [ProjectProgressController::class, 'dest
     Route::post('/comprehensive/site/store-or-update', [SiteController::class, 'storeOrUpdate'])->name('comprehensive.site.storeOrUpdate');
 
     Route::delete('/comprehensive/site/{site}', [SiteController::class, 'destroy'])->name('comprehensive.site.destroy');
+Route::get('/project_plan', [ProjectPlanController::class, 'index'])->name('project_plan');
 
 });
 Route::get('/api/sites/filter', [SiteController::class, 'filterByDate'])->name('api.sites.filter');

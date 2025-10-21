@@ -152,6 +152,7 @@ public function submitCampaign(Request $request)
                     'end_date' => $campaignData['end_date'] ?? $request->end_date,
                     'source' => $request->input('source_name'),
                     'tag' => $request->tag,
+                    'tag' => $request->tag,
                     'leads_count' => $leadsCount,
                     'leads_reserved' => $campaignData['leads_reserved'] ?? 0,
                     'leads_contacted' => $campaignData['leads_contacted'] ?? 0,

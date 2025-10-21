@@ -41,5 +41,6 @@ return [
     'unit_statistics_report' => 'إحصائيات الوحدات',
     'targeted_report' => 'تقرير المستهدفين',
     'unit_sales_report' => 'تقرير مبيعات الوحدات',
+    'project_plan' => 'خطة متابعة المشروع',
 ];
 
