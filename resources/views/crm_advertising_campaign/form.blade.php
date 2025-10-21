@@ -39,6 +39,8 @@
             <option value="">{{ __('campaigns.select_site') }}</option>
             <option value="aldhahran">{{ __('campaigns.aldhahran') }}</option>
             <option value="albashaer">{{ __('campaigns.albashaer') }}</option>
+            <option value="jeddah">{{ __('campaigns.jeddah') }}</option>
+            <option value="alfursan">{{ __('campaigns.alfursan') }}</option>
         </select>
 
         <div id="overlay" class="overlay d-none">
@@ -50,8 +52,7 @@
 
                 <ul class="nav nav-tabs mb-3" id="campaignTabs" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link active" id="existing-tab" data-toggle="tab" href="#existingCampaign"
-                            role="tab">
+                        <a class="nav-link active" id="existing-tab" data-toggle="tab" href="#existingCampaign" role="tab">
                             {{ __('campaigns.existing_campaign') }}
                         </a>
                     </li>
@@ -134,25 +135,25 @@
         const sourceSelect = $('#sourceSelect');
         const siteInput = $('#siteInput');
 
-        $(function() {
-            $('#campaignTabs a').on('click', function(e) {
+        $(function () {
+            $('#campaignTabs a').on('click', function (e) {
                 e.preventDefault();
                 $(this).tab('show');
             });
         });
 
-        siteSelect.on('change', function() {
+        siteSelect.on('change', function () {
             const site = $(this).val();
             if (!site) return;
             $('#campaignSelect option').each(function () {
-    const optionSite = $(this).data('site');
+                const optionSite = $(this).data('site');
 
-    if (!optionSite || optionSite === site) {
-        $(this).show();
-    } else {
-        $(this).hide();
-    }
-});
+                if (!optionSite || optionSite === site) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
 
 
             $.ajax({
@@ -161,7 +162,7 @@
                 data: {
                     site
                 },
-                success: function(data) {
+                success: function (data) {
                     if (data.status !== 'success' || !Array.isArray(data.sources)) {
                         alert('البيانات غير صحيحة من السيرفر.');
                         return;
@@ -177,7 +178,7 @@
                     });
 
                     // حقل الاسم عند تغيير المصدر
-                    sourceSelect.on('change', function() {
+                    sourceSelect.on('change', function () {
                         const selectedOption = $(this).find('option:selected');
                         $('#sourceNameInput').val(selectedOption.text());
                     });
@@ -195,7 +196,7 @@
                         }, 'slow');
                     }, 10);
                 },
-                error: function(xhr) {
+                error: function (xhr) {
                     alert('فشل في تحميل المصادر من السيرفر.');
                     console.error(xhr.responseText);
                 }
@@ -203,7 +204,7 @@
         });
 
 
-        $('#changeSiteBtn').on('click', function() {
+        $('#changeSiteBtn').on('click', function () {
             overlay.removeClass('show');
             setTimeout(() => {
                 overlay.addClass('d-none');

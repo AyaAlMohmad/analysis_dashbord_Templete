@@ -36,4 +36,6 @@ return [
     'cpc' => 'CPC',
     'ctr' => 'CTR',
     'cpm' => 'CPM',
+    'jeddah' => 'jeddah',
+    'alfursan' => 'alfursan',
 ];
