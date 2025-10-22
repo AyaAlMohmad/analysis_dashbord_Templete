@@ -79,7 +79,7 @@
         <hr>
         <div class="d-flex">
             <div class="card text-center">
-                <div class="card-header">{{ __('campaigns.campaign_name') }}</div>
+                <div class="card-header">{{ __('campaigns.Tag Name') }}</div>
                 <div class="card-footer">{{ $result->name }}</div>
             </div>
             <div class="card text-center">
@@ -211,3 +211,5 @@
         }
     </script>
 @endsection
+
+

@@ -39,4 +39,12 @@ return [
     'cpm' => 'تكلفة الألف ظهور (CPM)',
     'jeddah' => 'جدة',
     'alfursan' => 'الفرسان',
+    // في resources/lang/ar/campaigns.php
+'new_tag' => 'تاج جديد',
+'tag_name' => 'اسم التاج',
+'description' => 'الوصف',
+'status' => 'الحالة',
+'active' => 'نشط',
+'inactive' => 'غير نشط',
+'create_tag' => 'إنشاء التاج',
 ];

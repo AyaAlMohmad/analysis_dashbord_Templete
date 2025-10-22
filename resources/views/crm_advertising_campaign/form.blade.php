@@ -24,9 +24,7 @@
             border-radius: 10px;
             width: 500px;
             max-height: 80vh;
-            /* ✅ هذا يحدد أقصى ارتفاع للمودال */
             overflow-y: auto;
-            /* ✅ وهذا يتيح التمرير داخله */
         }
     </style>
 
@@ -59,6 +57,11 @@
                     <li class="nav-item">
                         <a class="nav-link" id="new-tab" data-toggle="tab" href="#newCampaign" role="tab">
                             {{ __('campaigns.new_campaign') }}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="tag-tab" data-toggle="tab" href="#newTag" role="tab">
+                            {{ __('campaigns.new_tag') }}
                         </a>
                     </li>
                 </ul>
@@ -122,6 +125,63 @@
                             <button type="submit" class="btn btn-primary mt-3">{{ __('campaigns.submit') }}</button>
                         </form>
                     </div>
+
+                    <!-- New Tab للـ New Tag -->
+                    <div class="tab-pane fade" id="newTag" role="tabpanel">
+                        <form method="POST" action="{{ route('admin.campaign.result') }}">
+                            @csrf
+                            <input type="hidden" name="site" id="tagSiteInput">
+                            
+                            @if(session('success'))
+                                <div class="alert alert-success">
+                                    {{ session('success') }}
+                                </div>
+                            @endif
+
+                            @if($errors->any())
+                                <div class="alert alert-danger">
+                                    <ul class="mb-0">
+                                        @foreach($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
+                            
+                            <!-- <div class="form-group">
+                                <label>{{ __('campaigns.tag_name') }}</label>
+                                <input type="text" name="tag_name" class="form-control" required>
+                            </div> -->
+                            <div class="form-group">
+                                <label>{{ __('campaigns.from_date') }}</label>
+                                <input type="date" name="from_date" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label>{{ __('campaigns.end_date') }}</label>
+                                <input type="date" name="end_date" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label>{{ __('campaigns.select_source') }}</label>
+                                <!-- استخدم id مختلف للـ tag -->
+                                <select name="source" id="tagSourceSelect" class="form-control" required></select>
+                            </div>
+                            <input type="hidden" name="source_name" id="tagSourceNameInput">
+                            <div class="form-group">
+                                <label>{{ __('campaigns.total_amount') }}</label>
+                                <input type="number" name="total_amount" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label>{{ __('campaigns.impression') }}</label>
+                                <input type="number" name="impression" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>{{ __('campaigns.clicks') }}</label>
+                                <input type="number" name="clicks" class="form-control">
+                            </div>
+
+                            <button type="submit" class="btn btn-success mt-3">{{ __('campaign.tags') }}</button>
+                        </form>
+                    </div>
                 </div>
 
             </div>
@@ -133,7 +193,9 @@
         const siteSelect = $('#site');
         const overlay = $('#overlay');
         const sourceSelect = $('#sourceSelect');
+        const tagSourceSelect = $('#tagSourceSelect'); // الـ select الجديد للـ tag
         const siteInput = $('#siteInput');
+        const tagSiteInput = $('#tagSiteInput');
 
         $(function () {
             $('#campaignTabs a').on('click', function (e) {
@@ -145,6 +207,7 @@
         siteSelect.on('change', function () {
             const site = $(this).val();
             if (!site) return;
+            
             $('#campaignSelect option').each(function () {
                 const optionSite = $(this).data('site');
 
@@ -168,23 +231,38 @@
                         return;
                     }
 
-                    // تهيئة الفورم
+                    // تهيئة الفورم للـ campaign
                     sourceSelect.empty().append(
                         '<option value="">{{ __('campaigns.select_source') }}</option>'
                     );
+                    
+                    // تهيئة الفورم للـ tag
+                    tagSourceSelect.empty().append(
+                        '<option value="">{{ __('campaigns.select_source') }}</option>'
+                    );
+                    
                     data.sources.forEach(source => {
                         sourceSelect.append(
                             `<option value="${source.id}">${source.name}</option>`);
+                        tagSourceSelect.append(
+                            `<option value="${source.id}">${source.name}</option>`);
                     });
 
-                    // حقل الاسم عند تغيير المصدر
+                    // حقل الاسم عند تغيير المصدر في الـ campaign
                     sourceSelect.on('change', function () {
                         const selectedOption = $(this).find('option:selected');
                         $('#sourceNameInput').val(selectedOption.text());
                     });
 
-                    // عيّن قيمة الموقع في كلا النموذجين
+                    // حقل الاسم عند تغيير المصدر في الـ tag
+                    tagSourceSelect.on('change', function () {
+                        const selectedOption = $(this).find('option:selected');
+                        $('#tagSourceNameInput').val(selectedOption.text());
+                    });
+
+                    // عيّن قيمة الموقع في جميع النماذج
                     siteInput.val(site);
+                    tagSiteInput.val(site);
                     $('#existingSiteInput').val(site);
 
                     // أظهر المودال

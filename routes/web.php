@@ -210,6 +210,8 @@ Route::delete('/project-progress/{id}', [ProjectProgressController::class, 'dest
     Route::get('/comprehensive/site/{id}', [SiteController::class, 'show'])->name('comprehensive.site.show');
     Route::post('/comprehensive/site/store-or-update', [SiteController::class, 'storeOrUpdate'])->name('comprehensive.site.storeOrUpdate');
 
+Route::get('/campaign/tags', [CrmAdvertisingCampaignController::class, 'getTags'])->name('campaign.tags');
+    
     Route::delete('/comprehensive/site/{site}', [SiteController::class, 'destroy'])->name('comprehensive.site.destroy');
 
 });

@@ -38,4 +38,12 @@ return [
     'cpm' => 'CPM',
     'jeddah' => 'jeddah',
     'alfursan' => 'alfursan',
+    // في resources/lang/ar/campaigns.php
+'new_tag' => ' New Tag',
+'tag_name' => 'Tag Name',
+'description' => 'Description',
+'status' => 'Status',
+'active' =>'Active',
+'inactive' => 'Inactive',
+'create_tag' => 'Create Tag',
 ];
