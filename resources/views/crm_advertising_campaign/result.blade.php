@@ -2,8 +2,8 @@
 
 @section('content')
     @php
-        $logo = $site === 'aldhahran' ? asset('images/logo1.png') : asset('images/logo2.png');
-        $darkColor = $site === 'aldhahran' ? '#00262f' : '#543829';
+        $logo = $site === 'aldhahran' ? asset('images/logo1.png') : ($site === 'albashaer' ? asset('images/logo2.png') :  ($site === 'jeddah' ? asset('images/jadah.png') : asset('images/alfursan.png')));
+        $darkColor = $site === 'aldhahran' ? '#00262f' :( $site === 'albashaer' ? '#543829' :($site === 'jeddah' ? '#1a472a': '#37160d'));
     @endphp
 
 
@@ -66,7 +66,7 @@
 
     <div class="container">
         <div class="text-center">
-            <img src="{{ $logo }}" class="logo" alt="Logo">
+            <img src="{{ $logo }}" class="logo" alt="Logo" style="width: 300px; height: 200px;">
         </div>
         <div class="title">
             <h2>{{ __('campaigns.campaign_details') }}</h2>

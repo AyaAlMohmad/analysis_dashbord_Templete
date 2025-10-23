@@ -110,5 +110,7 @@ return [
 'alfursan_total'=>'Alfursan - Total',
 'ended_calls_alfursan'=>'Alfursan - Ended',
 'added_calls_alfursan'=>'Alfursan - Added',
+'beneficiary' => 'Beneficiary',
+'non_beneficiary' => 'Non Beneficiary',
 
 ];

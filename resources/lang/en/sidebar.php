@@ -40,7 +40,7 @@ return [
     'unit_statistics_report' => 'Unit Statistics',
     'targeted_report' => 'Targeted Report',
     'unit_sales_report' => 'Unit Sales Report',
-
+    'project_plan' => 'Project Plan',
 
 ];
 
