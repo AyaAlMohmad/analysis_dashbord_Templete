@@ -41,6 +41,15 @@ return [
     'targeted_report' => 'Targeted Report',
     'unit_sales_report' => 'Unit Sales Report',
     'project_plan' => 'Project Plan',
+    'project_plan_jaddah' => 'Jadah',
+    'project_plan_dhahran' => 'Dhahran',
+    'project_plan_bashaer' => 'Bashaer',
+    'project_plan_alfursan' => 'Alfursan',
+    'system_management'=>'System Management',
+    'system_management_users'=>'Users',
+    'roles_permissions'=>'Roles',
+    'system_management_permissions'=>'Permissions',
+
 
 ];
 

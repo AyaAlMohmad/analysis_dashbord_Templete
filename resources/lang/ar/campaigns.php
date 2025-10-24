@@ -37,5 +37,18 @@ return [
 'cpc' => 'تكلفة الإعجاب (CPC)',
 'ctr' => 'نسبة الإعجابات إلى الظهور (CTR)',
 'cpm' => 'تكلفة الألف ظهور (CPM)',
+'cost'=>'التكلفة',
+'alfursan'=>'الفرسان',
+'jeddah'=>'الجدة',
+'dhahran'=>'الظهران',
+'bashaer'=>'البشائر',
+'new_tag'=>'تاغ جديد',
+'existing_tag'=>'تاغ موجود',
+'select_tag'=>'اختر التاغ',
+'existing_campaign'=>'حملة موجودة',
+'new_campaign'=>'حملة جديدة',
+'select_campaign'=>'اختر الحملة',
+'search_campaign'=>'بحث عن الحملة',
+'campaign_report'=>'تقرير الحملة',
 
 ];
