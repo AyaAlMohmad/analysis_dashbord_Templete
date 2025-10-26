@@ -182,43 +182,103 @@ class DashboardController extends Controller
         }
     }
 
-    private function compareItems1()
-    {
-        try {
-            $dhahran = Http::get('https://crm.azyanaldhahran.com/api/items')->json();
-            $bashaer = Http::get('https://crm.azyanalbashaer.com/api/items')->json();
-            $jaddah = Http::get('https://crm.azyanjeddah.com/api/items')->json();
-            $alfursan = Http::get('https://crm.azyanalfursan.com/api/items')->json();
+    // private function compareItems1()
+    // {
+    //     try {
+    //         $dhahran = Http::get('https://crm.azyanaldhahran.com/api/items')->json();
+    //         $bashaer = Http::get('https://crm.azyanalbashaer.com/api/items')->json();
+    //         $jaddah = Http::get('https://crm.azyanjeddah.com/api/items')->json();
+    //         $alfursan = Http::get('https://crm.azyanalfursan.com/api/items')->json();
 
-            return [
-                'available' => [
-                    'dhahran' => $dhahran['available'] ?? 0,
-                    'bashaer' => $bashaer['available'] ?? 0,
-                    'jaddah' => $jaddah['available'] ?? 0,
-                    'alfursan' => $alfursan['available'] ?? 0,
+    //         return [
+    //             'available' => [
+    //                 'dhahran' => $dhahran['available'] ?? 0,
+    //                 'bashaer' => $bashaer['available'] ?? 0,
+    //                 'jaddah' => $jaddah['available'] ?? 0,
+    //                 'alfursan' => $alfursan['available'] ?? 0,
+    //             ],
+    //             'blocked' => [
+    //                 'dhahran' => $dhahran['blocked'] ?? 0,
+    //                 'bashaer' => $bashaer['blocked'] ?? 0,
+    //                 'jaddah' => $jaddah['blocked'] ?? 0,
+    //             ],
+    //             'reserved' => [
+    //                 'dhahran' => $dhahran['reserved']['total'] ?? 0,
+    //                 'bashaer' => $bashaer['reserved']['total'] ?? 0,
+    //                 'jaddah' => $jaddah['reserved']['total'] ?? 0,
+    //                 'alfursan' => $alfursan['reserved']['total'] ?? 0,
+    //             ],
+    //             'contracted' => [
+    //                 'dhahran' => $dhahran['contracted']['total'] ?? 0,
+    //                 'bashaer' => $bashaer['contracted']['total'] ?? 0,
+    //                 'jaddah' => $jaddah['contracted']['total'] ?? 0,
+    //                 'alfursan' => $alfursan['contracted']['total'] ?? 0,
+    //             ]
+    //         ];
+    //     } catch (\Exception $e) {
+    //         return ['error' => 'Connection error in Items'];
+    //     }
+    // }
+    private function compareItems1()
+{
+    try {
+        $dhahran = Http::get('https://crm.azyanaldhahran.com/api/items')->json();
+        $bashaer = Http::get('https://crm.azyanalbashaer.com/api/items')->json();
+        $jaddah = Http::get('https://crm.azyanjeddah.com/api/items')->json();
+        $alfursan = Http::get('https://crm.azyanalfursan.com/api/items')->json();
+
+        return [
+            'available' => [
+                'dhahran' => $dhahran['available'] ?? 0,
+                'bashaer' => $bashaer['available'] ?? 0,
+                'jaddah' => $jaddah['available'] ?? 0,
+                'alfursan' => $alfursan['available'] ?? 0,
+            ],
+            'blocked' => [
+                'dhahran' => $dhahran['blocked'] ?? 0,
+                'bashaer' => $bashaer['blocked'] ?? 0,
+                'jaddah' => $jaddah['blocked'] ?? 0,
+                'alfursan' => $alfursan['blocked'] ?? 0,
+            ],
+            'reserved' => [
+                'dhahran' => $dhahran['reserved']['total'] ?? 0,
+                'bashaer' => $bashaer['reserved']['total'] ?? 0,
+                'jaddah' => $jaddah['reserved']['total'] ?? 0,
+                'alfursan' => $alfursan['reserved']['total'] ?? 0,
+            ],
+            'contracted' => [
+                'dhahran' => $dhahran['contracted']['total'] ?? 0,
+                'bashaer' => $bashaer['contracted']['total'] ?? 0,
+                'jaddah' => $jaddah['contracted']['total'] ?? 0,
+                'alfursan' => $alfursan['contracted']['total'] ?? 0,
+            ],
+            'beneficiaries' => [
+                'dhahran' => [
+                    'beneficiary' => $dhahran['beneficiary_data']['beneficiary'] ?? 0,
+                    'nonbeneficiary' => $dhahran['beneficiary_data']['nonbeneficiary'] ?? 0,
+                    'unknown' => $dhahran['beneficiary_data']['unknown'] ?? 0,
                 ],
-                'blocked' => [
-                    'dhahran' => $dhahran['blocked'] ?? 0,
-                    'bashaer' => $bashaer['blocked'] ?? 0,
-                    'jaddah' => $jaddah['blocked'] ?? 0,
+                'bashaer' => [
+                    'beneficiary' => $bashaer['beneficiary_data']['beneficiary'] ?? 0,
+                    'nonbeneficiary' => $bashaer['beneficiary_data']['nonbeneficiary'] ?? 0,
+                    'unknown' => $bashaer['beneficiary_data']['unknown'] ?? 0,
                 ],
-                'reserved' => [
-                    'dhahran' => $dhahran['reserved']['total'] ?? 0,
-                    'bashaer' => $bashaer['reserved']['total'] ?? 0,
-                    'jaddah' => $jaddah['reserved']['total'] ?? 0,
-                    'alfursan' => $alfursan['reserved']['total'] ?? 0,
+                'jaddah' => [
+                    'beneficiary' => $jaddah['beneficiary_data']['beneficiary'] ?? 0,
+                    'nonbeneficiary' => $jaddah['beneficiary_data']['nonbeneficiary'] ?? 0,
+                    'unknown' => $jaddah['beneficiary_data']['unknown'] ?? 0,
                 ],
-                'contracted' => [
-                    'dhahran' => $dhahran['contracted']['total'] ?? 0,
-                    'bashaer' => $bashaer['contracted']['total'] ?? 0,
-                    'jaddah' => $jaddah['contracted']['total'] ?? 0,
-                    'alfursan' => $alfursan['contracted']['total'] ?? 0,
+                'alfursan' => [
+                    'beneficiary' => $alfursan['beneficiary_data']['beneficiary'] ?? 0,
+                    'nonbeneficiary' => $alfursan['beneficiary_data']['nonbeneficiary'] ?? 0,
+                    'unknown' => $alfursan['beneficiary_data']['unknown'] ?? 0,
                 ]
-            ];
-        } catch (\Exception $e) {
-            return ['error' => 'Connection error in Items'];
-        }
+            ]
+        ];
+    } catch (\Exception $e) {
+        return ['error' => 'Connection error in Items'];
     }
+}
     private function compareLeadsActivity()
     {
         try {
