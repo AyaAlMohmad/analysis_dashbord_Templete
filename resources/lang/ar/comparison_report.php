@@ -107,5 +107,8 @@ return [
 'alfursan_total'=>'الفرسان - إجمالي',
 'ended_calls_alfursan'=>'الفرسان - المنتهية',
 'added_calls_alfursan'=>'الفرسان - المضافة',
+'percentage_label'=>'النسبة المئوية',
+'non_beneficiary'=>'غير مستفيد',
+'beneficiary'=>'مستفيد',
 
 ];
