@@ -14,7 +14,7 @@
         @if (session('success'))
           <div style="background-color: #d1fae5; color: #065f46; padding: 1rem 1.25rem; border-radius: 0.375rem; margin-bottom: 1.5rem;">
             <i class="fas fa-check-circle" style="margin-right: 0.5rem;"></i>
-            {{ __('users.success') }}
+            {{ session('success') }}
           </div>
         @endif
 
@@ -31,9 +31,8 @@
               <tr>
                 <th style="padding: 0.75rem; text-align: center; font-weight: 600; color: #374151;">{{ __('users.name') }}</th>
                 <th style="padding: 0.75rem; text-align: center; font-weight: 600; color: #374151;">{{ __('users.email') }}</th>
-                <th style="padding: 0.75rem; text-align: center; font-weight: 600; color: #374151;">{{ __('users.role') }}</th>
-                <th style="padding: 0.75rem; text-align: center; font-weight: 600; color: #374151;">{{ __('users.can_manage_progress') }}</th>
-                <th style="padding: 0.75rem; text-align: center; font-weight: 600; color: #374151;">{{ __('users.can_manage_manger') }}</th>
+                <th style="padding: 0.75rem; text-align: center; font-weight: 600; color: #374151;">{{ __('users.roles') }}</th>
+                <th style="padding: 0.75rem; text-align: center; font-weight: 600; color: #374151;">{{ __('users.direct_permissions') }}</th>
                 <th style="padding: 0.75rem; text-align: center; font-weight: 600; color: #374151;">{{ __('users.actions') }}</th>
               </tr>
             </thead>
@@ -43,29 +42,36 @@
                 <td style="padding: 1rem; text-align: center; color: #1f2937;">{{ $user->name }}</td>
                 <td style="padding: 1rem; text-align: center; color: #4b5563;">{{ $user->email }}</td>
                 <td style="padding: 1rem; text-align: center;">
-                  @if($user->is_admin)
-                    <span style="display: inline-block; padding: 0.25rem 0.5rem; background: #dcfce7; color: #166534; border-radius: 9999px; font-size: 0.875rem;">{{ __('users.admin') }}</span>
-                  @else
-                    <span style="display: inline-block; padding: 0.25rem 0.5rem; background: #f3f4f6; color: #374151; border-radius: 9999px; font-size: 0.875rem;">{{ __('users.user') }}</span>
+                  @foreach($user->roles as $role)
+                    <span style="display: inline-block; padding: 0.25rem 0.5rem; background: #dcfce7; color: #166534; border-radius: 9999px; font-size: 0.75rem; margin: 0.1rem;">
+                      {{ $role->name }}
+                    </span>
+                  @endforeach
+                  @if($user->roles->count() == 0)
+                    <span style="display: inline-block; padding: 0.25rem 0.5rem; background: #f3f4f6; color: #374151; border-radius: 9999px; font-size: 0.75rem;">
+                      {{ __('users.no_roles') }}
+                    </span>
                   @endif
                 </td>
-                <td style="text-align: center;">
-                    @if($user->is_progresses)
-                        <span style="display: inline-block; padding: 0.25rem 0.5rem; background: #dcfce7; color: #166534; border-radius: 9999px; font-size: 0.875rem;">{{ __('users.can_manage_progress') }}</span>
-                        @else
-                        <span style="display: inline-block; padding: 0.25rem 0.5rem; background: #f3f4f6; color: #374151; border-radius: 9999px; font-size: 0.875rem;">{{ __('users.can_not_manage_progress') }}</span>
-                    @endif
-                </td>
-                <td style="text-align: center;">
-                    @if($user->is_manger)
-                        <span style="display: inline-block; padding: 0.25rem 0.5rem; background: #dcfce7; color: #166534; border-radius: 9999px; font-size: 0.875rem;">{{ __('users.can_manage_manger') }}</span>
-                        @else
-                        <span style="display: inline-block; padding: 0.25rem 0.5rem; background: #f3f4f6; color: #374151; border-radius: 9999px; font-size: 0.875rem;">{{ __('users.can_not_manage_manger') }}</span>
-                    @endif
+                <td style="padding: 1rem; text-align: center;">
+                  @foreach($user->permissions as $permission)
+                    <span style="display: inline-block; padding: 0.25rem 0.5rem; background: #dbeafe; color: #1e40af; border-radius: 9999px; font-size: 0.7rem; margin: 0.1rem;">
+                      {{ $permission->name }}
+                    </span>
+                  @endforeach
+                  @if($user->permissions->count() == 0)
+                    <span style="display: inline-block; padding: 0.25rem 0.5rem; background: #f3f4f6; color: #374151; border-radius: 9999px; font-size: 0.75rem;">
+                      {{ __('users.no_permissions') }}
+                    </span>
+                  @endif
                 </td>
                 <td style="padding: 1rem; text-align: center;">
                   <a href="{{ route('admin.users.edit', $user) }}" style="color: #3b82f6; text-decoration: none; margin: 0 0.5rem;">
                     <i class="fas fa-edit"></i>
+                  </a>
+
+                  <a href="{{ route('admin.users.manage-permissions', $user) }}" style="color: #8b5cf6; text-decoration: none; margin: 0 0.5rem;">
+                    <i class="fas fa-key"></i>
                   </a>
 
                   <form action="{{ route('admin.users.destroy', $user) }}" method="POST" style="display: inline-block;" onsubmit="return confirm('{{ __('users.are_you_sure') }}');">

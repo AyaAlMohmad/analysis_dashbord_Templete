@@ -65,7 +65,7 @@
 <div class="container" id="fullReport">
 
     <div class="container">
-            <div class="text-center">
+        <div class="text-center">
             <img src="{{ $logo }}" class="logo" alt="Logo" style="width: 300px; height: 200px;">
         </div>
         <div class="title">
@@ -79,7 +79,7 @@
         <hr>
         <div class="d-flex">
             <div class="card text-center">
-                <div class="card-header">{{ __('campaigns.Tag Name') }}</div>
+                <div class="card-header">{{ __('campaigns.campaign_name') }}</div>
                 <div class="card-footer">{{ $result->name }}</div>
             </div>
             <div class="card text-center">
@@ -211,5 +211,3 @@
         }
     </script>
 @endsection
-
-

@@ -36,6 +36,7 @@ use App\Http\Controllers\SalesController;
 use App\Http\Controllers\TeamController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProjectPlanController;
+use App\Http\Controllers\RoleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -71,7 +72,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->as('admin.')->group(funct
     Route::get('/', [DashboardController::class, 'index'])->name('index');
     Route::get('/Analysis', [DashboardController::class, 'Analysis'])->name('Analysis');
     Route::put('/project-progress/update', [DashboardController::class, 'updateProjectProgress'])
-    ->name('project-progress.update');
+        ->name('project-progress.update');
     Route::get('/appointment', [AppointmentReportController::class, 'index'])->name(('appointment'));
     Route::post('/appointment/export', [AppointmentReportController::class, 'export'])->name('appointments.export');
     Route::get('/appointment-log/{site}', [AppointmentLogController::class, 'log'])->name('appointments.log');
@@ -121,13 +122,21 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->as('admin.')->group(funct
     Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
     Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+    Route::resource('roles', RoleController::class);
+
+    // Routes إضافية
+    Route::get('/users/{user}/manage-permissions', [UserController::class, 'managePermissions'])
+        ->name('users.manage-permissions');
+
+    Route::put('/users/{user}/update-permissions', [UserController::class, 'updatePermissions'])
+        ->name('users.update-permissions');
 
     Route::get('/project-progress', [ProjectProgressController::class, 'index'])->name('project-progress.index');
     Route::get('/project-progress/create', [ProjectProgressController::class, 'create'])->name('project-progress.create');
     Route::post('/project-progress', [ProjectProgressController::class, 'store'])->name('project-progress.store');
     Route::get('/project-progress/{id}/edit', [ProjectProgressController::class, 'edit'])->name('project-progress.edit');
     Route::put('/project-progress/{id}', [ProjectProgressController::class, 'update'])->name('project-progress.update');
-Route::delete('/project-progress/{id}', [ProjectProgressController::class, 'destroy'])->name('project-progress.destroy');
+    Route::delete('/project-progress/{id}', [ProjectProgressController::class, 'destroy'])->name('project-progress.destroy');
     Route::get('/reports/itemReport', [ItemReportController::class, 'itemReport'])->name('reports.item');
     Route::post('/reports/itemReport/result', [ItemReportController::class, 'itemReportResult'])->name('reports.itemReport.result');
 
@@ -154,7 +163,7 @@ Route::delete('/project-progress/{id}', [ProjectProgressController::class, 'dest
     Route::get('/campaign/result', [CrmAdvertisingCampaignController::class, 'show'])->name('campaign.show');
 
     Route::get('/admin/campaign/sources', [CrmAdvertisingCampaignController::class, 'getSources'])->name('campaign.sources');
- Route::get('/admin/campaign/tags', [CrmAdvertisingCampaignController::class, 'getTags'])->name('campaign.tags');
+    Route::get('/admin/campaign/tags', [CrmAdvertisingCampaignController::class, 'getTags'])->name('campaign.tags');
     Route::get('/comprehensive/form', [ComprehensiveReportController::class, 'form'])->name('comprehensive.form');
     // Route::post('/comprehensive', [ComprehensiveReportController::class, 'index'])->name('comprehensive.index');
     Route::post('/comprehensive', [ComprehensiveReportController::class, 'store'])->name('comprehensive.store');
@@ -211,10 +220,21 @@ Route::delete('/project-progress/{id}', [ProjectProgressController::class, 'dest
     Route::get('/comprehensive/site/{id}', [SiteController::class, 'show'])->name('comprehensive.site.show');
     Route::post('/comprehensive/site/store-or-update', [SiteController::class, 'storeOrUpdate'])->name('comprehensive.site.storeOrUpdate');
 
-Route::get('/campaign/tags', [CrmAdvertisingCampaignController::class, 'getTags'])->name('campaign.tags');
-    
+    Route::get('/campaign/tags', [CrmAdvertisingCampaignController::class, 'getTags'])->name('campaign.tags');
+
     Route::delete('/comprehensive/site/{site}', [SiteController::class, 'destroy'])->name('comprehensive.site.destroy');
-Route::get('/project_plan', [ProjectPlanController::class, 'index'])->name('project_plan');
+
+    // جميع الرواتب تأخذ site كمعامل
+    Route::get('/project-plans/{site}', [ProjectPlanController::class, 'index'])->name('project_plan.index');
+    Route::get('/project-plans/{site}/create', [ProjectPlanController::class, 'create'])->name('project-plans.create');
+    Route::post('/project-plans/{site}/store', [ProjectPlanController::class, 'store'])->name('project-plans.store');
+    Route::get('/project-plans/{site}/edit/{id}', [ProjectPlanController::class, 'edit'])->name('project-plans.edit');
+    Route::put('/project-plans/{site}/update/{id}', [ProjectPlanController::class, 'update'])->name('project-plans.update');
+    Route::delete('/project-plans/{site}/destroy/{id}', [ProjectPlanController::class, 'destroy'])->name('project-plans.destroy');
+    Route::post('/project-plans/{site}/update-status/{id}', [ProjectPlanController::class, 'updateStatus'])->name('project-plans.update-status');
+    Route::get('/cost-project', [CostLegislatorController::class, 'index'])->name('cost.project.form');
+    Route::post('/cost-project/calculate', [CostLegislatorController::class, 'calculate'])->name('cost.project.calculate');
+    Route::post('/cost-project/export', [CostLegislatorController::class, 'export'])->name('cost.project.export');
 
 });
 Route::get('/api/sites/filter', [SiteController::class, 'filterByDate'])->name('api.sites.filter');

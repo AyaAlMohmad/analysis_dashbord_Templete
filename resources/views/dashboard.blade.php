@@ -689,13 +689,13 @@
             </div>
             <div class="card-body">
                 <p class="card-title">{{ __('comparison_report.non_beneficiary') }}</p>
-                
+
                 <p class="card-value">${summary.non_beneficiary?.percentage?.toFixed(2) || 0}% من إجمالي الوحدات</p>
                 <div class="progress-bar" style="--width: ${summary.non_beneficiary?.percentage || 0}%; --color: var(--secondary)"></div>
             </div>
         </div>
     </div>
-    
+
 
     <!-- تقدم المشروع -->
     <div class="col-xl-4 col-md-6 col-12 mb-4 mx-auto">
@@ -903,8 +903,8 @@
         `;
         }
     }
-    
-            
+
+
 
         function createCallCard(color, count, title, icon) {
             return `
@@ -1196,7 +1196,7 @@
                 });
             }
         }
-        // 
+        //
         function updateAppointments(site) {
     const timeline = appointments.timeline || [];
 
@@ -1205,11 +1205,11 @@
     // تجميع البيانات حسب الشهر باللغة الإنجليزية
     timeline.forEach(item => {
         const date = new Date(item.date);
-        const monthYear = date.toLocaleDateString('en-US', { 
-            year: 'numeric', 
-            month: 'long' 
+        const monthYear = date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long'
         });
-        
+
         if (!monthlyData[monthYear]) {
             monthlyData[monthYear] = {
                 dhahran: 0,
