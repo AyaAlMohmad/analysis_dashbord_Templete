@@ -5,645 +5,604 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>نموذج تكلفة مشروع للنظام</title>
     <style>
-        :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #3498db;
-            --accent-color: #e74c3c;
-            --light-color: #ecf0f1;
-            --dark-color: #34495e;
-            --success-color: #27ae60;
-            --warning-color: #f39c12;
-        }
-        
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: Arial, sans-serif;
         }
         
         body {
-            background-color: #f5f7fa;
-            color: #333;
-            line-height: 1.6;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        header {
-            background: linear-gradient(135deg, var(--primary-color), var(--dark-color));
-            color: white;
-            padding: 20px 0;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 20px;
-        }
-        
-        h1 {
-            font-size: 28px;
-            margin-bottom: 10px;
-        }
-        
-        .project-info {
             background-color: white;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            color: black;
+            line-height: 1.2;
+            padding: 10px;
+            font-size: 12px;
         }
         
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
+        .excel-container {
+            width: 100%;
+            overflow-x: auto;
         }
         
-        .info-item {
-            background-color: var(--light-color);
-            padding: 15px;
-            border-radius: 6px;
-            border-right: 4px solid var(--secondary-color);
-        }
-        
-        .info-label {
-            font-weight: bold;
-            color: var(--dark-color);
-            margin-bottom: 5px;
-        }
-        
-        .info-value {
-            font-size: 18px;
-            color: var(--primary-color);
-        }
-        
-        .section {
-            background-color: white;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-        }
-        
-        .section-title {
-            color: var(--primary-color);
-            border-bottom: 2px solid var(--light-color);
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-            font-size: 22px;
-        }
-        
-        table {
+        .excel-table {
             width: 100%;
             border-collapse: collapse;
-            margin: 15px 0;
+            min-width: 1300px;
         }
         
-        th, td {
-            padding: 12px 15px;
+        .excel-table th, 
+        .excel-table td {
+            border: 1px solid #a0a0a0;
+            padding: 3px 5px;
             text-align: right;
-            border-bottom: 1px solid #ddd;
+            vertical-align: middle;
+            font-weight: normal;
+            height: 25px;
         }
         
-        th {
-            background-color: var(--light-color);
-            color: var(--dark-color);
+        .excel-table th {
+            background-color: #d9e1f2;
             font-weight: bold;
+            text-align: center;
         }
         
-        tr:hover {
-            background-color: #f9f9f9;
-        }
-        
-        .summary-table {
-            background-color: var(--light-color);
-            border-radius: 6px;
-            overflow: hidden;
-        }
-        
-        .summary-table th {
-            background-color: var(--secondary-color);
+        .section-header {
+            background-color: #4472c4;
             color: white;
-        }
-        
-        .cost-breakdown {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-        
-        .cost-card {
-            background-color: white;
-            border-radius: 8px;
-            padding: 15px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-            border-top: 4px solid var(--secondary-color);
-        }
-        
-        .cost-title {
             font-weight: bold;
-            color: var(--dark-color);
-            margin-bottom: 10px;
-            font-size: 18px;
+            text-align: center;
         }
         
-        .cost-value {
-            font-size: 24px;
-            color: var(--primary-color);
-            margin: 10px 0;
+        .sub-header {
+            background-color: #8faadc;
+            color: white;
+            font-weight: bold;
         }
         
-        .cost-percentage {
-            color: var(--accent-color);
+        .calculation {
+            background-color: #f2f2f2;
+        }
+        
+        .total-row {
+            background-color: #718096;
             font-weight: bold;
         }
         
         .notes {
             font-style: italic;
-            color: #7f8c8d;
-            font-size: 14px;
-            margin-top: 5px;
+            color: #7f7f7f;
+            font-size: 11px;
         }
         
-        footer {
+        .project-title {
             text-align: center;
-            margin-top: 30px;
-            padding: 20px;
-            color: #7f8c8d;
-            font-size: 14px;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            background-color: #4472c4;
+            color: white;
+            padding: 8px;
+            border: 1px solid #a0a0a0;
         }
         
-        @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .info-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .cost-breakdown {
-                grid-template-columns: 1fr;
-            }
-            
-            table {
-                font-size: 14px;
-            }
-            
-            th, td {
-                padding: 8px 10px;
-            }
+        .number {
+            text-align: left;
+            direction: ltr;
+        }
+        
+        .currency-note {
+            text-align: left;
+            direction: ltr;
+            font-size: 11px;
+            color: #666;
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div class="header-content">
-                <div>
-                    <h1>نموذج تكلفة مشروع للنظام</h1>
-                    <p>موازنة مشروع الفرسان بالرياض</p>
-                </div>
-                <div>
-                    <p>جميع المبالغ (ر.س)</p>
-                </div>
-            </div>
-        </header>
+    <div class="currency-note">جميع المبالغ (ر.س)</div>
+    
+    <div class="excel-container">
+        <div class="project-title">موازنة مشروع الفرسان بالرياض</div>
         
-        <section class="project-info">
-            <h2 class="section-title">معلومات المشروع</h2>
-            <div class="info-grid">
-                <div class="info-item">
-                    <div class="info-label">نوع الوحدات</div>
-                    <div class="info-value">فيلا / تاون هاوس / شقة</div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">إجمالي عدد الوحدات</div>
-                    <div class="info-value">1,766 وحدة</div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">إجمالي قيمة المشروع</div>
-                    <div class="info-value">1,743,000,000 ر.س</div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">أشهر البيع</div>
-                    <div class="info-value">40 شهر</div>
-                </div>
-            </div>
-        </section>
-        
-        <section class="section">
-            <h2 class="section-title">تكلفة تسويق ومبيعات المشروع - ملخص</h2>
+        <table class="excel-table">
+            <!-- معلومات المشروع -->
+            <tr>
+                <td style="border: none;"></td>
+                <td style="border: none;"></td>
+                <td colspan="3" style="text-align: center; border: none;">( بعد التدرج )</td>
+                <td colspan="4" style="border: none;"></td>
+            </tr>
+            <tr>
+                <td>معلومات المشروع</td>
+                <td>النوع</td>
+                <td>فيلا</td>
+                <td>تاون هاوس</td>
+                <td>شقة</td>
+                <td>اجمالي عدد الوحدات</td>
+                <td>اجمالي قيمة المشروع</td>
+                <td>اجمالي اشهر البيع</td>
+                <td>نسبة التكاليف المخطط لها</td>
+            </tr>
+            <tr>
+                <td style="border: none;"></td>
+                <td>العدد</td>
+                <td class="number">1,243</td>
+                <td class="number">148</td>
+                <td class="number">375</td>
+                <td class="number">1,766</td>
+                <td class="number">1,578,500,000.00</td>
+                <td class="number">40</td>
+                <td class="number">2%</td>
+            </tr>
+            <tr>
+                <td style="border: none;"></td>
+                <td>متوسط السعر</td>
+                <td class="number">1,000,000</td>
+                <td class="number">1,000,000</td>
+                <td class="number">500,000</td>
+                <td style="border: none;"></td>
+                <td style="border: none;"></td>
+                <td style="border: none;"></td>
+                <td style="border: none;"></td>
+            </tr>
+            <tr>
+                <td style="border: none;"></td>
+                <td>الإجمالي</td>
+                <td class="number">1,243,000,000</td>
+                <td class="number">148,000,000</td>
+                <td class="number">187,500,000</td>
+                <td style="border: none;"></td>
+                <td style="border: none;"></td>
+                <td style="border: none;"></td>
+                <td style="border: none;"></td>
+            </tr>
             
-            <table class="summary-table">
-                <thead>
-                    <tr>
-                        <th>البند</th>
-                        <th>التكلفة (ر.س)</th>
-                        <th>نسبة إجمالي المبيعات</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>المواد والتجهيزات التسويقية الثابتة</td>
-                        <td>45,000 ر.س</td>
-                        <td>0.0026%</td>
-                    </tr>
-                    <tr>
-                        <td>تكلفة تسويق المشروع الدورية</td>
-                        <td>756,000 ر.س</td>
-                        <td>0.0434%</td>
-                    </tr>
-                    <tr>
-                        <td>تكلفة موظفي المبيعات والاستشارات</td>
-                        <td>1,680,000 ر.س</td>
-                        <td>0.0964%</td>
-                    </tr>
-                    <tr>
-                        <td>المصاريف العمومية الدورية</td>
-                        <td>40,000 ر.س</td>
-                        <td>0.0023%</td>
-                    </tr>
-                    <tr>
-                        <td><strong>إجمالي التكلفة قبل عمولات البيع</strong></td>
-                        <td><strong>2,521,000 ر.س</strong></td>
-                        <td><strong>0.1447%</strong></td>
-                    </tr>
-                    <tr>
-                        <td>عمولات البيع</td>
-                        <td>10,596,000 ر.س</td>
-                        <td>0.608%</td>
-                    </tr>
-                    <tr>
-                        <td><strong>إجمالي التكلفة</strong></td>
-                        <td><strong>13,117,000 ر.س</strong></td>
-                        <td><strong>0.7527%</strong></td>
-                    </tr>
-                </tbody>
-            </table>
+            <!-- مسافات -->
+            <tr><td colspan="9" style="border: none; height: 15px;"></td></tr>
             
-            <div class="cost-breakdown">
-                <div class="cost-card">
-                    <div class="cost-title">متوسط التكلفة الشهرية للتسويق</div>
-                    <div class="cost-value">18,900 ر.س</div>
-                </div>
-                <div class="cost-card">
-                    <div class="cost-title">متوسط التكلفة الشهرية للمبيعات</div>
-                    <div class="cost-value">42,000 ر.س</div>
-                </div>
-                <div class="cost-card">
-                    <div class="cost-title">متوسط التكلفة الشهرية للمصاريف</div>
-                    <div class="cost-value">1,000 ر.س</div>
-                </div>
-            </div>
-        </section>
-        
-        <section class="section">
-            <h2 class="section-title">تفاصيل التكاليف</h2>
+            <!-- تكلفة تسويق ومبيعات المشروع - ملخص -->
+            <tr class="section-header">
+                <td colspan="2">تكلفة تسويق ومبيعات المشروع - ملخص</td>
+                <td colspan="3" style="border: none;"></td>
+                <td colspan="4" style="text-align: center;">جميع المبالغ (ر.س)</td>
+            </tr>
+            <tr>
+                <td>ملخص البنود الأساسية</td>
+                <td>1- تكلفة المواد والتجهيزات التسويقية الثابته</td>
+                <td>2- تكلفة تسويق المشروع الدورية</td>
+                <td>3- التكلفة الشهرية لموظفين المبيعات واستشارات شركة كيان وشركة مسار</td>
+                <td>4- المصاريف العمومية الدورية</td>
+                <td>إجمالي التكلفة قبل عمولات البيع (1+2+3+4)</td>
+                <td>يضاف عمولات البيع (% إلى إجمالي مبيعات المشروع)</td>
+                <td>إجمالي التكلفة</td>
+            </tr>
+            <tr>
+                <td style="border: none;"></td>
+                <td class="notes">وتشمل: الهوية والمطبوعات/ نظام مبيعات والموقع الكتروني/ تصاميم 3D ومجسمات العرض/وغير ذلك من تجهيزات</td>
+                <td class="notes">وتشمل: المواد والوسائل التسويقية الدورية (مثل الحملات الاعلانية /اشتراكات منصات وانظمة أخرى/ مؤثرين وإنتاج فني) + مرتبات موظفي التسويق الدورية</td>
+                <td class="notes">وتشمل: مرتبات موظفي البيع الدورية + مرتبات مستشاريي البيع الدورية</td>
+                <td class="notes">وتشمل: تشغيل مركز المبيعات وانتقالات + المصاريف العمومية الدورية</td>
+                <td style="border: none;"></td>
+                <td style="border: none;"></td>
+                <td style="border: none;"></td>
+            </tr>
+            <tr class="calculation">
+                <td>إجمالي التكلفة</td>
+                <td class="number">45</td>
+                <td class="number">840</td>
+                <td class="number">560</td>
+                <td class="number">40</td>
+                <td class="number">1,485</td>
+                <td class="number">10,596</td>
+                <td class="number">12,081</td>
+            </tr>
+            <tr class="calculation">
+                <td>% إجمالي المبيعات</td>
+                <td class="number">0.00%</td>
+                <td class="number">0.00%</td>
+                <td class="number">0.00%</td>
+                <td class="number">0.00%</td>
+                <td class="number">0.00%</td>
+                <td class="number">0.00%</td>
+                <td class="number">0.00%</td>
+            </tr>
+            <tr class="calculation">
+                <td>متوسط التكلفة الشهريه</td>
+                <td>-</td>
+                <td class="number">21</td>
+                <td class="number">14</td>
+                <td class="number">1</td>
+                <td style="border: none;"></td>
+                <td style="border: none;"></td>
+                <td style="border: none;"></td>
+            </tr>
             
-            <h3 style="margin: 20px 0 10px; color: var(--dark-color);">1- تكلفة المواد والتجهيزات التسويقية الثابتة</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>البند</th>
-                        <th>طريقة الدفع</th>
-                        <th>ملاحظات</th>
-                        <th>التكلفة (ر.س)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>هوية</td>
-                        <td>مرة واحدة في بداية المشروع</td>
-                        <td></td>
-                        <td>5,000</td>
-                    </tr>
-                    <tr>
-                        <td>تأسيس موقع الكتروني المشروع</td>
-                        <td>مرة واحدة في بداية المشروع</td>
-                        <td></td>
-                        <td>15,000</td>
-                    </tr>
-                    <tr>
-                        <td>الافتتاح</td>
-                        <td>مرة واحدة في بداية المشروع</td>
-                        <td></td>
-                        <td>50,000</td>
-                    </tr>
-                    <tr>
-                        <td>مطبوعات</td>
-                        <td>مرة واحدة في بداية المشروع</td>
-                        <td></td>
-                        <td>20,000</td>
-                    </tr>
-                    <tr>
-                        <td>النظام</td>
-                        <td>مرة واحدة في بداية المشروع</td>
-                        <td></td>
-                        <td>30,000</td>
-                    </tr>
-                    <tr>
-                        <td>3D Movie</td>
-                        <td>مرة واحدة في بداية المشروع</td>
-                        <td></td>
-                        <td>80,000</td>
-                    </tr>
-                    <tr>
-                        <td>Interior Design</td>
-                        <td>مرة واحدة في بداية المشروع</td>
-                        <td></td>
-                        <td>100,000</td>
-                    </tr>
-                    <tr>
-                        <td>أخرى</td>
-                        <td>تدفع على كذا دفعة حسب الحاجة</td>
-                        <td>مثل لوحات إعلانية بالشوارع وغيرها</td>
-                        <td>50,000</td>
-                    </tr>
-                    <tr>
-                        <td>أجهزة</td>
-                        <td>مرة واحدة في بداية المشروع</td>
-                        <td></td>
-                        <td>40,000</td>
-                    </tr>
-                    <tr>
-                        <td>مجسمات عرض</td>
-                        <td>مرة واحدة في بداية المشروع</td>
-                        <td></td>
-                        <td>75,000</td>
-                    </tr>
-                    <tr>
-                        <td><strong>الإجمالي</strong></td>
-                        <td></td>
-                        <td></td>
-                        <td><strong>465,000 ر.س</strong></td>
-                    </tr>
-                </tbody>
-            </table>
+            <!-- مسافات -->
+            <tr><td colspan="9" style="border: none; height: 15px;"></td></tr>
             
-            <h3 style="margin: 30px 0 10px; color: var(--dark-color);">2- تكلفة تسويق المشروع الدورية</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>البند</th>
-                        <th>طريقة الدفع</th>
-                        <th>المبلغ الشهري (ر.س)</th>
-                        <th>ملاحظات</th>
-                        <th>إجمالي التكلفة (ر.س)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>الحملات الإعلانية</td>
-                        <td>مبلغ شهري</td>
-                        <td>10,000</td>
-                        <td></td>
-                        <td>400,000</td>
-                    </tr>
-                    <tr>
-                        <td>اشتراكات وأنظمة أخرى</td>
-                        <td>مبلغ شهري</td>
-                        <td>3,000</td>
-                        <td></td>
-                        <td>120,000</td>
-                    </tr>
-                    <tr>
-                        <td>إنتاج فني</td>
-                        <td>مبلغ شهري</td>
-                        <td>2,000</td>
-                        <td></td>
-                        <td>80,000</td>
-                    </tr>
-                    <tr>
-                        <td>عروض استرداد نقدي للعملاء</td>
-                        <td>يدفع على فترات طوال مدة المشروع</td>
-                        <td>1,500</td>
-                        <td></td>
-                        <td>60,000</td>
-                    </tr>
-                    <tr>
-                        <td>معارض وفعاليات</td>
-                        <td>يدفع على فترات طوال مدة المشروع</td>
-                        <td>1,500</td>
-                        <td></td>
-                        <td>60,000</td>
-                    </tr>
-                    <tr>
-                        <td>مؤثرين</td>
-                        <td>يدفع على فترات طوال مدة المشروع</td>
-                        <td>900</td>
-                        <td></td>
-                        <td>36,000</td>
-                    </tr>
-                    <tr>
-                        <td><strong>الإجمالي</strong></td>
-                        <td></td>
-                        <td><strong>18,900 ر.س</strong></td>
-                        <td></td>
-                        <td><strong>756,000 ر.س</strong></td>
-                    </tr>
-                </tbody>
-            </table>
+            <!-- تكلفة تسويق ومبيعات المشروع - تفصيلي -->
+            <tr class="section-header">
+                <td colspan="9">تكلفة تسويق ومبيعات المشروع - تفصيلي</td>
+            </tr>
             
-            <h3 style="margin: 30px 0 10px; color: var(--dark-color);">3- التكلفة الشهرية لموظفي المبيعات والاستشارات</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>البند</th>
-                        <th>طريقة الدفع</th>
-                        <th>عدد الموظفين</th>
-                        <th>الراتب الشهري (ر.س)</th>
-                        <th>التكلفة الشهرية (ر.س)</th>
-                        <th>إجمالي التكلفة (ر.س)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>مشرف مبيعات</td>
-                        <td>مبلغ شهري</td>
-                        <td>1</td>
-                        <td>8,000</td>
-                        <td>8,000</td>
-                        <td>320,000</td>
-                    </tr>
-                    <tr>
-                        <td>ممثل مبيعات</td>
-                        <td>مبلغ شهري</td>
-                        <td>4</td>
-                        <td>6,000</td>
-                        <td>24,000</td>
-                        <td>960,000</td>
-                    </tr>
-                    <tr>
-                        <td>متابع عقود</td>
-                        <td>مبلغ شهري</td>
-                        <td>1</td>
-                        <td>5,000</td>
-                        <td>5,000</td>
-                        <td>200,000</td>
-                    </tr>
-                    <tr>
-                        <td>مشرف مبيعات هاتفية</td>
-                        <td>مبلغ شهري</td>
-                        <td>1</td>
-                        <td>7,000</td>
-                        <td>7,000</td>
-                        <td>280,000</td>
-                    </tr>
-                    <tr>
-                        <td>كول سنتر</td>
-                        <td>مبلغ شهري</td>
-                        <td>4</td>
-                        <td>4,500</td>
-                        <td>18,000</td>
-                        <td>720,000</td>
-                    </tr>
-                    <tr>
-                        <td><strong>إجمالي الموظفين</strong></td>
-                        <td></td>
-                        <td><strong>11</strong></td>
-                        <td></td>
-                        <td><strong>62,000 ر.س</strong></td>
-                        <td><strong>2,480,000 ر.س</strong></td>
-                    </tr>
-                    <tr>
-                        <td>شركة الكيان المتحدة</td>
-                        <td>مبلغ شهري</td>
-                        <td>-</td>
-                        <td>15,000</td>
-                        <td>15,000</td>
-                        <td>600,000</td>
-                    </tr>
-                    <tr>
-                        <td>شركة دار الأرجوان (مسار)</td>
-                        <td>مبلغ شهري</td>
-                        <td>-</td>
-                        <td>10,000</td>
-                        <td>10,000</td>
-                        <td>400,000</td>
-                    </tr>
-                    <tr>
-                        <td><strong>الإجمالي الكامل</strong></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td><strong>87,000 ر.س</strong></td>
-                        <td><strong>3,480,000 ر.س</strong></td>
-                    </tr>
-                </tbody>
-            </table>
+            <!-- 1- تكلفة المواد والتجهيزات التسويقية الثابته -->
+            <tr class="sub-header">
+                <td colspan="2">1- تكلفة المواد والتجهيزات التسويقية الثابته</td>
+                <td colspan="4" style="border: none;"></td>
+                <td colspan="3" style="text-align: center;">جميع المبالغ (ر.س)</td>
+            </tr>
+            <tr>
+                <td>البند</td>
+                <td colspan="2">طريقة الدفع</td>
+                <td colspan="3">ملاحظات</td>
+                <td colspan="3">إجمالي التكلفة</td>
+            </tr>
+            <tr>
+                <td>هوية</td>
+                <td colspan="2">مرة واحدة في بداية المشروع</td>
+                <td colspan="3"></td>
+                <td colspan="3" class="number">0</td>
+            </tr>
+            <tr>
+                <td>تأسيس موقع الكتروني المشروع</td>
+                <td colspan="2">مرة واحدة في بداية المشروع</td>
+                <td colspan="3"></td>
+                <td colspan="3" class="number">1</td>
+            </tr>
+            <tr>
+                <td>الافتتاح</td>
+                <td colspan="2">مرة واحدة في بداية المشروع</td>
+                <td colspan="3"></td>
+                <td colspan="3" class="number">2</td>
+            </tr>
+            <tr>
+                <td>مطبوعات</td>
+                <td colspan="2">مرة واحدة في بداية المشروع</td>
+                <td colspan="3"></td>
+                <td colspan="3" class="number">3</td>
+            </tr>
+            <tr>
+                <td>النظام</td>
+                <td colspan="2">مرة واحدة في بداية المشروع</td>
+                <td colspan="3"></td>
+                <td colspan="3" class="number">4</td>
+            </tr>
+            <tr>
+                <td>3d movie</td>
+                <td colspan="2">مرة واحدة في بداية المشروع</td>
+                <td colspan="3"></td>
+                <td colspan="3" class="number">5</td>
+            </tr>
+            <tr>
+                <td>Interior design</td>
+                <td colspan="2">مرة واحدة في بداية المشروع</td>
+                <td colspan="3"></td>
+                <td colspan="3" class="number">6</td>
+            </tr>
+            <tr>
+                <td>أخرى</td>
+                <td colspan="2">تدفع على كذا دفعة حسب الحاجة</td>
+                <td colspan="3" class="notes">مثل لوحات إعلانية بالشوارع وغيرها</td>
+                <td colspan="3" class="number">7</td>
+            </tr>
+            <tr>
+                <td>أجهزة</td>
+                <td colspan="2">مرة واحدة في بداية المشروع</td>
+                <td colspan="3"></td>
+                <td colspan="3" class="number">8</td>
+            </tr>
+            <tr>
+                <td>مجسمات عرض</td>
+                <td colspan="2">مرة واحدة في بداية المشروع</td>
+                <td colspan="3"></td>
+                <td colspan="3" class="number">9</td>
+            </tr>
+            <tr class="total-row">
+                <td>إجمالي تكلفة المواد والتجهيزات التسويقية الثابته</td>
+                <td colspan="5"></td>
+                <td colspan="3" class="number">45</td>
+            </tr>
             
-            <h3 style="margin: 30px 0 10px; color: var(--dark-color);">4- المصاريف العمومية الدورية</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>البند</th>
-                        <th>طريقة الدفع</th>
-                        <th>ملاحظات</th>
-                        <th>المبلغ الشهري (ر.س)</th>
-                        <th>إجمالي التكلفة (ر.س)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>مصاريف تشغيلية لوجستية وتشغيل مراكز ومكاتب بيع</td>
-                        <td>مبلغ شهري تقريبي</td>
-                        <td></td>
-                        <td>1,000</td>
-                        <td>40,000</td>
-                    </tr>
-                    <tr>
-                        <td><strong>الإجمالي</strong></td>
-                        <td></td>
-                        <td></td>
-                        <td><strong>1,000 ر.س</strong></td>
-                        <td><strong>40,000 ر.س</strong></td>
-                    </tr>
-                </tbody>
-            </table>
+            <!-- مسافات -->
+            <tr><td colspan="9" style="border: none; height: 10px;"></td></tr>
             
-            <h3 style="margin: 30px 0 10px; color: var(--dark-color);">توزيع العمولات</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>البند</th>
-                        <th>طريقة الدفع</th>
-                        <th>ملاحظات</th>
-                        <th>المبلغ للوحدة (ر.س)</th>
-                        <th>إجمالي التكلفة (ر.س)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>استشاري المبيعات</td>
-                        <td>الوحدة المباعة</td>
-                        <td></td>
-                        <td>2,000</td>
-                        <td>3,532,000</td>
-                    </tr>
-                    <tr>
-                        <td>مركز الاتصال</td>
-                        <td>الوحدة المباعة</td>
-                        <td></td>
-                        <td>500</td>
-                        <td>883,000</td>
-                    </tr>
-                    <tr>
-                        <td>عمولة مدير ومشرف المبيعات</td>
-                        <td>الوحدة المباعة</td>
-                        <td>20%</td>
-                        <td>400</td>
-                        <td>706,400</td>
-                    </tr>
-                    <tr>
-                        <td>عمولة قسم التسويق</td>
-                        <td>الوحدة المباعة</td>
-                        <td></td>
-                        <td>1,000</td>
-                        <td>1,766,000</td>
-                    </tr>
-                    <tr>
-                        <td>عمولة شركة الكيان المتحدة</td>
-                        <td>الوحدة المباعة</td>
-                        <td></td>
-                        <td>1,500</td>
-                        <td>2,649,000</td>
-                    </tr>
-                    <tr>
-                        <td>عمولة شركة دار الأرجوان (مسار)</td>
-                        <td>الوحدة المباعة</td>
-                        <td></td>
-                        <td>1,000</td>
-                        <td>1,766,000</td>
-                    </tr>
-                    <tr>
-                        <td><strong>الإجمالي</strong></td>
-                        <td></td>
-                        <td></td>
-                        <td><strong>6,400 ر.س</strong></td>
-                        <td><strong>11,302,400 ر.س</strong></td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
-        
-        <footer>
-            <p>تم إنشاء هذا النموذج بناءً على بيانات مشروع الفرسان بالرياض</p>
-            <p>جميع المبالغ بالريال السعودي (ر.س)</p>
-        </footer>
+            <!-- 2- تكلفة تسويق المشروع الدورية -->
+            <tr class="sub-header">
+                <td colspan="2">2- تكلفة تسويق المشروع الدورية</td>
+                <td colspan="5" style="border: none;"></td>
+                <td colspan="2" style="text-align: center;">جميع المبالغ (ر.س)</td>
+            </tr>
+            <tr class="sub-header">
+                <td colspan="2">تكلفة المواد والوسائل التسويقية الدورية</td>
+                <td colspan="5" style="border: none;"></td>
+                <td colspan="2" style="border: none;"></td>
+            </tr>
+            <tr>
+                <td>البند</td>
+                <td>طريقة الدفع</td>
+                <td colspan="3" style="border: none;"></td>
+                <td>المبلغ الشهري</td>
+                
+                <td>ملاحظات</td>
+                <td colspan="2">إجمالي التكلفة</td>
+            </tr>
+            <tr>
+                <td>الحملات الاعلانية</td>
+                <td>مبلغ شهري</td>
+                <td colspan="3" style="border: none;"></td>
+                <td class="number">1</td>
+                <td></td>
+                <td colspan="2" class="number">40</td>
+            </tr>
+            <tr>
+                <td>اشتراكات وانظمة اخرى</td>
+                <td>مبلغ شهري</td>
+                <td colspan="3" style="border: none;"></td>
+                <td class="number">2</td>
+                <td></td>
+                <td colspan="2" class="number">80</td>
+            </tr>
+            <tr>
+                <td>انتاج فني</td>
+                <td>مبلغ شهري</td>
+                <td colspan="3" style="border: none;"></td>
+                <td class="number">3</td>
+                <td></td>
+                <td colspan="2" class="number">120</td>
+            </tr>
+            <tr>
+                <td>عروض استرداد نقدي للعملاء</td>
+                <td>يدفع على فترات طوال مدة المشروع (ليس مبلغ ثابت)</td>
+                <td colspan="3" style="border: none;"></td>
+                <td class="number">4</td>
+                <td></td>
+                <td colspan="2" class="number">160</td>
+            </tr>
+            <tr>
+                <td>معارض وفعاليات</td>
+                <td>يدفع على فترات طوال مدة المشروع (ليس مبلغ ثابت)</td>
+                <td colspan="3" style="border: none;"></td>
+                <td class="number">5</td>
+                <td></td>
+                <td colspan="2" class="number">200</td>
+            </tr>
+            <tr>
+                <td>مؤثرين</td>
+                <td>يدفع على فترات طوال مدة المشروع (ليس مبلغ ثابت)</td>
+                <td colspan="3" style="border: none;"></td>
+                <td class="number">6</td>
+                <td></td>
+                <td colspan="2" class="number">240</td>
+            </tr>
+            <tr class="total-row">
+                <td>إجمالي البند</td>
+                <td></td>
+                <td colspan="3" style="border: none;"></td>
+                <td class="number">21</td>
+                <td></td>
+                <td colspan="2" class="number">840</td>
+            </tr>
+            
+            <!-- مسافات -->
+            <tr><td colspan="9" style="border: none; height: 10px;"></td></tr>
+            
+            <!-- 3- التكلفة الشهرية لموظفين المبيعات واستشارات شركة كيان وشركة مسار -->
+            <tr class="sub-header">
+                <td colspan="9">3- التكلفة الشهرية لموظفين المبيعات واستشارات شركة كيان وشركة مسار</td>
+            </tr>
+            <tr class="sub-header">
+                <td colspan="2">تكلفة مرتبات موظفي المبيعات الدورية</td>
+                <td colspan="6" style="border: none;"></td>
+                <td style="text-align: center;">جميع المبالغ (ر.س)</td>
+            </tr>
+            <tr>
+                <td>البند</td>
+                <td>طريقة الدفع</td>
+                <td>راتب الموظف</td>
+                <td>عدد الموظفين</td>
+                <td>اجمالي التكلفة الشهرية</td>
+                <td>ملاحظات</td>
+                <td colspan="3">إجمالي التكلفة لمدة المشروع</td>
+            </tr>
+            <tr>
+                <td>مشرف مبيعات</td>
+                <td>مبلغ شهري</td>
+                <td class="number">1</td>
+                <td class="number">1</td>
+                <td class="number">1</td>
+                <td></td>
+                <td colspan="3" class="number">40</td>
+            </tr>
+            <tr>
+                <td>ممثل مبيعات</td>
+                <td>مبلغ شهري</td>
+                <td class="number">1</td>
+                <td class="number">4</td>
+                <td class="number">4</td>
+                <td></td>
+                <td colspan="3" class="number">160</td>
+            </tr>
+            <tr>
+                <td>متابع عقود</td>
+                <td>مبلغ شهري</td>
+                <td class="number">1</td>
+                <td class="number">1</td>
+                <td class="number">1</td>
+                <td></td>
+                <td colspan="3" class="number">40</td>
+            </tr>
+            <tr>
+                <td>مشرف مبيعات هاتفية</td>
+                <td>مبلغ شهري</td>
+                <td class="number">1</td>
+                <td class="number">1</td>
+                <td class="number">1</td>
+                <td></td>
+                <td colspan="3" class="number">40</td>
+            </tr>
+            <tr>
+                <td>كول سنتر</td>
+                <td>مبلغ شهري</td>
+                <td class="number">1</td>
+                <td class="number">4</td>
+                <td class="number">4</td>
+                <td></td>
+                <td colspan="3" class="number">160</td>
+            </tr>
+            <tr class="total-row">
+                <td>إجمالي</td>
+                <td></td>
+                <td></td>
+                <td class="number">11</td>
+                <td class="number">11</td>
+                <td></td>
+                <td colspan="3" class="number">440</td>
+            </tr>
+            
+            <!-- مسافات -->
+            <tr><td colspan="9" style="border: none; height: 10px;"></td></tr>
+            
+            <!-- تكلفة شركات الاستشارات -->
+            <tr class="sub-header">
+                <td colspan="2">تكلفة شركات الاستشارات</td>
+                <td colspan="6" style="border: none;"></td>
+                <td style="text-align: center;">جميع المبالغ (ر.س)</td>
+            </tr>
+            <tr>
+                <td>البند</td>
+                <td>طريقة الدفع</td>
+                <td colspan="3">ملاحظات</td>
+                <td>المبلغ الشهري</td>
+                <td colspan="3">إجمالي التكلفة</td>
+            </tr>
+            <tr>
+                <td>شركة الكيان المتحدة</td>
+                <td>مبلغ شهري</td>
+                <td colspan="3"></td>
+                <td class="number">1</td>
+                <td colspan="3" class="number">40</td>
+            </tr>
+            <tr>
+                <td>شركة دار الارجوان (مسار)</td>
+                <td>مبلغ شهري</td>
+                <td colspan="3"></td>
+                <td class="number">2</td>
+                <td colspan="3" class="number">80</td>
+            </tr>
+            <tr class="total-row">
+                <td>إجمالي</td>
+                <td></td>
+                <td colspan="3"></td>
+                <td class="number">3</td>
+                <td colspan="3" class="number">120</td>
+            </tr>
+            <tr class="total-row">
+                <td>إجمالي تكلفة موظفين المبيعات وشركات الاستشارات</td>
+                <td></td>
+                <td colspan="3"></td>
+                <td class="number">14</td>
+                <td colspan="3" class="number">560</td>
+            </tr>
+            
+            <!-- مسافات -->
+            <tr><td colspan="9" style="border: none; height: 10px;"></td></tr>
+            
+            <!-- 4- المصاريف العمومية الدورية -->
+            <tr class="sub-header">
+                <td colspan="2">4- المصاريف العمومية الدورية</td>
+                <td colspan="6" style="border: none;"></td>
+                <td style="border: none;"></td>
+            </tr>
+            <tr>
+                <td>البند</td>
+                <td>طريقة الدفع</td>
+                <td colspan="4">ملاحظات</td>
+                <td>المبلغ الشهري</td>
+                <td colspan="2">إجمالي التكلفة</td>
+            </tr>
+            <tr>
+                <td>مصاريف تشغيلية لوجستية وتشغيل مراكز ومكاتب بيع</td>
+                <td>مبلغ شهري تقريبي</td>
+                <td colspan="4"></td>
+                <td class="number">1</td>
+                <td colspan="2" class="number">40</td>
+            </tr>
+            <tr class="total-row">
+                <td>إجمالي</td>
+                <td></td>
+                <td colspan="4"></td>
+                <td class="number">1</td>
+                <td colspan="2" class="number">40</td>
+            </tr>
+            
+            <!-- مسافات -->
+            <tr><td colspan="9" style="border: none; height: 15px;"></td></tr>
+            
+            <!-- توزيع العمولات -->
+            <tr class="sub-header">
+                <td colspan="2">توزيع العمولات</td>
+                <td colspan="5" style="border: none;"></td>
+                <td colspan="2" style="text-align: center;">جميع المبالغ (ر.س)</td>
+            </tr>
+            <tr>
+                <td>البند</td>
+                <td>طريقة الدفع</td>
+                <td colspan="3">ملاحظات</td>
+                <td>المبلغ للوحدة</td>
+                <td colspan="3">إجمالي التكلفة (ر.س)</td>
+            </tr>
+            <tr>
+                <td>استشاري المبيعات</td>
+                <td>الوحده المباعه</td>
+                <td colspan="3"></td>
+                <td class="number">1</td>
+                <td colspan="3" class="number">1,766</td>
+            </tr>
+            <tr>
+                <td>مركز الاتصال</td>
+                <td>الوحده المباعه</td>
+                <td colspan="3"></td>
+                <td class="number">1</td>
+                <td colspan="3" class="number">1,766</td>
+            </tr>
+            <tr>
+                <td>عمولة مدير ومشرف المبيعات</td>
+                <td>الوحده المباعه</td>
+                <td colspan="3" class="notes">20%</td>
+                <td class="number">1</td>
+                <td colspan="3" class="number">1,766</td>
+            </tr>
+            <tr>
+                <td>عمولة قسم التسويق</td>
+                <td>الوحده المباعه</td>
+                <td colspan="3"></td>
+                <td class="number">1</td>
+                <td colspan="3" class="number">1,766</td>
+            </tr>
+            <tr>
+                <td>عمولة شركة الكيان المتحدة</td>
+                <td>الوحده المباعه</td>
+                <td colspan="3"></td>
+                <td class="number">1</td>
+                <td colspan="3" class="number">1,766</td>
+            </tr>
+            <tr>
+                <td>عمولة شركة دار الارجوان (مسار)</td>
+                <td>الوحده المباعه</td>
+                <td colspan="3"></td>
+                <td class="number">1</td>
+                <td colspan="3" class="number">1,766</td>
+            </tr>
+            <tr class="total-row">
+                <td>إجمالي</td>
+                <td></td>
+                <td colspan="3"></td>
+                <td class="number">6</td>
+                <td colspan="3" class="number">10,596</td>
+            </tr>
+        </table>
     </div>
 </body>
 </html>

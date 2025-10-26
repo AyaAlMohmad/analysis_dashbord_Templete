@@ -37,6 +37,10 @@ use App\Http\Controllers\TeamController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProjectPlanController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\CostLegislatorController;
+use App\Http\Controllers\StaffTreeController;
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -232,10 +236,14 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->as('admin.')->group(funct
     Route::put('/project-plans/{site}/update/{id}', [ProjectPlanController::class, 'update'])->name('project-plans.update');
     Route::delete('/project-plans/{site}/destroy/{id}', [ProjectPlanController::class, 'destroy'])->name('project-plans.destroy');
     Route::post('/project-plans/{site}/update-status/{id}', [ProjectPlanController::class, 'updateStatus'])->name('project-plans.update-status');
-    Route::get('/cost-project', [CostLegislatorController::class, 'index'])->name('cost.project.form');
-    Route::post('/cost-project/calculate', [CostLegislatorController::class, 'calculate'])->name('cost.project.calculate');
-    Route::post('/cost-project/export', [CostLegislatorController::class, 'export'])->name('cost.project.export');
-
+   Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/cost-legislator', [CostLegislatorController::class, 'index'])->name('admin.cost.legislator.index');
+    Route::post('/cost-legislator/calculate', [CostLegislatorController::class, 'calculate'])->name('admin.cost.legislator.calculate');
+    Route::get('/cost-legislator/results', [CostLegislatorController::class, 'results'])->name('admin.cost.legislator.results');
+    Route::post('/cost-legislator/export', [CostLegislatorController::class, 'export'])->name('admin.cost.legislator.export');
+});
+Route::get('/staff-tree', [StaffTreeController::class, 'index'])->name('staff-tree.index');
+Route::get('/staff-tree/project/{id}', [StaffTreeController::class, 'getProject'])->name('staff-tree.project');
 });
 Route::get('/api/sites/filter', [SiteController::class, 'filterByDate'])->name('api.sites.filter');
 require __DIR__ . '/auth.php';

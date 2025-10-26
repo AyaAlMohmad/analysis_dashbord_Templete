@@ -502,228 +502,256 @@
         //     updateAppointments(site);
         //     updateCallsSection(site, siteName);
         // }
-        function loadSiteData(site) {
-            let summary, siteName, siteColor;
+     // Load full site data مع إضافة بيانات المستفيدين
+      function loadSiteData(site) {
+    let summary, siteName, siteColor;
 
-            if (site === 'all') {
-                    siteName = '{{ __('comparison_report.all') }}';
-                siteColor = 'primary';
+    // الحصول على بيانات items
+    const itemsData = comparisonData.items || {};
+    const beneficiariesData = itemsData.beneficiaries || {};
 
-                const dh = getSiteData('dhahran');
-                const bs = getSiteData('bashaer');
-                const jd = getSiteData('jaddah');
-                const af = getSiteData('alfursan');
+    if (site === 'all') {
+        siteName = '{{ __('comparison_report.all') }}';
+        siteColor = 'primary';
 
-                summary = {
-                    total_units: dh.total_units + bs.total_units + jd.total_units + af.total_units,
-                    total_price: dh.total_price + bs.total_price + jd.total_price + af.total_price,
-                    available: {
-                        count: dh.available.count + bs.available.count + jd.available.count + af.available.count,
-                        percentage: ((dh.available.count + bs.available.count + jd.available.count + af.available.count) / (dh.total_units + bs.total_units + jd.total_units + af.total_units || 1)) * 100,
-                        total_value: dh.available.total_value + bs.available.total_value + jd.available.total_value + af.available.total_value
-                    },
-                    blocked: {
-                        count: dh.blocked.count + bs.blocked.count + jd.blocked.count + af.blocked.count,
-                        percentage: ((dh.blocked.count + bs.blocked.count + jd.blocked.count + af.blocked.count) / (dh.total_units + bs.total_units + jd.total_units + af.total_units || 1)) * 100,
-                        total_value: dh.blocked.total_value + bs.blocked.total_value + jd.blocked.total_value + af.blocked.total_value
-                    },
-                    reserved: {
-                        count: dh.reserved.count + bs.reserved.count + jd.reserved.count + af.reserved.count,
-                        percentage: ((dh.reserved.count + bs.reserved.count + jd.reserved.count + af.reserved.count) / (dh.total_units + bs.total_units + jd.total_units + af.total_units || 1)) * 100,
-                        total_value: dh.reserved.total_value + bs.reserved.total_value + jd.reserved.total_value + af.reserved.total_value
-                    },
-                    contracted: {
-                        count: dh.contracted.count + bs.contracted.count + jd.contracted.count + af.contracted.count,
-                        percentage: ((dh.contracted.count + bs.contracted.count + jd.contracted.count + af.contracted.count) / (dh.total_units + bs.total_units + jd.total_units + af.total_units || 1)) * 100,
-                        total_value: dh.contracted.total_value + bs.contracted.total_value + jd.contracted.total_value + af.contracted.total_value
-                    },
-                    beneficiary: {
-                        count: (dh.beneficiary?.count || 0) + (bs.beneficiary?.count || 0) + (jd.beneficiary?.count || 0) + (af.beneficiary?.count || 0),
-                        percentage: (((dh.beneficiary?.count || 0) + (bs.beneficiary?.count || 0) + (jd.beneficiary?.count || 0) + (af.beneficiary?.count || 0)) / (dh.total_units + bs.total_units + jd.total_units + af.total_units || 1)) * 100,
-                        total_value: (dh.beneficiary?.total_value || 0) + (bs.beneficiary?.total_value || 0) + (jd.beneficiary?.total_value || 0) + (af.beneficiary?.total_value || 0)
-                    },
-                    non_beneficiary: {
-                        count: (dh.non_beneficiary?.count || 0) + (bs.non_beneficiary?.count || 0) + (jd.non_beneficiary?.count || 0) + (af.non_beneficiary?.count || 0),
-                        percentage: (((dh.non_beneficiary?.count || 0) + (bs.non_beneficiary?.count || 0) + (jd.non_beneficiary?.count || 0) + (af.non_beneficiary?.count || 0)) / (dh.total_units + bs.total_units + jd.total_units + af.total_units || 1)) * 100,
-                        total_value: (dh.non_beneficiary?.total_value || 0) + (bs.non_beneficiary?.total_value || 0) + (jd.non_beneficiary?.total_value || 0) + (af.non_beneficiary?.total_value || 0)
-                    },
-                    overall_value: dh.overall_value + bs.overall_value + jd.overall_value + af.overall_value,
-                    overall_progress_percentage: ((dh.reserved.count + bs.reserved.count + jd.reserved.count + af.reserved.count + dh.contracted.count + bs.contracted.count + jd.contracted.count + af.contracted.count) /
-                        (dh.total_units + bs.total_units + jd.total_units + af.total_units || 1)) * 100
-                };
+        const dh = getSiteData('dhahran');
+        const bs = getSiteData('bashaer');
+        const jd = getSiteData('jaddah');
+        const af = getSiteData('alfursan');
 
-            } else {
-                if (site === 'jaddah') {
-                        siteName = '{{ __('comparison_report.jaddah') }}';
-                    siteColor = 'warning';
-                } else if (site === 'alfursan') {
-                        siteName = '{{ __('comparison_report.alfursan') }}';
-                    siteColor = 'teal';
-                } else {
-                    siteName = site === 'dhahran' ? '{{ __('comparison_report.dhahran') }}' : '{{ __('comparison_report.bashaer') }}';
-                    siteColor = site === 'dhahran' ? 'primary' : 'success';
-                }
-                summary = getSiteData(site);
-            }
+        // الحصول على بيانات المستفيدين من items
+        const dhBeneficiary = beneficiariesData.dhahran || {beneficiary: 0, nonbeneficiary: 0};
+        const bsBeneficiary = beneficiariesData.bashaer || {beneficiary: 0, nonbeneficiary: 0};
+        const jdBeneficiary = beneficiariesData.jaddah || {beneficiary: 0, nonbeneficiary: 0};
+        const afBeneficiary = beneficiariesData.alfursan || {beneficiary: 0, nonbeneficiary: 0};
 
-            document.getElementById('villa-summary-title').innerText = siteName;
-            updateVillaSummaryHTML(summary, site, siteColor);
-            updateActivityCharts(site);
-            updateAppointments(site);
-            updateCallsSection(site, siteName);
+        // حساب إجمالي المستفيدين وغير المستفيدين
+        const totalBeneficiary = dhBeneficiary.beneficiary + bsBeneficiary.beneficiary + jdBeneficiary.beneficiary + afBeneficiary.beneficiary;
+        const totalNonBeneficiary = dhBeneficiary.nonbeneficiary + bsBeneficiary.nonbeneficiary + jdBeneficiary.nonbeneficiary + afBeneficiary.nonbeneficiary;
+        const totalBeneficiaryUnits = totalBeneficiary + totalNonBeneficiary;
+
+        summary = {
+            total_units: dh.total_units + bs.total_units + jd.total_units + af.total_units,
+            total_price: dh.total_price + bs.total_price + jd.total_price + af.total_price,
+            available: {
+                count: dh.available.count + bs.available.count + jd.available.count + af.available.count,
+                percentage: ((dh.available.count + bs.available.count + jd.available.count + af.available.count) / (dh.total_units + bs.total_units + jd.total_units + af.total_units || 1)) * 100,
+                total_value: dh.available.total_value + bs.available.total_value + jd.available.total_value + af.available.total_value
+            },
+            blocked: {
+                count: dh.blocked.count + bs.blocked.count + jd.blocked.count + af.blocked.count,
+                percentage: ((dh.blocked.count + bs.blocked.count + jd.blocked.count + af.blocked.count) / (dh.total_units + bs.total_units + jd.total_units + af.total_units || 1)) * 100,
+                total_value: dh.blocked.total_value + bs.blocked.total_value + jd.blocked.total_value + af.blocked.total_value
+            },
+            reserved: {
+                count: dh.reserved.count + bs.reserved.count + jd.reserved.count + af.reserved.count,
+                percentage: ((dh.reserved.count + bs.reserved.count + jd.reserved.count + af.reserved.count) / (dh.total_units + bs.total_units + jd.total_units + af.total_units || 1)) * 100,
+                total_value: dh.reserved.total_value + bs.reserved.total_value + jd.reserved.total_value + af.reserved.total_value
+            },
+            contracted: {
+                count: dh.contracted.count + bs.contracted.count + jd.contracted.count + af.contracted.count,
+                percentage: ((dh.contracted.count + bs.contracted.count + jd.contracted.count + af.contracted.count) / (dh.total_units + bs.total_units + jd.total_units + af.total_units || 1)) * 100,
+                total_value: dh.contracted.total_value + bs.contracted.total_value + jd.contracted.total_value + af.contracted.total_value
+            },
+            beneficiary: {
+                count: totalBeneficiary,
+                percentage: totalBeneficiaryUnits > 0 ? (totalBeneficiary / totalBeneficiaryUnits * 100) : 0,
+                total_value: 0
+            },
+            non_beneficiary: {
+                count: totalNonBeneficiary,
+                percentage: totalBeneficiaryUnits > 0 ? (totalNonBeneficiary / totalBeneficiaryUnits * 100) : 0,
+                total_value: 0
+            },
+            overall_value: dh.overall_value + bs.overall_value + jd.overall_value + af.overall_value,
+            overall_progress_percentage: ((dh.reserved.count + bs.reserved.count + jd.reserved.count + af.reserved.count + dh.contracted.count + bs.contracted.count + jd.contracted.count + af.contracted.count) /
+                (dh.total_units + bs.total_units + jd.total_units + af.total_units || 1)) * 100
+        };
+
+    } else {
+        if (site === 'jaddah') {
+            siteName = '{{ __('comparison_report.jaddah') }}';
+            siteColor = 'warning';
+        } else if (site === 'alfursan') {
+            siteName = '{{ __('comparison_report.alfursan') }}';
+            siteColor = 'teal';
+        } else {
+            siteName = site === 'dhahran' ? '{{ __('comparison_report.dhahran') }}' : '{{ __('comparison_report.bashaer') }}';
+            siteColor = site === 'dhahran' ? 'primary' : 'success';
         }
-       function updateVillaSummaryHTML(summary, site, siteColor) {
+
+        // الحصول على بيانات الموقع المحدد
+        summary = getSiteData(site);
+
+        // إضافة بيانات المستفيدين من items للفرع المحدد
+        const siteBeneficiary = beneficiariesData[site] || {beneficiary: 0, nonbeneficiary: 0};
+        const totalBeneficiaryUnits = siteBeneficiary.beneficiary + siteBeneficiary.nonbeneficiary;
+
+        summary.beneficiary = {
+            count: siteBeneficiary.beneficiary || 0,
+            percentage: totalBeneficiaryUnits > 0 ? (siteBeneficiary.beneficiary / totalBeneficiaryUnits * 100) : 0,
+            total_value: 0
+        };
+        summary.non_beneficiary = {
+            count: siteBeneficiary.nonbeneficiary || 0,
+            percentage: totalBeneficiaryUnits > 0 ? (siteBeneficiary.nonbeneficiary / totalBeneficiaryUnits * 100) : 0,
+            total_value: 0
+        };
+    }
+
+    document.getElementById('villa-summary-title').innerText = siteName;
+    updateVillaSummaryHTML(summary, site, siteColor);
+    updateActivityCharts(site);
+    updateAppointments(site);
+    updateCallsSection(site, siteName);
+}
+function updateVillaSummaryHTML(summary, site, siteColor) {
     document.getElementById('villa-summary-data').innerHTML = `
-    <!-- إجمالي الوحدات -->
-    <div class="col-xl-4 col-md-6 col-12 mb-4">
-        <div class="stat-card total-units">
-            <div class="card-header">
-                <i class="fas fa-home"></i>
-                <h3>${summary.total_units}</h3>
-            </div>
-            <div class="card-body">
-                <p class="card-title">{{ __('comparison_report.total_units') }}</p>
-                <p class="card-value"><i class="fas fa-dollar-sign"></i> ${numberFormat(summary.total_price)}</p>
-                <div class="progress-bar" style="--width: 100%; --color: var(--${siteColor})"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- المتاحة -->
-    <div class="col-xl-4 col-md-6 col-12 mb-4">
-        <div class="stat-card available">
-            <div class="card-header">
-                <i class="fas fa-check-circle"></i>
-                <h3>${summary.available.count} <span>(${summary.available.percentage.toFixed(2)}%)</span></h3>
-            </div>
-            <div class="card-body">
-                <p class="card-title">{{ __('comparison_report.available') }}</p>
-                <p class="card-value"><i class="fas fa-dollar-sign"></i> ${numberFormat(summary.available.total_value)}</p>
-                <div class="progress-bar" style="--width: ${summary.available.percentage}%; --color: var(--info)"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- المحجوبة -->
-    <div class="col-xl-4 col-md-6 col-12 mb-4">
-        <div class="stat-card blocked">
-            <div class="card-header">
-                <i class="fas fa-lock"></i>
-                <h3>${summary.blocked.count} <span>(${summary.blocked.percentage.toFixed(2)}%)</span></h3>
-            </div>
-            <div class="card-body">
-                <p class="card-title">{{ __('comparison_report.blocked') }}</p>
-                <p class="card-value"><i class="fas fa-dollar-sign"></i> ${numberFormat(summary.blocked.total_value)}</p>
-                <div class="progress-bar" style="--width: ${summary.blocked.percentage}%; --color: var(--warning)"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- المحجوزة -->
-    <div class="col-xl-4 col-md-6 col-12 mb-4">
-        <div class="stat-card reserved">
-            <div class="card-header">
-                <i class="fas fa-handshake"></i>
-                <h3>${summary.reserved.count} <span>(${summary.reserved.percentage.toFixed(2)}%)</span></h3>
-            </div>
-            <div class="card-body">
-                <p class="card-title">{{ __('comparison_report.reserved') }}</p>
-                <p class="card-value"><i class="fas fa-dollar-sign"></i> ${numberFormat(summary.reserved.total_value)}</p>
-                <div class="progress-bar" style="--width: ${summary.reserved.percentage}%; --color: var(--danger)"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- المتعاقد عليها -->
-    <div class="col-xl-4 col-md-6 col-12 mb-4">
-        <div class="stat-card contracted">
-            <div class="card-header">
-                <i class="fas fa-file-contract"></i>
-                <h3>${summary.contracted.count} <span>(${summary.contracted.percentage.toFixed(2)}%)</span></h3>
-            </div>
-            <div class="card-body">
-                <p class="card-title">{{ __('comparison_report.contracted') }}</p>
-                <p class="card-value"><i class="fas fa-dollar-sign"></i> ${numberFormat(summary.contracted.total_value)}</p>
-                <div class="progress-bar" style="--width: ${summary.contracted.percentage}%; --color: var(--success)"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- الإجمالي المحجوز والمتعاقد -->
-    <div class="col-xl-4 col-md-6 col-12 mb-4">
-        <div class="stat-card overall">
-            <div class="card-header">
-                <i class="fas fa-dollar-sign"></i>
-                <h3>${summary.reserved.count + summary.contracted.count}</h3>
-            </div>
-            <div class="card-body">
-                <p class="card-title">{{ __('comparison_report.overall_reserved_contracted') }}</p>
-                <p class="card-value"><i class="fas fa-dollar-sign"></i> ${numberFormat(summary.overall_value)}</p>
-                <div class="progress-bar" style="--width: ${summary.overall_progress_percentage}%; --color: var(--purple)"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- مستفيد -->
-    <div class="col-xl-4 col-md-6 col-12 mb-4">
-        <div class="stat-card beneficiary">
-            <div class="card-header">
-                <i class="fas fa-user-check"></i>
-                <h3>${summary.beneficiary?.count || 0} <span>(${summary.beneficiary?.percentage?.toFixed(2) || 0}%)</span></h3>
-            </div>
-            <div class="card-body">
-                <p class="card-title">{{ __('comparison_report.beneficiary') }}</p>
-                <!-- إزالة الدولار وإظهار النسبة فقط -->
-                <p class="card-value">${summary.beneficiary?.percentage?.toFixed(2) || 0}% من إجمالي الوحدات</p>
-                <div class="progress-bar" style="--width: ${summary.beneficiary?.percentage || 0}%; --color: var(--teal)"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- غير مستفيد -->
-    <div class="col-xl-4 col-md-6 col-12 mb-4">
-        <div class="stat-card non-beneficiary">
-            <div class="card-header">
-                <i class="fas fa-user-times"></i>
-                <h3>${summary.non_beneficiary?.count || 0} <span>(${summary.non_beneficiary?.percentage?.toFixed(2) || 0}%)</span></h3>
-            </div>
-            <div class="card-body">
-                <p class="card-title">{{ __('comparison_report.non_beneficiary') }}</p>
-
-                <p class="card-value">${summary.non_beneficiary?.percentage?.toFixed(2) || 0}% من إجمالي الوحدات</p>
-                <div class="progress-bar" style="--width: ${summary.non_beneficiary?.percentage || 0}%; --color: var(--secondary)"></div>
-            </div>
-        </div>
-    </div>
-
-
-    <!-- تقدم المشروع -->
-    <div class="col-xl-4 col-md-6 col-12 mb-4 mx-auto">
-        <div class="stat-card progress">
-            <div class="card-header">
-                <i class="fas fa-chart-line"></i>
-                <h3>
-                    ${site === 'all' ? '{{ $progressData['all'] }}%' :
-                     site === 'dhahran' ? '{{ $progressData['dhahran'] }}%' :
-                     site === 'bashaer' ? '{{ $progressData['bashaer'] }}%' :
-                     site === 'jaddah' ? '{{ $progressData['jaddah'] }}%' :
-                     '{{ $progressData['alfursan'] }}%'}
-                </h3>
-            </div>
-            <div class="card-body">
-                <p class="card-title">{{ __('comparison_report.project_progress') }}</p>
-                <div class="progress-bar"
-                     style="--width: ${site === 'all' ? '{{ $progressData['all'] }}%' :
-                              site === 'dhahran' ? '{{ $progressData['dhahran'] }}%' :
-                              site === 'bashaer' ? '{{ $progressData['bashaer'] }}%' :
-                              site === 'jaddah' ? '{{ $progressData['jaddah'] }}%' :
-                              '{{ $progressData['alfursan'] }}%' };
-                            --color: var(--primary)">
+        <!-- الصف الأول - 4 بطاقات -->
+        <div class="col-xl-3 col-md-6 col-12 mb-4">
+            <div class="stat-card total-units">
+                <div class="card-header">
+                    <i class="fas fa-home"></i>
+                    <h3>${summary.total_units}</h3>
+                </div>
+                <div class="card-body">
+                    <p class="card-title">{{ __('comparison_report.total_units') }}</p>
+                    <p class="card-value"><i class="fas fa-dollar-sign"></i> ${numberFormat(summary.total_price)}</p>
+                    <div class="progress-bar" style="--width: 100%; --color: var(--${siteColor})"></div>
                 </div>
             </div>
         </div>
-    </div>
-`;
+ <div class="col-xl-3 col-md-6 col-12 mb-4">
+            <div class="stat-card beneficiary">
+                <div class="card-header">
+                    <i class="fas fa-user-check"></i>
+                    <h3>${summary.beneficiary?.count || 0} <span>(${summary.beneficiary?.percentage?.toFixed(2) || 0}%)</span></h3>
+                </div>
+                <div class="card-body">
+                    <p class="card-title">{{ __('comparison_report.beneficiary') }}</p>
+                    <p class="card-value">${summary.beneficiary?.count || 0} وحدة (${summary.beneficiary?.percentage?.toFixed(2) || 0}%)</p>
+                    <div class="progress-bar" style="--width: ${summary.beneficiary?.percentage || 0}%; --color: var(--teal)"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 col-12 mb-4">
+            <div class="stat-card non-beneficiary">
+                <div class="card-header">
+                    <i class="fas fa-user-times"></i>
+                    <h3>${summary.non_beneficiary?.count || 0} <span>(${summary.non_beneficiary?.percentage?.toFixed(2) || 0}%)</span></h3>
+                </div>
+                <div class="card-body">
+                    <p class="card-title">{{ __('comparison_report.non_beneficiary') }}</p>
+                    <p class="card-value">${summary.non_beneficiary?.count || 0} وحدة (${summary.non_beneficiary?.percentage?.toFixed(2) || 0}%)</p>
+                    <div class="progress-bar" style="--width: ${summary.non_beneficiary?.percentage || 0}%; --color: var(--secondary)"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 col-12 mb-4">
+            <div class="stat-card available">
+                <div class="card-header">
+                    <i class="fas fa-check-circle"></i>
+                    <h3>${summary.available.count} <span>(${summary.available.percentage.toFixed(2)}%)</span></h3>
+                </div>
+                <div class="card-body">
+                    <p class="card-title">{{ __('comparison_report.available') }}</p>
+                    <p class="card-value"><i class="fas fa-dollar-sign"></i> ${numberFormat(summary.available.total_value)}</p>
+                    <div class="progress-bar" style="--width: ${summary.available.percentage}%; --color: var(--info)"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 col-12 mb-4">
+            <div class="stat-card blocked">
+                <div class="card-header">
+                    <i class="fas fa-lock"></i>
+                    <h3>${summary.blocked.count} <span>(${summary.blocked.percentage.toFixed(2)}%)</span></h3>
+                </div>
+                <div class="card-body">
+                    <p class="card-title">{{ __('comparison_report.blocked') }}</p>
+                    <p class="card-value"><i class="fas fa-dollar-sign"></i> ${numberFormat(summary.blocked.total_value)}</p>
+                    <div class="progress-bar" style="--width: ${summary.blocked.percentage}%; --color: var(--warning)"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 col-12 mb-4">
+            <div class="stat-card reserved">
+                <div class="card-header">
+                    <i class="fas fa-handshake"></i>
+                    <h3>${summary.reserved.count} <span>(${summary.reserved.percentage.toFixed(2)}%)</span></h3>
+                </div>
+                <div class="card-body">
+                    <p class="card-title">{{ __('comparison_report.reserved') }}</p>
+                    <p class="card-value"><i class="fas fa-dollar-sign"></i> ${numberFormat(summary.reserved.total_value)}</p>
+                    <div class="progress-bar" style="--width: ${summary.reserved.percentage}%; --color: var(--danger)"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- الصف الثاني - 4 بطاقات -->
+        <div class="col-xl-3 col-md-6 col-12 mb-4">
+            <div class="stat-card contracted">
+                <div class="card-header">
+                    <i class="fas fa-file-contract"></i>
+                    <h3>${summary.contracted.count} <span>(${summary.contracted.percentage.toFixed(2)}%)</span></h3>
+                </div>
+                <div class="card-body">
+                    <p class="card-title">{{ __('comparison_report.contracted') }}</p>
+                    <p class="card-value"><i class="fas fa-dollar-sign"></i> ${numberFormat(summary.contracted.total_value)}</p>
+                    <div class="progress-bar" style="--width: ${summary.contracted.percentage}%; --color: var(--success)"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 col-12 mb-4">
+            <div class="stat-card overall">
+                <div class="card-header">
+                    <i class="fas fa-dollar-sign"></i>
+                    <h3>${summary.reserved.count + summary.contracted.count}</h3>
+                </div>
+                <div class="card-body">
+                    <p class="card-title">{{ __('comparison_report.overall_reserved_contracted') }}</p>
+                    <p class="card-value"><i class="fas fa-dollar-sign"></i> ${numberFormat(summary.overall_value)}</p>
+                    <div class="progress-bar" style="--width: ${summary.overall_progress_percentage}%; --color: var(--purple)"></div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- الصف الثالث - بطاقة تقدم المشروع في المنتصف -->
+        <div class="col-xl-12 col-md-12 col-12 mb-4">
+            <div class="row justify-content-center">
+                <div class="col-xl-4 col-md-6 col-12">
+                    <div class="stat-card progress">
+                        <div class="card-header">
+                            <i class="fas fa-chart-line"></i>
+                            <h3>
+                                ${site === 'all' ? '{{ $progressData['all'] }}%' :
+                                 site === 'dhahran' ? '{{ $progressData['dhahran'] }}%' :
+                                 site === 'bashaer' ? '{{ $progressData['bashaer'] }}%' :
+                                 site === 'jaddah' ? '{{ $progressData['jaddah'] }}%' :
+                                 '{{ $progressData['alfursan'] }}%'}
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-title">{{ __('comparison_report.project_progress') }}</p>
+                            <div class="progress-bar"
+                                 style="--width: ${site === 'all' ? '{{ $progressData['all'] }}%' :
+                                          site === 'dhahran' ? '{{ $progressData['dhahran'] }}%' :
+                                          site === 'bashaer' ? '{{ $progressData['bashaer'] }}%' :
+                                          site === 'jaddah' ? '{{ $progressData['jaddah'] }}%' :
+                                          '{{ $progressData['alfursan'] }}%' };
+                                        --color: var(--primary)">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
 }
 
             //     function updateVillaSummaryHTML(summary, site, siteColor) {
