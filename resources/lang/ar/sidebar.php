@@ -42,5 +42,13 @@ return [
     'targeted_report' => 'تقرير المستهدفين',
     'unit_sales_report' => 'تقرير مبيعات الوحدات',
     'project_plan' => 'خطة متابعة المشروع',
+    'project_plan_jaddah' => ' جدة',
+    'project_plan_dhahran' => 'الظهران',
+    'project_plan_bashaer' => 'البشائر',
+    'project_plan_alfursan' => 'الفورسان',
+    'system_management'=>'إدارة النظام',
+    'system_management_users'=>'المستخدمين',
+    'roles_permissions'=>'الدوار',
+    'system_management_permissions'=>'الصلاحيات',
 ];
 
