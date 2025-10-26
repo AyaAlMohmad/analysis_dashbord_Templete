@@ -6,65 +6,59 @@ use Illuminate\Http\Request;
 
 class CostLegislatorController extends Controller
 {
-    /**
-     * عرض نموذج تكلفة المشروع
-     */
+
     public function index()
     {
         return view('cost_legislator.index');
     }
-    
-    /**
-     * معالجة بيانات النموذج وحساب التكاليف
-     */
-   public function calculate(Request $request)
-{
-    // التحقق من الصلاحيات
-    if (!auth()->check() || !auth()->user()->is_admin) {
-        abort(403, 'Unauthorized');
+
+
+    public function calculate(Request $request)
+    {
+        // التحقق من الصلاحيات
+        if (!auth()->check() || !auth()->user()->is_admin) {
+            abort(403, 'Unauthorized');
+        }
+
+        // التحقق من البيانات المدخلة
+        $validated = $request->validate([
+            'villa_count' => 'required|integer|min:0',
+            'townhouse_count' => 'required|integer|min:0',
+            'apartment_count' => 'required|integer|min:0',
+            'villa_price' => 'required|numeric|min:0',
+            'townhouse_price' => 'required|numeric|min:0',
+            'apartment_price' => 'required|numeric|min:0',
+            'sales_months' => 'required|integer|min:1',
+            'cost_ratio' => 'required|numeric|min:0'
+        ]);
+
+
+        $results = $this->performCalculations($validated);
+
+
+        session([
+            'cost_calculation_data' => $validated,
+            'cost_calculation_results' => $results
+        ]);
+
+
+        return view('cost_legislator.results', [
+            'data' => $validated,
+            'results' => $results
+        ]);
     }
-    
-    // التحقق من البيانات المدخلة
-    $validated = $request->validate([
-        'villa_count' => 'required|integer|min:0',
-        'townhouse_count' => 'required|integer|min:0',
-        'apartment_count' => 'required|integer|min:0',
-        'villa_price' => 'required|numeric|min:0',
-        'townhouse_price' => 'required|numeric|min:0',
-        'apartment_price' => 'required|numeric|min:0',
-        'sales_months' => 'required|integer|min:1',
-        'cost_ratio' => 'required|numeric|min:0'
-    ]);
-    
-    // إجراء الحسابات
-    $results = $this->performCalculations($validated);
-    
-    // حفظ البيانات في session
-    session([
-        'cost_calculation_data' => $validated,
-        'cost_calculation_results' => $results
-    ]);
-    
-    // إرجاع النتائج
-    return view('cost_legislator.results', [
-        'data' => $validated,
-        'results' => $results
-    ]);
-}
-    
-    
-    /**
-     * تنفيذ الحسابات
-     */
+
+
+
     private function performCalculations($data)
     {
-        // حساب إجمالي الوحدات
+
         $totalUnits = $data['villa_count'] + $data['townhouse_count'] + $data['apartment_count'];
-        
+
         // حساب إجمالي قيمة المشروع
-        $totalProjectValue = ($data['villa_count'] * $data['villa_price']) + 
-                            ($data['townhouse_count'] * $data['townhouse_price']) + 
-                            ($data['apartment_count'] * $data['apartment_price']);
+        $totalProjectValue = ($data['villa_count'] * $data['villa_price']) +
+            ($data['townhouse_count'] * $data['townhouse_price']) +
+            ($data['apartment_count'] * $data['apartment_price']);
 
         // 1- تكلفة المواد والتجهيزات التسويقية الثابتة
         $fixedMarketingItems = [
@@ -79,7 +73,7 @@ class CostLegislatorController extends Controller
             ['name' => 'أجهزة', 'payment_method' => 'مرة واحدة في بداية المشروع', 'notes' => '', 'cost' => 40000],
             ['name' => 'مجسمات عرض', 'payment_method' => 'مرة واحدة في بداية المشروع', 'notes' => '', 'cost' => 75000],
         ];
-        
+
         $fixedMarketingCost = collect($fixedMarketingItems)->sum('cost');
 
         // 2- تكلفة تسويق المشروع الدورية
@@ -91,7 +85,7 @@ class CostLegislatorController extends Controller
             ['name' => 'معارض وفعاليات', 'payment_method' => 'يدفع على فترات طوال مدة المشروع (ليس مبلغ ثابت)', 'monthly_amount' => 1500, 'notes' => '', 'total_cost' => 1500 * $data['sales_months']],
             ['name' => 'مؤثرين', 'payment_method' => 'يدفع على فترات طوال مدة المشروع (ليس مبلغ ثابت)', 'monthly_amount' => 900, 'notes' => '', 'total_cost' => 900 * $data['sales_months']],
         ];
-        
+
         $recurringMarketingMonthly = collect($recurringMarketingItems)->sum('monthly_amount');
         $recurringMarketingCost = $recurringMarketingMonthly * $data['sales_months'];
 
@@ -103,7 +97,7 @@ class CostLegislatorController extends Controller
             ['position' => 'مشرف مبيعات هاتفية', 'payment_method' => 'مبلغ شهري', 'salary' => 7000, 'employee_count' => 1, 'monthly_cost' => 7000, 'notes' => '', 'total_cost' => 7000 * $data['sales_months']],
             ['position' => 'كول سنتر', 'payment_method' => 'مبلغ شهري', 'salary' => 4500, 'employee_count' => 4, 'monthly_cost' => 18000, 'notes' => '', 'total_cost' => 18000 * $data['sales_months']],
         ];
-        
+
         $salesStaffMonthly = collect($salesStaffItems)->sum('monthly_cost');
         $salesStaffTotal = $salesStaffMonthly * $data['sales_months'];
 
@@ -112,7 +106,7 @@ class CostLegislatorController extends Controller
             ['company' => 'شركة الكيان المتحدة', 'payment_method' => 'مبلغ شهري', 'notes' => '', 'monthly_amount' => 15000, 'total_cost' => 15000 * $data['sales_months']],
             ['company' => 'شركة دار الارجوان (مسار)', 'payment_method' => 'مبلغ شهري', 'notes' => '', 'monthly_amount' => 10000, 'total_cost' => 10000 * $data['sales_months']],
         ];
-        
+
         $consultancyMonthly = collect($consultancyItems)->sum('monthly_amount');
         $consultancyTotal = $consultancyMonthly * $data['sales_months'];
         $salesStaffCost = $salesStaffTotal + $consultancyTotal;
@@ -121,7 +115,7 @@ class CostLegislatorController extends Controller
         $operationalItems = [
             ['name' => 'مصاريف تشغيلية لوجستية وتشغيل مراكز ومكاتب بيع', 'payment_method' => 'مبلغ شهري تقريبي', 'notes' => '', 'monthly_amount' => 1000, 'total_cost' => 1000 * $data['sales_months']],
         ];
-        
+
         $operationalMonthly = collect($operationalItems)->sum('monthly_amount');
         $operationalCost = $operationalMonthly * $data['sales_months'];
 
@@ -134,7 +128,7 @@ class CostLegislatorController extends Controller
             ['name' => 'عمولة شركة الكيان المتحدة', 'payment_method' => 'الوحده المباعه', 'notes' => '', 'unit_amount' => 1500, 'total_cost' => 1500 * $totalUnits],
             ['name' => 'عمولة شركة دار الارجوان (مسار)', 'payment_method' => 'الوحده المباعه', 'notes' => '', 'unit_amount' => 1000, 'total_cost' => 1000 * $totalUnits],
         ];
-        
+
         $commissionUnitTotal = collect($commissionItems)->sum('unit_amount');
         $commissionCost = collect($commissionItems)->sum('total_cost');
 
@@ -145,7 +139,7 @@ class CostLegislatorController extends Controller
         return [
             'total_units' => $totalUnits,
             'total_project_value' => $totalProjectValue,
-            
+
             // التكاليف الأساسية
             'fixed_marketing_cost' => $fixedMarketingCost,
             'recurring_marketing_cost' => $recurringMarketingCost,
@@ -154,7 +148,7 @@ class CostLegislatorController extends Controller
             'total_cost_before_commission' => $totalCostBeforeCommission,
             'commission_cost' => $commissionCost,
             'total_cost' => $totalCost,
-            
+
             // البيانات التفصيلية
             'fixed_marketing_items' => $fixedMarketingItems,
             'recurring_marketing_items' => $recurringMarketingItems,
@@ -171,41 +165,39 @@ class CostLegislatorController extends Controller
             'commission_unit_total' => $commissionUnitTotal,
         ];
     }
-    
-    /**
-     * تصدير البيانات إلى Excel
-     */
+
+
     public function export(Request $request)
     {
         // التحقق من الصلاحيات
         if (!auth()->check() || !auth()->user()->is_admin) {
             abort(403, 'Unauthorized');
         }
-        
+
         $data = $request->all();
         return $this->generateExcel($data);
     }
-    
+
     /**
      * إنشاء ملف Excel
      */
     private function generateExcel($data)
     {
         $fileName = 'project_cost_' . date('Y-m-d') . '.csv';
-        
+
         $headers = [
             'Content-Type' => 'text/csv; charset=UTF-8',
             'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
         ];
 
-        $callback = function() use ($data) {
+        $callback = function () use ($data) {
             $file = fopen('php://output', 'w');
-            
+
             // Add BOM for UTF-8
             fwrite($file, "\xEF\xBB\xBF");
-            
+
             fputcsv($file, ['نوع الوحدة', 'العدد', 'متوسط السعر', 'الإجمالي']);
-            
+
             if (isset($data['villa_count'])) {
                 fputcsv($file, [
                     'فيلا',
@@ -214,7 +206,7 @@ class CostLegislatorController extends Controller
                     number_format($data['villa_count'] * $data['villa_price'])
                 ]);
             }
-            
+
             if (isset($data['townhouse_count'])) {
                 fputcsv($file, [
                     'تاون هاوس',
@@ -223,7 +215,7 @@ class CostLegislatorController extends Controller
                     number_format($data['townhouse_count'] * $data['townhouse_price'])
                 ]);
             }
-            
+
             if (isset($data['apartment_count'])) {
                 fputcsv($file, [
                     'شقة',
@@ -232,22 +224,22 @@ class CostLegislatorController extends Controller
                     number_format($data['apartment_count'] * $data['apartment_price'])
                 ]);
             }
-            
+
             fclose($file);
         };
 
         return response()->stream($callback, 200, $headers);
     }
     public function results()
-{
-    // إذا لم تكن هناك بيانات، ارجع إلى الصفحة الرئيسية
-    if (!session()->has('cost_calculation_data')) {
-        return redirect()->route('admin.cost.legislator.index');
-    }
+    {
+        // إذا لم تكن هناك بيانات، ارجع إلى الصفحة الرئيسية
+        if (!session()->has('cost_calculation_data')) {
+            return redirect()->route('admin.cost.legislator.index');
+        }
 
-    return view('cost_legislator.results', [
-        'data' => session('cost_calculation_data'),
-        'results' => session('cost_calculation_results')
-    ]);
-}
+        return view('cost_legislator.results', [
+            'data' => session('cost_calculation_data'),
+            'results' => session('cost_calculation_results')
+        ]);
+    }
 }
