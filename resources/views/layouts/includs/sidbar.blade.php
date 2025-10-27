@@ -82,6 +82,18 @@
         </li>
         @endif
 
+<li class="nav-item {{ Route::is('admin.staff-tree.index') ? 'active' : '' }}">
+    <a href="{{ route('admin.staff-tree.index') }}">
+        <i class="ft-user"></i>
+        <span>{{ __('sidebar.staff_tree') }}</span>
+    </a>
+</li>
+<li class="nav-item {{ Route::is('admin.cost.legislator.index') ? 'active' : '' }}">
+    <a href="{{ route('admin.cost.legislator.index') }}">
+        <i class="ft-user"></i>
+        <span>{{ __('sidebar.cost_legislator') }}</span>
+    </a>
+</li>
         <!-- إدارة النظام مع الصلاحيات -->
         @if (auth()->user()->hasPermission('view_users') || auth()->user()->hasPermission('view_roles'))
         <li class="nav-item has-sub {{ Route::is('admin.users.*') || Route::is('admin.roles.*') ? 'open' : '' }}">

@@ -50,5 +50,7 @@ return [
     'system_management_users'=>'المستخدمين',
     'roles_permissions'=>'الدوار',
     'system_management_permissions'=>'الصلاحيات',
+    'staff_tree'=>'شجرة الموظفين',
+    'cost_legislator'=>'حسابات التكاليف',
 ];
 

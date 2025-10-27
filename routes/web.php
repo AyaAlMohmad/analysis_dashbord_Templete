@@ -237,10 +237,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->as('admin.')->group(funct
     Route::delete('/project-plans/{site}/destroy/{id}', [ProjectPlanController::class, 'destroy'])->name('project-plans.destroy');
     Route::post('/project-plans/{site}/update-status/{id}', [ProjectPlanController::class, 'updateStatus'])->name('project-plans.update-status');
    Route::middleware(['auth', 'admin'])->group(function () {
-    Route::get('/cost-legislator', [CostLegislatorController::class, 'index'])->name('admin.cost.legislator.index');
-    Route::post('/cost-legislator/calculate', [CostLegislatorController::class, 'calculate'])->name('admin.cost.legislator.calculate');
-    Route::get('/cost-legislator/results', [CostLegislatorController::class, 'results'])->name('admin.cost.legislator.results');
-    Route::post('/cost-legislator/export', [CostLegislatorController::class, 'export'])->name('admin.cost.legislator.export');
+    Route::get('/cost-legislator', [CostLegislatorController::class, 'index'])->name('cost.legislator.index');
+    Route::post('/cost-legislator/calculate', [CostLegislatorController::class, 'calculate'])->name('cost.legislator.calculate');
+    Route::get('/cost-legislator/results', [CostLegislatorController::class, 'results'])->name('cost.legislator.results');
+    Route::post('/cost-legislator/export', [CostLegislatorController::class, 'export'])->name('cost.legislator.export');
 });
 Route::get('/staff-tree', [StaffTreeController::class, 'index'])->name('staff-tree.index');
 Route::get('/staff-tree/project/{id}', [StaffTreeController::class, 'getProject'])->name('staff-tree.project');
