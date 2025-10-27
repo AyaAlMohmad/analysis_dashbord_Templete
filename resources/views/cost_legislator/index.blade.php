@@ -1,9 +1,5 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نموذج تكلفة مشروع للنظام</title>
+@extends('layouts.app')
+@section('content')
     <style>
         * {
             box-sizing: border-box;
@@ -11,7 +7,7 @@
             padding: 0;
             font-family: Arial, sans-serif;
         }
-        
+
         body {
             background-color: white;
             color: black;
@@ -19,19 +15,19 @@
             padding: 10px;
             font-size: 12px;
         }
-        
+
         .excel-container {
             width: 100%;
             overflow-x: auto;
         }
-        
+
         .excel-table {
             width: 100%;
             border-collapse: collapse;
             min-width: 1300px;
         }
-        
-        .excel-table th, 
+
+        .excel-table th,
         .excel-table td {
             border: 1px solid #a0a0a0;
             padding: 3px 5px;
@@ -40,41 +36,41 @@
             font-weight: normal;
             height: 25px;
         }
-        
+
         .excel-table th {
             background-color: #d9e1f2;
             font-weight: bold;
             text-align: center;
         }
-        
+
         .section-header {
             background-color: #4472c4;
             color: white;
             font-weight: bold;
             text-align: center;
         }
-        
+
         .sub-header {
             background-color: #8faadc;
             color: white;
             font-weight: bold;
         }
-        
+
         .calculation {
             background-color: #f2f2f2;
         }
-        
+
         .total-row {
             background-color: #718096;
             font-weight: bold;
         }
-        
+
         .notes {
             font-style: italic;
             color: #7f7f7f;
             font-size: 11px;
         }
-        
+
         .project-title {
             text-align: center;
             font-size: 16px;
@@ -85,12 +81,12 @@
             padding: 8px;
             border: 1px solid #a0a0a0;
         }
-        
+
         .number {
             text-align: left;
             direction: ltr;
         }
-        
+
         .currency-note {
             text-align: left;
             direction: ltr;
@@ -99,13 +95,12 @@
             margin-bottom: 10px;
         }
     </style>
-</head>
-<body>
+
     <div class="currency-note">جميع المبالغ (ر.س)</div>
-    
+
     <div class="excel-container">
         <div class="project-title">موازنة مشروع الفرسان بالرياض</div>
-        
+
         <table class="excel-table">
             <!-- معلومات المشروع -->
             <tr>
@@ -158,10 +153,10 @@
                 <td style="border: none;"></td>
                 <td style="border: none;"></td>
             </tr>
-            
+
             <!-- مسافات -->
             <tr><td colspan="9" style="border: none; height: 15px;"></td></tr>
-            
+
             <!-- تكلفة تسويق ومبيعات المشروع - ملخص -->
             <tr class="section-header">
                 <td colspan="2">تكلفة تسويق ومبيعات المشروع - ملخص</td>
@@ -218,15 +213,15 @@
                 <td style="border: none;"></td>
                 <td style="border: none;"></td>
             </tr>
-            
+
             <!-- مسافات -->
             <tr><td colspan="9" style="border: none; height: 15px;"></td></tr>
-            
+
             <!-- تكلفة تسويق ومبيعات المشروع - تفصيلي -->
             <tr class="section-header">
                 <td colspan="9">تكلفة تسويق ومبيعات المشروع - تفصيلي</td>
             </tr>
-            
+
             <!-- 1- تكلفة المواد والتجهيزات التسويقية الثابته -->
             <tr class="sub-header">
                 <td colspan="2">1- تكلفة المواد والتجهيزات التسويقية الثابته</td>
@@ -304,10 +299,10 @@
                 <td colspan="5"></td>
                 <td colspan="3" class="number">45</td>
             </tr>
-            
+
             <!-- مسافات -->
             <tr><td colspan="9" style="border: none; height: 10px;"></td></tr>
-            
+
             <!-- 2- تكلفة تسويق المشروع الدورية -->
             <tr class="sub-header">
                 <td colspan="2">2- تكلفة تسويق المشروع الدورية</td>
@@ -324,7 +319,7 @@
                 <td>طريقة الدفع</td>
                 <td colspan="3" style="border: none;"></td>
                 <td>المبلغ الشهري</td>
-                
+
                 <td>ملاحظات</td>
                 <td colspan="2">إجمالي التكلفة</td>
             </tr>
@@ -384,10 +379,10 @@
                 <td></td>
                 <td colspan="2" class="number">840</td>
             </tr>
-            
+
             <!-- مسافات -->
             <tr><td colspan="9" style="border: none; height: 10px;"></td></tr>
-            
+
             <!-- 3- التكلفة الشهرية لموظفين المبيعات واستشارات شركة كيان وشركة مسار -->
             <tr class="sub-header">
                 <td colspan="9">3- التكلفة الشهرية لموظفين المبيعات واستشارات شركة كيان وشركة مسار</td>
@@ -460,10 +455,10 @@
                 <td></td>
                 <td colspan="3" class="number">440</td>
             </tr>
-            
+
             <!-- مسافات -->
             <tr><td colspan="9" style="border: none; height: 10px;"></td></tr>
-            
+
             <!-- تكلفة شركات الاستشارات -->
             <tr class="sub-header">
                 <td colspan="2">تكلفة شركات الاستشارات</td>
@@ -505,10 +500,10 @@
                 <td class="number">14</td>
                 <td colspan="3" class="number">560</td>
             </tr>
-            
+
             <!-- مسافات -->
             <tr><td colspan="9" style="border: none; height: 10px;"></td></tr>
-            
+
             <!-- 4- المصاريف العمومية الدورية -->
             <tr class="sub-header">
                 <td colspan="2">4- المصاريف العمومية الدورية</td>
@@ -536,10 +531,10 @@
                 <td class="number">1</td>
                 <td colspan="2" class="number">40</td>
             </tr>
-            
+
             <!-- مسافات -->
             <tr><td colspan="9" style="border: none; height: 15px;"></td></tr>
-            
+
             <!-- توزيع العمولات -->
             <tr class="sub-header">
                 <td colspan="2">توزيع العمولات</td>
@@ -604,5 +599,4 @@
             </tr>
         </table>
     </div>
-</body>
-</html>
+@endsection
