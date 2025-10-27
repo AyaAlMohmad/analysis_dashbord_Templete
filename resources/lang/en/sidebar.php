@@ -49,6 +49,9 @@ return [
     'system_management_users'=>'Users',
     'roles_permissions'=>'Roles',
     'system_management_permissions'=>'Permissions',
+    'staff_tree'=>'Staff Tree',
+    'cost_legislator'=>'Cost Legislator',
+    
 
 
 ];
