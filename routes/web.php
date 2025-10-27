@@ -37,6 +37,10 @@ use App\Http\Controllers\TeamController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProjectPlanController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\CostLegislatorController;
+use App\Http\Controllers\StaffTreeController;
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -126,10 +130,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->as('admin.')->group(funct
 
     // Routes إضافية
     Route::get('/users/{user}/manage-permissions', [UserController::class, 'managePermissions'])
-         ->name('users.manage-permissions');
+        ->name('users.manage-permissions');
 
     Route::put('/users/{user}/update-permissions', [UserController::class, 'updatePermissions'])
-         ->name('users.update-permissions');
+        ->name('users.update-permissions');
 
     Route::get('/project-progress', [ProjectProgressController::class, 'index'])->name('project-progress.index');
     Route::get('/project-progress/create', [ProjectProgressController::class, 'create'])->name('project-progress.create');
@@ -220,6 +224,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->as('admin.')->group(funct
     Route::get('/comprehensive/site/{id}', [SiteController::class, 'show'])->name('comprehensive.site.show');
     Route::post('/comprehensive/site/store-or-update', [SiteController::class, 'storeOrUpdate'])->name('comprehensive.site.storeOrUpdate');
 
+    Route::get('/campaign/tags', [CrmAdvertisingCampaignController::class, 'getTags'])->name('campaign.tags');
+
     Route::delete('/comprehensive/site/{site}', [SiteController::class, 'destroy'])->name('comprehensive.site.destroy');
 
     // جميع الرواتب تأخذ site كمعامل
@@ -230,8 +236,14 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->as('admin.')->group(funct
     Route::put('/project-plans/{site}/update/{id}', [ProjectPlanController::class, 'update'])->name('project-plans.update');
     Route::delete('/project-plans/{site}/destroy/{id}', [ProjectPlanController::class, 'destroy'])->name('project-plans.destroy');
     Route::post('/project-plans/{site}/update-status/{id}', [ProjectPlanController::class, 'updateStatus'])->name('project-plans.update-status');
-
-
+   Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/cost-legislator', [CostLegislatorController::class, 'index'])->name('admin.cost.legislator.index');
+    Route::post('/cost-legislator/calculate', [CostLegislatorController::class, 'calculate'])->name('admin.cost.legislator.calculate');
+    Route::get('/cost-legislator/results', [CostLegislatorController::class, 'results'])->name('admin.cost.legislator.results');
+    Route::post('/cost-legislator/export', [CostLegislatorController::class, 'export'])->name('admin.cost.legislator.export');
+});
+Route::get('/staff-tree', [StaffTreeController::class, 'index'])->name('staff-tree.index');
+Route::get('/staff-tree/project/{id}', [StaffTreeController::class, 'getProject'])->name('staff-tree.project');
 });
 Route::get('/api/sites/filter', [SiteController::class, 'filterByDate'])->name('api.sites.filter');
 require __DIR__ . '/auth.php';

@@ -13,7 +13,8 @@
             {{ __('messages.monthly_appointments') }}
         </h2>
         <div style="font-size: 20px; color: #5c4033; margin-top: 10px;"> {{ __('components.month') }}
-            {{ now()->format('F') }}</div>
+            {{ now()->format('F') }}
+        </div>
     </div>
 
     <!-- Main Content -->
@@ -76,8 +77,10 @@
                         <th style="padding: 10px; border: 1px solid #ccc;"> {{ __('components.appointments') }}</th>
                         <th style="padding: 10px; border: 1px solid #ccc;"> {{ __('components.visited') }}</th>
                         <th style="padding: 10px; border: 1px solid #ccc;"> {{ __('components.success_rate') }} </th>
-                        <th style="padding: 10px; border: 1px solid #ccc;"> {{ __('components.external_visit_leads_count') }} </th>
-                        <th style="padding: 10px; border: 1px solid #ccc;"> {{ __('components.external_visit_leads') }} </th>
+                        <th style="padding: 10px; border: 1px solid #ccc;">
+                            {{ __('components.external_visit_leads_count') }} </th>
+                        <th style="padding: 10px; border: 1px solid #ccc;"> {{ __('components.external_visit_leads') }}
+                        </th>
 
                     </tr>
                 </thead>
@@ -93,10 +96,10 @@
                             % {{ number_format($percentage, 2) }}
                         </td>
                         <td style="padding: 10px; border: 1px solid #ccc;">
-                            {{ $data['external_visit_leads_count'] }}
+                            {{ $data['external_visit_leads_count'] ?? 0 }}
                         </td>
                         <td style="padding: 10px; border: 1px solid #ccc;">
-                            % {{ number_format($percentageExternalVisitLeads, 2) }}
+                            % {{ number_format($percentageExternalVisitLeads ?? 0, 2) }}
                         </td>
                     </tr>
                 </tbody>
@@ -115,7 +118,7 @@
 
         @elseif(isset($project_name) && $project_name == 'أزيان الفرسان')
             <img src="{{ asset('images/alfursan.png') }}" alt="Azyan Logo Farsan" style="height: 50px;">
-            @elseif (!empty($logo) && file_exists(public_path('storage/' . $logo)))
+        @elseif (!empty($logo) && file_exists(public_path('storage/' . $logo)))
             <img src="{{ asset('storage/' . $logo) }}" alt="Site Logo" style="height: 50px;">
         @else
             <span style="font-size: 14px; color: #8b5a3b; font-weight: bold;">{{ $project_name }}</span>

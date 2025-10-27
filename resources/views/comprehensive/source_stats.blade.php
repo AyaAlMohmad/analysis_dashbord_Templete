@@ -33,7 +33,7 @@
                         <th style="border: 1px solid #ccc;"> {{__('components.contract_rate_from_registrations')}}  </th>
                     </tr>
                 </thead>
-                <tbody>
+                <!-- <tbody>
                     @foreach($data['sources'] as $source)
                         <tr @if(str_contains($source['source_name'], 'WA-Interested')) style="background-color: #e0f2f1;" @endif>
                             <td style="border: 1px solid #ccc;">{{ $source['source_name'] }}</td>
@@ -56,7 +56,32 @@
                         <td style="border: 1px solid #ccc;">{{ $data['totals']['contract_leads'] }}</td>
                         <td style="border: 1px solid #ccc;">{{ number_format($data['totals']['contract_from_paid_percent'], 2) }}%</td>
                     </tr>
-                </tbody>
+                </tbody> -->
+                <tbody>
+    @foreach($data['sources'] as $source)
+        <tr @if(str_contains($source['source_name'], 'WA-Interested')) style="background-color: #e0f2f1;" @endif>
+            <td style="border: 1px solid #ccc;">{{ $source['source_name'] }}</td>
+            <td style="border: 1px solid #ccc;">{{ $source['total_leads'] }}</td>
+            <td style="border: 1px solid #ccc;">{{ $source['visited_leads'] }}</td>
+            <td style="border: 1px solid #ccc;">{{ number_format($source['visited_percent'], 2) }}%</td>
+            <td style="border: 1px solid #ccc;">{{ $source['paid_leads'] }}</td>
+            <td style="border: 1px solid #ccc;">{{ number_format($source['paid_from_visited_percent'], 2) }}%</td>
+            <td style="border: 1px solid #ccc;">{{ $source['contract_leads'] }}</td>
+            <td style="border: 1px solid #ccc;">{{ number_format($source['contract_from_paid_percent'], 2) }}%</td>
+        </tr>
+    @endforeach
+
+    <tr style="font-weight: bold; background-color: #ffe082;">
+        <td style="border: 1px solid #ccc;">{{__('components.total')}}</td>
+        <td style="border: 1px solid #ccc;">{{ $data['totals']['total_leads'] ?? 0 }}</td>
+        <td style="border: 1px solid #ccc;">{{ $data['totals']['visited_leads'] ?? 0 }}</td>
+        <td style="border: 1px solid #ccc;">{{ number_format($data['totals']['visited_percent'] ?? 0, 2) }}%</td>
+        <td style="border: 1px solid #ccc;">{{ $data['totals']['paid_leads'] ?? 0 }}</td>
+        <td style="border: 1px solid #ccc;">{{ number_format($data['totals']['paid_from_visited_percent'] ?? 0, 2) }}%</td>
+        <td style="border: 1px solid #ccc;">{{ $data['totals']['contract_leads'] ?? 0 }}</td>
+        <td style="border: 1px solid #ccc;">{{ number_format($data['totals']['contract_from_paid_percent'] ?? 0, 2) }}%</td>
+    </tr>
+</tbody>
             </table>
         </div>
     </div>
