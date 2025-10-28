@@ -39,6 +39,7 @@ use App\Http\Controllers\ProjectPlanController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\CostLegislatorController;
 use App\Http\Controllers\StaffTreeController;
+use App\Http\Controllers\FinalContractsController;
 
 
 
@@ -236,14 +237,26 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->as('admin.')->group(funct
     Route::put('/project-plans/{site}/update/{id}', [ProjectPlanController::class, 'update'])->name('project-plans.update');
     Route::delete('/project-plans/{site}/destroy/{id}', [ProjectPlanController::class, 'destroy'])->name('project-plans.destroy');
     Route::post('/project-plans/{site}/update-status/{id}', [ProjectPlanController::class, 'updateStatus'])->name('project-plans.update-status');
-   Route::middleware(['auth', 'admin'])->group(function () {
-    Route::get('/cost-legislator', [CostLegislatorController::class, 'index'])->name('cost.legislator.index');
-    Route::post('/cost-legislator/calculate', [CostLegislatorController::class, 'calculate'])->name('cost.legislator.calculate');
-    Route::get('/cost-legislator/results', [CostLegislatorController::class, 'results'])->name('cost.legislator.results');
-    Route::post('/cost-legislator/export', [CostLegislatorController::class, 'export'])->name('cost.legislator.export');
-});
-Route::get('/staff-tree', [StaffTreeController::class, 'index'])->name('staff-tree.index');
-Route::get('/staff-tree/project/{id}', [StaffTreeController::class, 'getProject'])->name('staff-tree.project');
+    Route::middleware(['auth', 'admin'])->group(function () {
+        Route::get('/cost-legislator', [CostLegislatorController::class, 'index'])->name('cost.legislator.index');
+        Route::post('/cost-legislator/calculate', [CostLegislatorController::class, 'calculate'])->name('cost.legislator.calculate');
+        Route::get('/cost-legislator/results', [CostLegislatorController::class, 'results'])->name('cost.legislator.results');
+        Route::post('/cost-legislator/export', [CostLegislatorController::class, 'export'])->name('cost.legislator.export');
+    });
+    Route::get('/staff-tree', [StaffTreeController::class, 'index'])->name('staff-tree.index');
+    Route::get('/staff-tree/project/{id}', [StaffTreeController::class, 'getProject'])->name('staff-tree.project');
+    Route::prefix('final-contracts')->group(function () {
+        Route::get('/', [FinalContractsController::class, 'index'])->name('final-contracts.index');
+        Route::get('/search', [FinalContractsController::class, 'search'])->name('final-contracts.search');
+        Route::get('/export', [FinalContractsController::class, 'exportExcel'])->name('final-contracts.export');
+        Route::get('/create', [FinalContractsController::class, 'create'])->name('final-contracts.create');
+        Route::post('/', [FinalContractsController::class, 'store'])->name('final-contracts.store');
+        Route::get('/{id}', [FinalContractsController::class, 'show'])->name('final-contracts.show');
+        Route::get('/{id}/edit', [FinalContractsController::class, 'edit'])->name('final-contracts.edit');
+        Route::put('/{id}', [FinalContractsController::class, 'update'])->name('final-contracts.update');
+        Route::delete('/{id}', [FinalContractsController::class, 'destroy'])->name('final-contracts.destroy');
+        Route::get('/statistics/overview', [FinalContractsController::class, 'statistics'])->name('final-contracts.statistics');
+    });
 });
 Route::get('/api/sites/filter', [SiteController::class, 'filterByDate'])->name('api.sites.filter');
 require __DIR__ . '/auth.php';

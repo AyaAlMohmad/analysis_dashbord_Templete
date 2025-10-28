@@ -124,6 +124,7 @@ class StaffTreeController extends Controller
         ];
     }
     
+    
     public function index() {
         return view('staff_tree.index', [
             'projects' => $this->projects,
@@ -138,4 +139,11 @@ class StaffTreeController extends Controller
         }
         return $total;
     }
+    public function getProject($id) {
+        if (isset($this->projects[$id])) {
+            return response()->json($this->projects[$id]);
+        }
+        return response()->json(['error' => 'Project not found'], 404);
+    }
 }
+

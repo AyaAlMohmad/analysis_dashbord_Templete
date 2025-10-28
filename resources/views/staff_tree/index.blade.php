@@ -405,6 +405,7 @@
     @foreach($projects as $project)
     <div class="page">
         <div class="project-title">{{ $project['name'] }}</div>
+        
 
         @if(isset($project['manager']))
         <div class="manager-box">
