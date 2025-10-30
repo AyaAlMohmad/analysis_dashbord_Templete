@@ -3,147 +3,256 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class StaffTreeController extends Controller
 {
-    private $projects;
-    
-    public function __construct() {
-        $this->projects = [
-            [
-                'name' => 'مشروع ازيان نمار',
-                'manager' => 'اصيل السلمي',
-                'manager_title' => 'مدير علاقة (مكلف بإدارة التسليم)',
-                'employees' => [
-                    'متعب العجمي',
-                    'إبراهيم الدوسري', 
-                    'عبد الرحمن العمودي',
-                    'نواف القحطاني',
-                    'محمد الشهري',
-                    'نايف الهمامي'
-                ],
-                'service_title' => 'خدمة عملاء ما بعد البيع',
-                'departments' => ['ادارة الكيان', 'ادارة التطوير الشامل'],
-                'total_employees' => 7
-            ],
-            [
-                'name' => 'مشروع ازيان خزام',
-                'positions' => [
-                    'المدير التنفيذي للمبيعات' => ['فهد عطرجي'],
-                    'مسؤول دعم المبيعات' => ['عمار النجار'],
-                    'مدير المبيعات الهاتفية' => ['مشاعل الشهراني'],
-                    'مشرف المبيعات' => ['طارق عاروده (لم تتم المباشرة)'],
-                    'مبيعات هاتفية' => ['بشرى الغبيوي', 'رغد المسعري', 'رهف العريفي'],
-                    'استشاري مبيعات' => ['عبد الله العمودي', 'عبد الرحمن باسرده', 'عيسى العبسي', 'عبد الله المضيان']
-                ],
-                'departments' => ['ادارة الكيان', 'ادارة التطوير الشامل'],
-                'total_employees' => 10,
-                'current_employees' => true
-            ],
-            [
-                'name' => 'مشروع ازيان الفرسان',
-                'status' => 'لم يتم الإطلاق',
-                'positions' => [
-                    'المدير التنفيذي للمبيعات' => ['فهد عطرجي'],
-                    'مدير المبيعات الهاتفية' => ['شاغر'],
-                    'مشرف المبيعات' => ['شاغر'],
-                    'مبيعات هاتفية' => ['شاغر', 'شاغر', 'شاغر'],
-                    'استشاري مبيعات' => ['شاغر', 'شاغر', 'شاغر'],
-                    'منسق عقود المبيعات' => ['شاغر']
-                ],
-                'departments' => ['ادارة الكيان', 'ادارة التطوير الشامل'],
-                'total_employees' => 1
-            ],
-            [
-                'name' => 'مشروع ازيان بريدة',
-                'positions' => [
-                    'المدير التنفيذي للمبيعات' => ['فهد عطرجي'],
-                    'منسق عقود المبيعات' => ['شاغر'],
-                    'مبيعات هاتفية' => ['امل الحربي', 'ابتسام الذياب', 'نوف الحبرتي'],
-                    'مدير المبيعات الهاتفية' => ['شاغر'],
-                    'مشرف المبيعات' => ['احمد الحربي (لم تتم المباشرة)'],
-                    'استشاري مبيعات' => ['فيصل المضيان', 'ندى', 'محمد العشري']
-                ],
-                'departments' => ['ادارة الكيان', 'ادارة التطوير الشامل'],
-                'total_employees' => 8
-            ],
-            [
-                'name' => 'مشروع ازيان هضبة',
-                'positions' => [
-                    'المدير التنفيذي للمبيعات' => ['فهد عطرجي'],
-                    'مبيعات هاتفية' => ['شيم الغامدي', 'روان السعدي', 'هتون ابراهيم'],
-                    'مدير المبيعات الهاتفية' => ['سهى الفريدي'],
-                    'مشرف المبيعات' => ['منصور بن فريج'],
-                    'استشاري مبيعات' => ['محمد الشمراني', 'احمد مشاط', 'احمد الجاوي', 'ربى الغامدي', 'ممدوح المطيري'],
-                    'منسق عقود المبيعات' => ['براء النجار']
-                ],
-                'departments' => ['ادارة التطوير الشامل', 'ادارة الكيان'],
-                'total_employees' => 12
-            ],
-            [
-                'name' => 'مشروع ازيان جدة',
-                'positions' => [
-                    'المدير التنفيذي للمبيعات' => ['فهد عطرجي'],
-                    'مبيعات هاتفية' => ['احلام الزهراني (لم تتم المباشرة)', 'ريم الزهراني', 'فرح الشهري (لم تتم المباشرة)'],
-                    'مدير المبيعات الهاتفية' => ['شاغر'],
-                    'مشرف المبيعات' => ['وليد بن شحبل'],
-                    'استشاري مبيعات' => ['شاغر', 'احمد الجاوي', 'محمد الشمراني', 'شاغر', 'شاغر'],
-                    'منسق عقود المبيعات' => ['شاغر']
-                ],
-                'departments' => ['ادارة التطوير الشامل', 'ادارة الكيان'],
-                'total_employees' => 5,
-                'current_employees' => true
-            ],
-            [
-                'name' => 'مشروع ازيان البشاير',
-                'positions' => [
-                    'المدير التنفيذي للمبيعات' => ['فهد عطرجي'],
-                    'مبيعات هاتفية' => ['رزان الاصبحي (لم تتم المباشرة)', 'منار السلمي', 'وفاء عسيري (لم تتم المباشرة)'],
-                    'مدير المبيعات الهاتفية' => ['شاغر'],
-                    'مشرف المبيعات' => ['شاغر'],
-                    'استشاري مبيعات' => ['شاغر', 'شاغر', 'شاغر', 'شاغر', 'شاغر'],
-                    'منسق عقود المبيعات' => ['شاغر']
-                ],
-                'departments' => ['ادارة التطوير الشامل', 'ادارة الكيان'],
-                'total_employees' => 2,
-                'current_employees' => true
-            ],
-            [
-                'name' => 'مشروع ازيان الظهران',
-                'positions' => [
-                    'المدير التنفيذي للمبيعات' => ['فهد عطرجي'],
-                    'مبيعات هاتفية' => ['اريج كركدان (لم تتم المباشرة)', 'رهف الغامدي', 'لمى السليماني (لم تتم المباشرة)', 'شاغر', 'شاغر'],
-                    'مدير المبيعات الهاتفية' => ['شاغر'],
-                    'مشرف المبيعات' => ['شاغر'],
-                    'استشاري مبيعات' => ['ناصر المالكي', 'شاغر', 'شاغر', 'عبد الرحمن اليامي', 'شاغر']
-                ],
-                'departments' => ['ادارة التطوير الشامل', 'ادارة الكيان'],
-                'total_employees' => 4,
-                'current_employees' => true
+    protected $reportView = 'staff_tree.index';
+    protected $formRouteName = 'admin.comprehensive.staff-tree.process';
+
+    public function index(Request $request)
+    {
+        $albashaerStaffTree = $this->getAlbashaerStaffTreeReport();
+        $dhahranStaffTree = $this->getDhahranStaffTreeReport();
+        $jeddahStaffTree = $this->getJeddahStaffTreeReport();
+        $alfursanStaffTree = $this->getAlfursanStaffTreeReport();
+
+        return view($this->reportView, [
+            'albashaerStaffTree' => $albashaerStaffTree,
+            'dhahranStaffTree' => $dhahranStaffTree,
+            'jeddahStaffTree' => $jeddahStaffTree,
+            'alfursanStaffTree' => $alfursanStaffTree,
+        ]);
+    }
+
+    private function getAlbashaerStaffTreeReport()
+    {
+        try {
+            $response = Http::get('https://crm.azyanalbashaer.com/api/custom-reports/api_staff_tree');
+
+            if ($response->successful()) {
+                $data = $response->json();
+
+                if ($data['status'] ?? false) {
+                    return $this->transformStaffData($data, 'البشائر');
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error("Albashaer Staff Tree API Error: " . $e->getMessage());
+        }
+
+        return [
+            'status' => false,
+            'message' => 'Failed to fetch staff tree report from Albashaer API',
+            'data' => [],
+        ];
+    }
+
+    private function getDhahranStaffTreeReport()
+    {
+        try {
+            $response = Http::get('https://crm.azyanaldhahran.com/api/custom-reports/api_staff_tree');
+
+            if ($response->successful()) {
+                $data = $response->json();
+
+                if ($data['status'] ?? false) {
+                    return $this->transformStaffData($data, 'الظهران');
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error("Dhahran Staff Tree API Error: " . $e->getMessage());
+        }
+
+        return [
+            'status' => false,
+            'message' => 'Failed to fetch staff tree report from Dhahran API',
+            'data' => [],
+        ];
+    }
+
+    private function getJeddahStaffTreeReport()
+    {
+        try {
+            $response = Http::get('https://crm.azyanjeddah.com/api/custom-reports/api_staff_tree');
+
+            if ($response->successful()) {
+                $data = $response->json();
+
+                if ($data['status'] ?? false) {
+                    return $this->transformStaffData($data, 'جدة');
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error("Jeddah Staff Tree API Error: " . $e->getMessage());
+        }
+
+        return [
+            'status' => false,
+            'message' => 'Failed to fetch staff tree report from Jeddah API',
+            'data' => [],
+        ];
+    }
+
+    private function getAlfursanStaffTreeReport()
+    {
+        try {
+            $response = Http::get('https://crm.azyanalfursan.com/api/custom-reports/api_staff_tree');
+
+            if ($response->successful()) {
+                $data = $response->json();
+
+                if ($data['status'] ?? false) {
+                    return $this->transformStaffData($data, 'الفرسان');
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error("Alfursan Staff Tree API Error: " . $e->getMessage());
+        }
+
+        return [
+            'status' => false,
+            'message' => 'Failed to fetch staff tree report from Alfursan API',
+            'data' => [],
+        ];
+    }
+
+    private function transformStaffData($apiData, $projectName)
+    {
+        // البيانات بتكون في apiData['data']['staff'] و apiData['data']['roles']
+        $staffData = $apiData['data']['staff'] ?? [];
+        $rolesData = $apiData['data']['roles'] ?? [];
+
+        logger('Staff Data Count for ' . $projectName . ': ' . count($staffData));
+        logger('Roles Data Count for ' . $projectName . ': ' . count($rolesData));
+
+        // إذا ما في بيانات، رجع مصفوفة فاضية
+        if (empty($staffData)) {
+            return [
+                'status' => true,
+                'data' => [
+                    'manager' => '',
+                    'manager_title' => '',
+                    'service_title' => 'خدمات ' . $projectName,
+                    'total_employees' => 0,
+                    'employees' => [],
+                    'positions' => [],
+                    'departments' => [],
+                ]
+            ];
+        }
+
+        // استخراج البيانات الحقيقية
+        $manager = $this->extractManager($staffData);
+        $positions = $this->groupEmployeesByRole($staffData, $rolesData);
+        $employees = $this->extractEmployeeNames($staffData);
+        $departments = $this->extractDepartmentsFromRoles($rolesData);
+
+        return [
+            'status' => true,
+            'data' => [
+                'manager' => $manager['name'] ?? '',
+                'manager_title' => $manager['role_name'] ?? '',
+                'service_title' => 'خدمات ' . $projectName,
+                'total_employees' => count($staffData),
+                'employees' => $employees,
+                'positions' => $positions,
+                'departments' => $departments,
             ]
         ];
     }
-    
-    
-    public function index() {
-        return view('staff_tree.index', [
-            'projects' => $this->projects,
-            'totalEmployees' => $this->getTotalEmployees()
-        ]);
-    }
-    
-    private function getTotalEmployees() {
-        $total = 0;
-        foreach ($this->projects as $project) {
-            $total += $project['total_employees'];
+
+    private function extractManager($staffData)
+    {
+        // خذ أول موظف نشط كمدير
+        foreach ($staffData as $employee) {
+            if (($employee['active'] ?? '0') === '1') {
+                $name = $this->getArabicName($employee);
+                if (!empty(trim($name))) {
+                    return [
+                        'name' => $name,
+                        'role_name' => $employee['role_name'] ?? 'مدير'
+                    ];
+                }
+            }
         }
-        return $total;
+        
+        return ['name' => '', 'role_name' => ''];
     }
-    public function getProject($id) {
-        if (isset($this->projects[$id])) {
-            return response()->json($this->projects[$id]);
+
+    private function getArabicName($employee)
+    {
+        try {
+            $firstNameJson = $employee['firstname'] ?? '{"ar": ""}';
+            $lastNameJson = $employee['lastname'] ?? '{"ar": ""}';
+            
+            $firstNameArray = json_decode($firstNameJson, true) ?? [];
+            $lastNameArray = json_decode($lastNameJson, true) ?? [];
+            
+            $firstName = $firstNameArray['ar'] ?? $employee['firstname'] ?? '';
+            $lastName = $lastNameArray['ar'] ?? $employee['lastname'] ?? '';
+            
+            return trim($firstName . ' ' . $lastName);
+        } catch (\Exception $e) {
+            return $employee['firstname'] . ' ' . $employee['lastname'];
         }
-        return response()->json(['error' => 'Project not found'], 404);
+    }
+
+    private function groupEmployeesByRole($staffData, $rolesData)
+    {
+        $positions = [];
+        
+        // إنشاء lookup table للأدوار
+        $rolesLookup = [];
+        foreach ($rolesData as $role) {
+            $rolesLookup[$role['roleid']] = $role['name'];
+        }
+        
+        foreach ($staffData as $employee) {
+            $roleId = $employee['role'];
+            $roleName = $rolesLookup[$roleId] ?? $employee['role_name'] ?? 'موظف';
+            $employeeName = $this->getArabicName($employee);
+            
+            if (empty(trim($employeeName))) {
+                continue; // تخطى إذا الاسم فاضي
+            }
+            
+            if (!isset($positions[$roleName])) {
+                $positions[$roleName] = [];
+            }
+            
+            $positions[$roleName][] = $employeeName;
+        }
+        
+        return $positions;
+    }
+
+    private function extractEmployeeNames($staffData)
+    {
+        $names = [];
+        
+        foreach ($staffData as $employee) {
+            $name = $this->getArabicName($employee);
+            if (!empty(trim($name))) {
+                $names[] = $name;
+            }
+        }
+        
+        return array_slice($names, 0, 10); // خذ أول 10 موظفين فقط
+    }
+
+    private function extractDepartmentsFromRoles($rolesData)
+    {
+        $departments = [];
+        
+        foreach ($rolesData as $role) {
+            $roleName = $role['name'];
+            if (!in_array($roleName, $departments)) {
+                $departments[] = $roleName;
+            }
+        }
+        
+        return $departments;
     }
 }
-

@@ -23,7 +23,6 @@
             position: relative;
         }
 
-        /* تصميم الصفحات بنفس أسلوب قسم khozam */
         .project-section {
             background-color: #f9f6f2;
             padding: 60px 20px;
@@ -213,7 +212,6 @@
             text-align: center;
         }
 
-        /* الأقسام الإضافية */
         .logo-section {
             background: linear-gradient(45deg, #4b3a3a 0%, #794D30 70%, #3b2b20 100%);
             color: white;
@@ -312,6 +310,16 @@
                 transform: rotate(360deg);
             }
         }
+
+        .error-message {
+            background: #ffebee;
+            border: 1px solid #e53935;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            margin: 10px 0;
+        }
     </style>
 
     <div id="report-content">
@@ -335,31 +343,33 @@
             </div>
         </div>
 
-        <!-- قسم khozam الأصلي -->
-        <div class="page-section">
-            <div class="project-section">
-                <div class="project-logo-right">
-                    <img src="{{ asset('build/logo.png') }}" alt="Tatwir Logo" style="height: 60px;">
-                </div>
-                <div class="project-logo-top">
-                    <img src="{{ asset('images/kayan.png') }}" alt="Kayan Logo" style="height: 60px;">
-                </div>
-                <div class="project-content">
-                    <div style="margin-bottom: 30px;">
-                        <img src="{{ asset('images/logo5.png') }}" alt="Project Logo" style="height:200px;">
-                    </div>
-                    <div style="margin-top: 20px; font-size: 18px; color: #8b5a3b;">
-                        Please select a date range from the form
-                    </div>
-                </div>
-                <div class="project-decoration">
-                    <img src="{{ asset('images/stayle.png') }}" alt="Decoration" style="height: 400px;">
-                </div>
-            </div>
-        </div>
+        <!-- صفحات المشاريع -->
+        @php
+            $projects = [
+                'albashaer' => [
+                    'name' => 'مشروع البشائر',
+                    'data' => $albashaerStaffTree['data'] ?? [],
+                    'status' => $albashaerStaffTree['status'] ?? false
+                ],
+                'dhahran' => [
+                    'name' => 'مشروع الظهران', 
+                    'data' => $dhahranStaffTree['data'] ?? [],
+                    'status' => $dhahranStaffTree['status'] ?? false
+                ],
+                'jeddah' => [
+                    'name' => 'مشروع جدة',
+                    'data' => $jeddahStaffTree['data'] ?? [],
+                    'status' => $jeddahStaffTree['status'] ?? false
+                ],
+                'alfursan' => [
+                    'name' => 'مشروع الفرسان',
+                    'data' => $alfursanStaffTree['data'] ?? [],
+                    'status' => $alfursanStaffTree['status'] ?? false
+                ]
+            ];
+        @endphp
 
-        <!-- صفحات المشاريع بنفس التصميم -->
-        @foreach($projects as $project)
+        @foreach($projects as $projectKey => $project)
         <div class="page-section">
             <div class="project-section">
                 <div class="project-logo-right">
@@ -372,64 +382,69 @@
                 <div class="project-content">
                     <div class="project-title">{{ $project['name'] }}</div>
 
-                    @if(isset($project['manager']))
-                    <div class="manager-box">
-                        <div class="manager-title">
-                            @if(isset($project['manager_title']))
-                                {{ $project['manager_title'] }}
-                            @else
-                                المدير التنفيذي للمبيعات
-                            @endif
+                    @if(!$project['status'] || empty($project['data']))
+                        <div class="error-message">
+                            لا توجد بيانات متاحة لشجرة الموظفين
                         </div>
-                        <div class="manager-name">{{ $project['manager'] }}</div>
-                    </div>
-                    @endif
-
-                    @if(isset($project['service_title']))
-                    <div class="service-title">{{ $project['service_title'] }}</div>
-                    <div class="employees-grid">
-                        @foreach($project['employees'] as $employee)
-                        <div class="employee-card">{{ $employee }}</div>
-                        @endforeach
-                    </div>
-                    @endif
-
-                    @if(isset($project['positions']))
-                    <div class="positions-container">
-                        @foreach($project['positions'] as $position => $employees)
-                        <div class="position-box">
-                            <div class="position-header">{{ $position }}</div>
-                            <div class="position-employees">
-                                @foreach($employees as $employee)
-                                <div class="employee-item
-                                    @if(strpos($employee, 'شاغر') !== false) vacant
-                                    @elseif(strpos($employee, 'لم تتم المباشرة') !== false) not-started
-                                    @endif">
-                                    {{ $employee }}
-                                </div>
-                                @endforeach
-                            </div>
-                        </div>
-                        @endforeach
-                    </div>
-                    @endif
-
-                    <div class="departments">
-                        <div class="departments-list">
-                            @foreach($project['departments'] as $department)
-                            <div class="department">{{ $department }}</div>
-                            @endforeach
-                        </div>
-                        <div class="count-container">
-                            <div class="count-box">
-                                @if(isset($project['current_employees']))
-                                    عدد الموظفين : {{ $project['total_employees'] }} الحاليين
+                    @else
+                        @if(!empty($project['data']['manager']))
+                        <div class="manager-box">
+                            <div class="manager-title">
+                                @if(!empty($project['data']['manager_title']))
+                                    {{ $project['data']['manager_title'] }}
                                 @else
-                                    عدد الموظفين : {{ $project['total_employees'] }}
+                                    المدير
                                 @endif
                             </div>
+                            <div class="manager-name">{{ $project['data']['manager'] }}</div>
                         </div>
-                    </div>
+                        @endif
+
+                        <div class="service-title">{{ $project['data']['service_title'] ?? 'خدمات المشروع' }}</div>
+                        
+                        @if(!empty($project['data']['employees']))
+                        <div class="employees-grid">
+                            @foreach($project['data']['employees'] as $employee)
+                            <div class="employee-card">{{ $employee }}</div>
+                            @endforeach
+                        </div>
+                        @endif
+
+                        @if(!empty($project['data']['positions']))
+                        <div class="positions-container">
+                            @foreach($project['data']['positions'] as $position => $employees)
+                            <div class="position-box">
+                                <div class="position-header">{{ $position }}</div>
+                                <div class="position-employees">
+                                    @foreach($employees as $employee)
+                                    <div class="employee-item
+                                        @if(strpos($employee, 'شاغر') !== false) vacant
+                                        @elseif(strpos($employee, 'لم تتم المباشرة') !== false) not-started
+                                        @endif">
+                                        {{ $employee }}
+                                    </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                        @endif
+
+                        <div class="departments">
+                            @if(!empty($project['data']['departments']))
+                            <div class="departments-list">
+                                @foreach($project['data']['departments'] as $department)
+                                <div class="department">{{ $department }}</div>
+                                @endforeach
+                            </div>
+                            @endif
+                            <div class="count-container">
+                                <div class="count-box">
+                                    عدد الموظفين : {{ $project['data']['total_employees'] ?? 0 }}
+                                </div>
+                            </div>
+                        </div>
+                    @endif
                 </div>
 
                 <div class="project-decoration">
